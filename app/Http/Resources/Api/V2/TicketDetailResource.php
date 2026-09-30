@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Resources\Api\V2;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TicketDetailResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'ticket_number' => $this->ticket_number,
+            'status' => $this->status,
+            'is_used' => $this->is_used,
+            'used_at' => $this->used_at,
+            'event' => new EventDetailResource($this->whenLoaded('event')),
+            'ticket_type' => new TicketTypeResource($this->whenLoaded('ticketType')),
+            'order' => $this->when($this->relationLoaded('order'), function () {
+                return [
+                    'id' => $this->order->id,
+                    'order_number' => $this->order->order_number,
+                    'buyer_name' => $this->order->buyer_name,
+                    'buyer_email' => $this->order->buyer_email,
+                    'buyer_phone' => $this->order->buyer_phone,
+                    'total_amount' => $this->order->total_amount,
+                    'status' => $this->order->status,
+                    'payment_status' => $this->order->payment_status,
+                ];
+            }),
+            'check_ins' => $this->when($this->relationLoaded('checkIns'), function () {
+                return $this->checkIns->map(function ($checkIn) {
+                    return [
+                        'id' => $checkIn->id,
+                        'checked_in_at' => $checkIn->checked_in_at,
+                        'checked_in_by' => $checkIn->checkedInBy?->name,
+                    ];
+                });
+            }),
+            'qr_data' => [
+                'ticket_number' => $this->ticket_number,
+                'event_id' => $this->event_id,
+                'ticket_type_id' => $this->ticket_type_id,
+            ],
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+}

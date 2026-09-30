@@ -1,0 +1,1377 @@
+openapi: 3.0.3
+info:
+  title: Suptix Event Management API
+  description: |
+    Suptix is a comprehensive event management platform API that provides endpoints for event creation, ticket management, and organizer services.
+    
+    The API supports two versions:
+    - **V1**: Legacy API routes for ticket verification and basic operations
+    - **V2**: Modern RESTful API with comprehensive event and user management
+    
+    ## Authentication
+    This API uses Laravel Sanctum for authentication. Include the `Authorization: Bearer {token}` header for authenticated requests.
+    
+    ## Response Format
+    All API responses follow a consistent format:
+    ```json
+    {
+      "status": "success|error",
+      "message": "Response message",
+      "data": {} // Response data (for success responses)
+    }
+    ```
+  version: 2.0.0
+  contact:
+    name: Suptix API Support
+    email: support@suptix.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.suptix.com/api
+    description: Production server
+  - url: https://staging-api.suptix.com/api
+    description: Staging server
+  - url: http://localhost:8000/api
+    description: Development server
+
+paths:
+  # Authentication Endpoints (V1)
+  /login:
+    post:
+      tags:
+        - Authentication (V1)
+      summary: User login
+      description: Authenticate user and receive access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                honeypot:
+                  type: string
+                  maxLength: 0
+                  description: Anti-spam field, must be empty
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /logout:
+    post:
+      tags:
+        - Authentication (V1)
+      summary: User logout
+      description: Logout user and revoke access token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /account/deletion-info:
+    get:
+      tags:
+        - Authentication (V1)
+      summary: Get account deletion information
+      description: Retrieve information about account deletion process
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Account deletion info retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /account:
+    delete:
+      tags:
+        - Authentication (V1)
+      summary: Delete user account
+      description: Permanently delete user account and all associated data
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Account deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  # Ticket Management (V1)
+  /tickets/scan-qr:
+    post:
+      tags:
+        - Tickets (V1)
+      summary: Scan QR code for ticket verification
+      description: Verify ticket by scanning QR code (public endpoint for mobile apps)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - qr_data
+              properties:
+                qr_data:
+                  type: string
+                  description: JSON string containing ticket information
+                  example: '{"ticket_number":"TKT-ABC123"}'
+      responses:
+        '200':
+          description: Ticket verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketVerificationResponse'
+        '404':
+          description: Ticket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tickets/verify-by-number:
+    post:
+      tags:
+        - Tickets (V1)
+      summary: Verify ticket by number
+      description: Verify ticket using ticket number (requires authentication)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ticket_number
+              properties:
+                ticket_number:
+                  type: string
+                  example: TKT-ABC123
+      responses:
+        '200':
+          description: Ticket verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketVerificationResponse'
+        '404':
+          description: Ticket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tickets/{ticket}/mark-used:
+    put:
+      tags:
+        - Tickets (V1)
+      summary: Mark ticket as used
+      description: Mark a ticket as used for event entry
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: ticket
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ticket ID or ticket number
+      responses:
+        '200':
+          description: Ticket marked as used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Ticket already used or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # V2 API Endpoints
+  /v2/auth/register:
+    post:
+      tags:
+        - Authentication (V2)
+      summary: Register new user
+      description: Create a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                phone:
+                  type: string
+                  maxLength: 15
+                  example: +1234567890
+                password:
+                  type: string
+                  minLength: 8
+                  example: password123
+                password_confirmation:
+                  type: string
+                  example: password123
+                honeypot:
+                  type: string
+                  maxLength: 0
+                  description: Anti-spam field, must be empty
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /v2/auth/login:
+    post:
+      tags:
+        - Authentication (V2)
+      summary: User login
+      description: Authenticate user and receive access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  example: password123
+                honeypot:
+                  type: string
+                  maxLength: 0
+                  description: Anti-spam field, must be empty
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/auth/logout:
+    post:
+      tags:
+        - Authentication (V2)
+      summary: User logout
+      description: Logout user and revoke current access token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /v2/auth/refresh:
+    post:
+      tags:
+        - Authentication (V2)
+      summary: Refresh access token
+      description: Refresh the current access token
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /v2/auth/account:
+    delete:
+      tags:
+        - Authentication (V2)
+      summary: Delete user account
+      description: Permanently delete user account
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  description: Current user password for confirmation
+      responses:
+        '200':
+          description: Account deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Events (V2)
+  /v2/events:
+    get:
+      tags:
+        - Events (V2)
+      summary: List events
+      description: Get a paginated list of published events
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search in event title, description, or tags
+        - name: type
+          in: query
+          schema:
+            type: string
+          description: Filter by event type
+        - name: organizer_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by organizer ID
+        - name: location
+          in: query
+          schema:
+            type: string
+          description: Search in venue location
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 15
+            minimum: 1
+            maximum: 100
+          description: Number of events per page
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+
+  /v2/events/{event}:
+    get:
+      tags:
+        - Events (V2)
+      summary: Get event details
+      description: Retrieve detailed information about a specific event
+      parameters:
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Event ID, slug, or code
+      responses:
+        '200':
+          description: Event details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventDetailResponse'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/events/{event}/tickets:
+    get:
+      tags:
+        - Events (V2)
+      summary: Get event ticket types
+      description: Retrieve available ticket types for an event
+      parameters:
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Event ID, slug, or code
+      responses:
+        '200':
+          description: Ticket types retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketTypesResponse'
+
+  # User Management (V2)
+  /v2/user/profile:
+    get:
+      tags:
+        - User (V2)
+      summary: Get user profile
+      description: Retrieve current user profile information
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+    put:
+      tags:
+        - User (V2)
+      summary: Update user profile
+      description: Update current user profile information
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: string
+                  maxLength: 15
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+
+  /v2/user/orders:
+    get:
+      tags:
+        - User (V2)
+      summary: Get user orders
+      description: Retrieve current user's order history
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 15
+          description: Number of orders per page
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOrdersResponse'
+
+  /v2/user/tickets:
+    get:
+      tags:
+        - User (V2)
+      summary: Get user tickets
+      description: Retrieve current user's tickets
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 15
+          description: Number of tickets per page
+      responses:
+        '200':
+          description: Tickets retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTicketsResponse'
+
+  # Orders (V2)
+  /v2/orders:
+    get:
+      tags:
+        - Orders (V2)
+      summary: List user orders
+      description: Get a paginated list of user's orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 15
+          description: Number of orders per page
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOrdersResponse'
+    post:
+      tags:
+        - Orders (V2)
+      summary: Create new order
+      description: Create a new ticket order for an event
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailResponse'
+        '400':
+          description: Event not available or validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/orders/{order}:
+    get:
+      tags:
+        - Orders (V2)
+      summary: Get order details
+      description: Retrieve detailed information about a specific order
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: order
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Order ID
+      responses:
+        '200':
+          description: Order details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetailResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Tickets (V2)
+  /v2/tickets:
+    get:
+      tags:
+        - Tickets (V2)
+      summary: List user tickets
+      description: Get a paginated list of user's tickets
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 15
+          description: Number of tickets per page
+      responses:
+        '200':
+          description: Tickets retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTicketsResponse'
+
+  /v2/tickets/{ticket}:
+    get:
+      tags:
+        - Tickets (V2)
+      summary: Get ticket details
+      description: Retrieve detailed information about a specific ticket
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: ticket
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Ticket ID
+      responses:
+        '200':
+          description: Ticket details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDetailResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v2/tickets/scan:
+    post:
+      tags:
+        - Tickets (V2)
+      summary: Scan ticket QR code
+      description: Scan and verify a ticket using QR code data
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - qr_data
+              properties:
+                qr_data:
+                  type: string
+                  description: JSON string from QR code
+      responses:
+        '200':
+          description: Ticket scanned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDetailResponse'
+
+  /v2/tickets/verify:
+    post:
+      tags:
+        - Tickets (V2)
+      summary: Verify ticket by number
+      description: Verify a ticket using ticket number
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ticket_number
+              properties:
+                ticket_number:
+                  type: string
+                  example: TKT-ABC123
+      responses:
+        '200':
+          description: Ticket verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketVerificationDetailResponse'
+
+  /v2/tickets/{ticket}/check-in:
+    put:
+      tags:
+        - Tickets (V2)
+      summary: Check-in ticket
+      description: Check-in a ticket for event entry
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: ticket
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Ticket ID
+      responses:
+        '200':
+          description: Ticket checked in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDetailResponse'
+        '400':
+          description: Ticket cannot be checked in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Response Schemas
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Operation completed successfully
+        data:
+          oneOf:
+            - type: object
+            - type: "null"
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: An error occurred
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: Validation failed
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    # Authentication Schemas
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Login successful
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              example: eyJ0eXAiOiJKV1QiLCJhbGc...
+
+    RegisterResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: User registered successfully
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              example: eyJ0eXAiOiJKV1QiLCJhbGc...
+
+    # User Schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        phone:
+          type: string
+          example: +1234567890
+
+    UserProfileResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Profile retrieved successfully
+        data:
+          $ref: '#/components/schemas/User'
+
+    # Event Schemas
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: EVT-ABC123
+        slug:
+          type: string
+          example: awesome-tech-conference-2024
+        title:
+          type: string
+          example: Awesome Tech Conference 2024
+        description:
+          type: string
+          example: Join us for the most exciting tech conference of the year
+        cover_image_url:
+          type: string
+          format: uri
+          example: https://example.com/images/event-cover.jpg
+        start_date:
+          type: string
+          format: date
+          example: '2024-12-25'
+        start_time:
+          type: string
+          format: time
+          example: '09:00:00'
+        end_date:
+          type: string
+          format: date
+          example: '2024-12-25'
+        end_time:
+          type: string
+          format: time
+          example: '17:00:00'
+        status:
+          type: string
+          enum: [draft, published, live, past, canceled]
+          example: published
+        tags:
+          type: array
+          items:
+            type: string
+          example: [technology, conference, networking]
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+        venue:
+          $ref: '#/components/schemas/Venue'
+
+    Organizer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Tech Events Inc.
+        email:
+          type: string
+          format: email
+          example: info@techevents.com
+
+    Venue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Grand Convention Center
+        address:
+          type: string
+          example: 123 Main Street
+        city:
+          type: string
+          example: New York
+        state:
+          type: string
+          example: NY
+        country:
+          type: string
+          example: USA
+
+    EventListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Events retrieved successfully
+        data:
+          type: object
+          properties:
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+            pagination:
+              $ref: '#/components/schemas/PaginationMeta'
+
+    EventDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Event details retrieved successfully
+        data:
+          allOf:
+            - $ref: '#/components/schemas/Event'
+            - type: object
+              properties:
+                ticket_types:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TicketType'
+
+    # Ticket Schemas
+    TicketType:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: General Admission
+        description:
+          type: string
+          example: Standard event access
+        price:
+          type: number
+          format: decimal
+          example: 50.00
+        is_available:
+          type: boolean
+          example: true
+        available_quantity:
+          type: integer
+          example: 100
+
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        ticket_number:
+          type: string
+          example: TKT-ABC123DEF456
+        status:
+          type: string
+          enum: [valid, used, cancelled]
+          example: valid
+        is_used:
+          type: boolean
+          example: false
+        used_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        price:
+          type: number
+          format: decimal
+          example: 50.00
+        ticket_type:
+          $ref: '#/components/schemas/TicketType'
+        event:
+          $ref: '#/components/schemas/Event'
+
+    TicketTypesResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Ticket types retrieved successfully
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketType'
+
+    TicketVerificationResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Ticket verified successfully
+        data:
+          $ref: '#/components/schemas/Ticket'
+
+    TicketDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Ticket details retrieved successfully
+        data:
+          allOf:
+            - $ref: '#/components/schemas/Ticket'
+            - type: object
+              properties:
+                check_ins:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CheckIn'
+
+    TicketVerificationDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Ticket verified successfully
+        data:
+          type: object
+          properties:
+            ticket:
+              $ref: '#/components/schemas/Ticket'
+            verification:
+              type: object
+              properties:
+                is_valid:
+                  type: boolean
+                  example: true
+                is_used:
+                  type: boolean
+                  example: false
+                can_check_in:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Ticket is valid and ready for check-in
+
+    UserTicketsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Tickets retrieved successfully
+        data:
+          type: object
+          properties:
+            tickets:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticket'
+            pagination:
+              $ref: '#/components/schemas/PaginationMeta'
+
+    # Order Schemas
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        order_number:
+          type: string
+          example: ORD-ABC123
+        buyer_name:
+          type: string
+          example: John Doe
+        buyer_email:
+          type: string
+          format: email
+          example: john@example.com
+        buyer_phone:
+          type: string
+          example: +1234567890
+        total_amount:
+          type: number
+          format: decimal
+          example: 150.00
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled]
+          example: confirmed
+        payment_status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+          example: paid
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00Z'
+        event:
+          $ref: '#/components/schemas/Event'
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - event_id
+        - tickets
+        - buyer_name
+        - buyer_email
+        - buyer_phone
+      properties:
+        event_id:
+          type: integer
+          example: 1
+        tickets:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - ticket_type_id
+              - quantity
+            properties:
+              ticket_type_id:
+                type: integer
+                example: 1
+              quantity:
+                type: integer
+                minimum: 1
+                maximum: 10
+                example: 2
+        buyer_name:
+          type: string
+          maxLength: 255
+          example: John Doe
+        buyer_email:
+          type: string
+          format: email
+          maxLength: 255
+          example: john@example.com
+        buyer_phone:
+          type: string
+          maxLength: 15
+          example: +1234567890
+        honeypot:
+          type: string
+          maxLength: 0
+          description: Anti-spam field, must be empty
+
+    OrderDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Order details retrieved successfully
+        data:
+          allOf:
+            - $ref: '#/components/schemas/Order'
+            - type: object
+              properties:
+                tickets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ticket'
+
+    UserOrdersResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Orders retrieved successfully
+        data:
+          type: object
+          properties:
+            orders:
+              type: array
+              items:
+                $ref: '#/components/schemas/Order'
+            pagination:
+              $ref: '#/components/schemas/PaginationMeta'
+
+    # Utility Schemas
+    CheckIn:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        checked_in_at:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00Z'
+        checked_in_by:
+          type: integer
+          example: 1
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        last_page:
+          type: integer
+          example: 5
+        per_page:
+          type: integer
+          example: 15
+        total:
+          type: integer
+          example: 67
+        has_more:
+          type: boolean
+          example: true
+
+tags:
+  - name: Authentication (V1)
+    description: User authentication endpoints for legacy API
+  - name: Tickets (V1)
+    description: Ticket verification and management endpoints for legacy API
+  - name: Authentication (V2)
+    description: Modern user authentication endpoints
+  - name: Events (V2)
+    description: Event browsing and management endpoints
+  - name: User (V2)
+    description: User profile and account management endpoints
+  - name: Orders (V2)
+    description: Order creation and management endpoints
+  - name: Tickets (V2)
+    description: Ticket management and verification endpoints

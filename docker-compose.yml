@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "true"
+      "APP_NAME": "Suptix"
+    ports:
+      - "8000:80"
+    volumes:
+      - storage:/var/www/html/storage/app/public
+    networks:
+      - suptix
+
+volumes:
+  storage:
+
+networks:
+  suptix:
+    external: true
+    name: ccg04so88sgg4gwsk44gwckg
+    # If your DB is a separate Coolify service on the same server, set
+    # "external: true" and use the shared network Coolify creates for that
+    # service. Then set DB_HOST in your Coolify env vars to the DB service name.
+    driver: bridge

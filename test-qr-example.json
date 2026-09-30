@@ -1,0 +1,32 @@
+{
+  "ticket_number": "TKT-123456789",
+  "attendee_name": "John Doe",
+  "attendee_email": "john@example.com",
+  "price": 50.00,
+  "status": "active",
+  "event": {
+    "id": 1,
+    "title": "Sample Concert Event",
+    "start_date": "2025-08-15",
+    "start_time": "19:00:00",
+    "venue": {
+      "name": "Music Hall",
+      "address": "123 Main Street",
+      "city": "Accra",
+      "country": "Ghana"
+    },
+    "organizer": {
+      "name": "Event Organizers Ltd"
+    }
+  },
+  "ticket_type": {
+    "name": "VIP",
+    "description": "VIP access with premium benefits"
+  },
+  "order": {
+    "order_number": "ORD-987654321",
+    "status": "completed"
+  },
+  "verification_url": "https://suptix.live/verify-ticket/TKT-123456789",
+  "generated_at": "2025-07-27T10:30:00.000Z"
+}
