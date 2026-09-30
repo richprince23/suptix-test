@@ -9,7 +9,7 @@ Suptix is a modern, scalable event management and ticketing platform designed fo
 - **Phase 1: Project Setup and Development** - Completed
 - **Phase 2: Testing and Quality Assurance** - In Progress
 - **Phase 3: Deployment** - To Be Implemented
-- **Phase 4: Maintenance** - To Be Implemented
+- **Phase 4: Maintenance and Improvements** - To Be Implemented
 
 ---
 
