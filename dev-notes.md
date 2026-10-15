@@ -8,4 +8,4 @@ Repo Structure
 - feature/individual branches for individual or feature based dev. 
 PS: This is where we work and merge upwords
 
-
+php -d pcov.enabled=1 -d pcov.directory=app artisan test --coverage --coverage-html coverage 2>&1 | tail -80
