@@ -25,4 +25,4 @@ yarn-error.log
 */.DS_Store
 .DS_Store
 storage/database.sqlite
-/project_docs
+/project_docs/coverage
