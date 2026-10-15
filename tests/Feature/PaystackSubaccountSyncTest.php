@@ -6,9 +6,9 @@ use App\Models\Organizer;
 use App\Models\PaymentInfo;
 use App\Models\User;
 use App\Services\PaystackSubaccountService;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PaystackSubaccountSyncTest extends TestCase
@@ -54,7 +54,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->paystackService = new PaystackSubaccountService;
     }
 
-    /** @test */
+    #[Test]
     public function it_can_determine_when_to_sync_with_paystack()
     {
         // Should not sync when no subaccount code
@@ -97,7 +97,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->assertTrue($this->paymentInfo->shouldSyncWithPaystack());
     }
 
-    /** @test */
+    #[Test]
     public function it_handles_sync_errors_gracefully()
     {
         // Mock failed Paystack API response
@@ -116,7 +116,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->assertStringContainsString('Invalid subaccount code', $this->paymentInfo->getLastSyncError());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_clear_sync_errors()
     {
         // Add a sync error
@@ -138,7 +138,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->assertNull($this->paymentInfo->getLastSyncError());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_perform_manual_sync()
     {
         // Mock successful Paystack API response
@@ -162,7 +162,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->assertEquals('Subaccount updated successfully', $result['message']);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_for_manual_sync_without_subaccount_code()
     {
         $paymentInfoWithoutCode = PaymentInfo::create([
@@ -186,7 +186,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $paymentInfoWithoutCode->manualSyncWithPaystack();
     }
 
-    /** @test */
+    #[Test]
     public function it_updates_payment_info_with_paystack_response_data()
     {
         // Mock successful Paystack API response with updated data
@@ -218,7 +218,7 @@ class PaystackSubaccountSyncTest extends TestCase
         $this->assertTrue($this->paymentInfo->is_active);
     }
 
-    /** @test */
+    #[Test]
     public function paystack_service_provides_user_friendly_error_messages()
     {
         $testCases = [
