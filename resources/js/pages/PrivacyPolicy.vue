@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-background">
         <NavBar text-color="text-foreground" background-color="bg-background" class=" z-20 w-full border-b border-gray-200 shadow-sm" />
 
@@ -105,7 +104,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
-import SeoHead from '@/components/SeoHead.vue';
 
 defineProps<{
     seo: any;

@@ -5,9 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\EventType;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers\EventFormFieldsRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\EventPartnersRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\EventPeopleRelationManager;
-use App\Filament\Resources\EventResource\RelationManagers\EventSessionsRelationManager;
 use App\Filament\Resources\EventResource\RelationManagers\TicketTypesRelationManager;
 use App\Filament\Resources\EventResource\Widgets;
 use App\Models\Event;
@@ -179,25 +176,7 @@ class EventResource extends Resource
                                 ->label(fn($get) => $get('is_multi_day') ? 'Closing Time (Last Day)' : 'End Time'),
                         ])->columns(2),
 
-                        Toggle::make('is_rsvp')
-                            ->label('Is this an RSVPed Event?')
-                            ->reactive(),
-
-                        Placeholder::make('rsvp_credit_info')
-                            ->label('')
-                            ->content('Free RSVP events include 100 attendee slots and 100 confirmation emails at no cost. Need more? Purchase additional slot packs from the event\'s Credits page after creation.')
-                            ->visible(fn ($get) => $get('is_rsvp'))
-                            ->columnSpanFull(),
-
-                        DateTimePicker::make('rsvp_closes_at')
-                            ->label('RSVP Closes At')
-                            ->nullable()
-                            ->native(false)
-                            ->displayFormat('D, M j Y H:i')
-                            ->helperText('Optional. If not set, RSVP closes when the event starts.')
-                            ->visible(fn($get) => $get('is_rsvp')),
-
-                        Select::make('status')
+                                        Select::make('status')
                             ->options([
                                 'draft' => 'Draft',
                                 'published' => 'Published',
@@ -240,7 +219,6 @@ class EventResource extends Resource
                 TextColumn::make('start_date')->date(),
                 TextColumn::make('start_time')->time(),
                 // TextColumn::make('team.name')->wrap(),
-                IconColumn::make('is_rsvp')->boolean(),
                 TextColumn::make('status')->badge()->colors([
                     'success' => fn($state) => $state == 'published' && $state == 'live',
                     'warning' => fn($state) => $state == 'draft',
@@ -270,10 +248,7 @@ class EventResource extends Resource
     {
         return [
             TicketTypesRelationManager::class,
-            EventSessionsRelationManager::class,
             EventFormFieldsRelationManager::class,
-            EventPeopleRelationManager::class,
-            EventPartnersRelationManager::class,
         ];
     }
 

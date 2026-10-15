@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventCreditPurchase;
 use App\Models\PaymentInfo;
-use App\Services\EventCreditService;
 use App\Services\PaystackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,10 +12,8 @@ class PaystackController extends Controller
 {
     protected PaystackService $paystackService;
 
-    public function __construct(
-        PaystackService $paystackService,
-        protected EventCreditService $creditService,
-    ) {
+    public function __construct(PaystackService $paystackService)
+    {
         $this->paystackService = $paystackService;
     }
 
@@ -196,27 +192,6 @@ class PaystackController extends Controller
      */
     protected function handleChargeSuccess(array $data): void
     {
-        // Handle RSVP credit purchases (no subaccount split — platform revenue)
-        $metadataType = $data['metadata']['type'] ?? null;
-        if ($metadataType === 'rsvp_credit_purchase') {
-            $reference = $data['reference'] ?? null;
-            if ($reference) {
-                $purchase = EventCreditPurchase::where('paystack_reference', $reference)
-                    ->where('status', 'pending')
-                    ->first();
-
-                if ($purchase) {
-                    $this->creditService->grantCreditsFromPurchase($purchase);
-                    Log::info('RSVP credits granted from purchase', [
-                        'purchase_id' => $purchase->id,
-                        'event_id'    => $purchase->event_id,
-                        'reference'   => $reference,
-                    ]);
-                }
-            }
-            return;
-        }
-
         $subaccountCode = $data['subaccount']['subaccount_code'] ?? null;
 
         if (! $subaccountCode) {

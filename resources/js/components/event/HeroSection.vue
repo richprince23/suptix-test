@@ -71,23 +71,10 @@
                     Get Tickets
                 </button>
                 <button
-                    v-else-if="showRsvpCta"
-                    @click="$emit('rsvp')"
-                    class="bg-primary text-white font-semibold px-8 py-3.5 rounded-full text-base cursor-pointer transition-opacity hover:opacity-90"
-                >
-                    RSVP Now
-                </button>
-                <button
                     @click="$emit('share')"
                     class="bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-8 py-3.5 rounded-full text-base cursor-pointer transition-colors hover:bg-white/20"
                 >
                     Share
-                </button>
-                <button
-                    @click="$emit('report')"
-                    class="text-red-300 border border-red-400/30 bg-red-500/10 backdrop-blur-sm font-medium px-6 py-3.5 rounded-full text-sm cursor-pointer transition-colors hover:bg-red-500/20"
-                >
-                    Report
                 </button>
             </div>
         </div>
@@ -107,14 +94,11 @@ const props = defineProps<{
     location?: string;
     mode?: string;
     showTicketCta: boolean;
-    showRsvpCta: boolean;
     statusClasses: string;
 }>();
 
 defineEmits<{
     'get-tickets': [];
-    'rsvp': [];
     'share': [];
-    'report': [];
 }>();
 </script>

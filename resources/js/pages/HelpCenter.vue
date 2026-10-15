@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <!-- Hero Content Section -->
     <section class="bg-gradient-to-br from-primary/10 via-background to-primary/5">
         <NavBar text-color="text-foreground" background-color="bg-background/90"
@@ -296,7 +295,6 @@
 
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
-import SeoHead from '@/components/SeoHead.vue';
 import Footer from '@/components/Footer.vue';
 import { Calendar, CheckCircle, ChevronDown, Mail, MessageSquare, Phone, RefreshCw, Search, Ticket, User } from 'lucide-vue-next';
 import { ref } from 'vue';

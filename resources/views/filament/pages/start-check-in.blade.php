@@ -73,9 +73,9 @@
                         <div class="flex items-center space-x-2">
                             <span class="text-sm text-gray-600">Event Type:</span>
                             <x-filament::badge 
-                                :color="$eventDetails['is_rsvp'] ? 'info' : 'primary'"
+                                :color="'primary'"
                             >
-                                {{ $eventDetails['is_rsvp'] ? 'RSVP Event' : 'Ticketed Event' }}
+                                Ticketed Event
                             </x-filament::badge>
                         </div>
                     </div>

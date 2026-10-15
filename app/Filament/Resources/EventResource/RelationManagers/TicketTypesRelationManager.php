@@ -75,10 +75,7 @@ class TicketTypesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->hidden(function (RelationManager $livewire): bool {
-                        return $livewire->getOwnerRecord()->is_rsvp == true;
-                    }
-                ),
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

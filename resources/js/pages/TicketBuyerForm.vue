@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <main class="bg-background min-h-screen">
         <NavBar text-color='text-foreground' :background-color="'bg-background'" class="bg-background" />
         <div class="mx-auto max-w-7xl px-4  py-8 md:py-8 sm:px-12 lg:px-16">
@@ -299,7 +298,6 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
-import SeoHead from '@/components/SeoHead.vue'
 import Button from '@/components/ui/button/Button.vue'
 import NavBar from '@/components/NavBar.vue'
 import Checkbox from '@/components/ui/checkbox/Checkbox.vue'

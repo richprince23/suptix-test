@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <Toaster :close-button="true" />
     <NavBar text-color="text-foreground" background-color="bg-transparent"
         class="fixed z-20 w-full backdrop-blur" />
@@ -437,7 +436,6 @@ import { ref, computed } from 'vue';
 import { toast, Toaster } from 'vue-sonner';
 import axios from 'axios';
 import NavBar from '@/components/NavBar.vue';
-import SeoHead from '@/components/SeoHead.vue';
 import Footer from '@/components/Footer.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';

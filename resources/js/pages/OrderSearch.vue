@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-background">
         <!-- Navigation -->
         <NavBar text-color="text-black"
@@ -387,7 +386,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 import QRCodeComponent from '@/components/QRCodeComponent.vue';
-import SeoHead from '@/components/SeoHead.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Input from '@/components/ui/input/Input.vue';
 import axios from 'axios';

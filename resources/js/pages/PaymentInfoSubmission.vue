@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-gray-50">
         <NavBar class="fixed z-20 w-full bg-black border-b border-gray-200 shadow-sm" />
 
@@ -231,7 +230,6 @@
 
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
-import SeoHead from '@/components/SeoHead.vue';
 import { router } from '@inertiajs/vue3';
 import { AlertCircle, CheckCircle, Info } from 'lucide-vue-next';
 import { ref, computed, onMounted } from 'vue';

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Mail\OrderEmail;
 use App\Mail\TicketEmail;
 use App\Models\Order;
-use App\Services\SeoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +21,9 @@ class OrderController extends Controller
     {
         $orderNumber = $request->query('order');
 
-        SeoService::setOrderSearchSEO();
 
         return Inertia::render('OrderSearch', [
             'initialOrderNumber' => $orderNumber,
-            'seo' => SeoService::orderSearch(),
         ]);
     }
 
@@ -492,7 +489,6 @@ class OrderController extends Controller
                     ->toArray();
                 return $ticketArray;
             }),
-            'seo' => SeoService::orderDetails($order),
         ]);
     }
 }

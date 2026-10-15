@@ -97,19 +97,6 @@ class EventResource extends Resource
                         ->imageEditor()
                         ->maxSize(5000)
                         ->directory('event-covers')->disk(config('filesystems.default')),
-                    Toggle::make('is_rsvp')
-                        ->label('Is this an RSVPed Event?')
-                        ->hint('RSVPed events do not require creating tickets')
-                        ->reactive(),
-
-                    DateTimePicker::make('rsvp_closes_at')
-                        ->label('RSVP Closes At')
-                        ->nullable()
-                        ->native(false)
-                        ->displayFormat('D, M j Y H:i')
-                        ->helperText('Optional. If not set, RSVP closes when the event starts.')
-                        ->visible(fn($get) => $get('is_rsvp')),
-
                     Select::make('status')
                         ->options([
                             'draft' => 'Draft',
@@ -150,7 +137,6 @@ class EventResource extends Resource
                 TextColumn::make('start_date')
                     ->date()
                     ->sortable(),
-                IconColumn::make('is_rsvp')->boolean(),
                 TextColumn::make('status')
                     ->badge()
                     ->colors([

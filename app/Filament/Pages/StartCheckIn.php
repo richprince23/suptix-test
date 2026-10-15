@@ -162,7 +162,6 @@ class StartCheckIn extends Page implements HasForms
             'time' => \Carbon\Carbon::parse($event->start_time)->format('g:i A'),
             'venue' => $event->venue_name,
             'status' => $event->status,
-            'is_rsvp' => $event->is_rsvp,
         ];
     }
 }

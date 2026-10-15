@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organizer;
-use App\Services\SeoService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Artesaos\SEOTools\Facades\SEOMeta;
-use Artesaos\SEOTools\Facades\OpenGraph;
-use Artesaos\SEOTools\Facades\TwitterCard;
-use Artesaos\SEOTools\Facades\JsonLd;
 
 class OrganizerController extends Controller
 {
@@ -111,65 +106,6 @@ class OrganizerController extends Controller
             ];
         });
 
-        // SEO data for organizer profile
-        $seo = [
-            'title' => $organizer->name . ' - Events & Profile | Suptix',
-            'description' => $organizer->description
-                ? substr(strip_tags($organizer->description), 0, 155) . '...'
-                : "Discover events by {$organizer->name}. View upcoming events, past events, and subscribe for updates on Suptix.",
-            'keywords' => "events by {$organizer->name}, {$organizer->name} events, event organizer, upcoming events, " .
-                         ($organizer->city ? "{$organizer->city} events, " : "") .
-                         "event tickets, subscribe to events",
-            'og_title' => $organizer->name . ' - Event Organizer',
-            'og_description' => $organizer->description
-                ? substr(strip_tags($organizer->description), 0, 155) . '...'
-                : "Discover amazing events by {$organizer->name}. {$stats['total_events']} events organized.",
-            'og_image' => $organizer->banner_url ?? $organizer->logo_url ?? asset('suptix-default.jpg'),
-            'og_type' => 'profile',
-            'twitter_card' => 'summary_large_image',
-            'twitter_title' => $organizer->name . ' - Events & Profile',
-            'twitter_description' => "Discover events by {$organizer->name} on Suptix",
-            'twitter_image' => $organizer->banner_url ?? $organizer->logo_url ?? asset('suptix-default.jpg'),
-            'canonical' => route('organizers.show', $organizer->slug),
-        ];
-
-        // Set SEO using SEOTools
-        SEOMeta::setTitle($seo['title'])
-            ->setDescription($seo['description'])
-            ->addKeyword(explode(', ', $seo['keywords']))
-            ->setCanonical($seo['canonical']);
-
-        OpenGraph::setTitle($seo['og_title'])
-            ->setDescription($seo['og_description'])
-            ->setUrl($seo['canonical'])
-            ->setType($seo['og_type'])
-            ->addImage($seo['og_image']);
-
-        TwitterCard::setTitle($seo['twitter_title'])
-            ->setDescription($seo['twitter_description'])
-            ->setType($seo['twitter_card'])
-            ->setImage($seo['twitter_image']);
-
-        JsonLd::addValues([
-            '@context' => 'https://schema.org',
-            '@type' => 'Organization',
-            'name' => $organizer->name,
-            'description' => $organizer->description,
-            'url' => route('organizers.show', $organizer->slug),
-            'logo' => $organizer->logo_url,
-            'address' => [
-                '@type' => 'PostalAddress',
-                'addressLocality' => $organizer->city,
-                'addressCountry' => $organizer->country,
-            ],
-            'contactPoint' => [
-                '@type' => 'ContactPoint',
-                'email' => $organizer->email,
-                'telephone' => $organizer->phone,
-            ],
-            'sameAs' => $organizer->website ? [$organizer->website] : [],
-        ]);
-
         return Inertia::render('OrganizerProfile', [
             'organizer' => array_merge($organizer->toArray(), [
                 'logo_url' => $organizer->logo_url,
@@ -179,7 +115,6 @@ class OrganizerController extends Controller
             'upcomingEvents' => $upcomingEvents,
             'calendarEvents' => $calendarEvents,
             'stats' => $stats,
-            'seo' => $seo,
         ]);
     }
 

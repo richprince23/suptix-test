@@ -1,5 +1,4 @@
 <template>
-    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-background to-gray-100 py-12">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <!-- Success Header -->
@@ -141,7 +140,6 @@
 </template>
 
 <script setup lang="ts">
-import SeoHead from '@/components/SeoHead.vue';
 import { Link, router } from '@inertiajs/vue3';
 import { CheckCircleIcon, XIcon } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
