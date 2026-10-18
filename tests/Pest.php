@@ -13,7 +13,8 @@
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\DatabaseTransactions::class)
-    ->in('Feature');
+    ->in('Feature')
+    ->in('Unit');
 
 /*
 |--------------------------------------------------------------------------

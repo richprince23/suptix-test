@@ -27,3 +27,7 @@ yarn-error.log
 storage/database.sqlite
 /project_docs
 /coverage
+code-coverage.txt
+docs/pending-issues
+eslint.txt
+pint.txt
