@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Discount;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Ticket;
@@ -151,6 +152,13 @@ class CleanupIncompleteOrders extends Command
                     if ($paymentCount > 0) {
                         $order->payments()->delete();
                         $deletedPaymentsCount += $paymentCount;
+                    }
+
+                    // Give back the discount use this unpaid order consumed
+                    if ($order->discount_id) {
+                        Discount::where('id', $order->discount_id)
+                            ->where('used_count', '>', 0)
+                            ->decrement('used_count');
                     }
 
                     // Delete the order itself
