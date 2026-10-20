@@ -1,0 +1,65 @@
+flowchart TB
+    subgraph Clients
+        BUY[Buyer browser<br/>Vue 3 + Inertia]
+        ORG[Organizer browser<br/>Filament admin]
+        SCAN[Scanner app<br/>suptix_scan]
+    end
+
+    subgraph Laravel["Laravel 12 application"]
+        subgraph Web["Web and API layer"]
+            TPC[TicketPurchaseController<br/>F1 purchase and pricing]
+            DC[DiscountController<br/>discount validation]
+            PC[PaymentController<br/>F2 callback and webhook]
+            TC[TicketController<br/>F3 validate and mark used]
+            CIC[CheckInController<br/>F3 entry]
+        end
+
+        subgraph Services["Service layer"]
+            PS[PaystackService<br/>init, verify, signature]
+            PBS[PaystackBalanceService<br/>subaccount and admin balances]
+        end
+
+        subgraph Domain["Domain models"]
+            ORD[Order]
+            TKT[Ticket]
+            TT[TicketType]
+            PAY[Payment]
+            DSC[Discount]
+        end
+
+        subgraph Background["Background work"]
+            CLN[orders:cleanup-incomplete<br/>F4 release unpaid orders]
+            Q[Queue and mail]
+        end
+    end
+
+    DB[(MySQL 8.4)]
+    PAYSTACK[Paystack API]
+
+    BUY --> TPC
+    BUY --> DC
+    BUY --> PC
+    ORG --> Domain
+    SCAN --> TC
+    SCAN --> CIC
+
+    TPC --> PS
+    TPC --> ORD
+    TPC --> TT
+    TPC --> DSC
+    PC --> PS
+    PC --> PBS
+    PC --> PAY
+    PC --> ORD
+    PC --> TKT
+    PC --> Q
+    TC --> TKT
+    CIC --> TKT
+    DC --> DSC
+    CLN --> ORD
+    CLN --> DSC
+
+    Domain --> DB
+    PS <--> PAYSTACK
+    PBS <--> PAYSTACK
+    PAYSTACK -- "charge.success webhook" --> PC

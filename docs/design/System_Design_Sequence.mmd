@@ -1,0 +1,54 @@
+sequenceDiagram
+    autonumber
+    actor Buyer
+    participant Web as Vue + Inertia
+    participant TPC as TicketPurchaseController
+    participant PS as PaystackService
+    participant PSK as Paystack
+    participant PC as PaymentController
+    participant DB as MySQL
+    participant Q as Queue and mail
+    actor Staff
+    participant TC as TicketController
+
+    rect rgb(235, 245, 255)
+    Note over Buyer,DB: F1 Purchase and pricing
+    Buyer->>Web: choose tickets, enter discount code
+    Web->>TPC: POST purchase
+    TPC->>DB: lock ticket types, check availability
+    TPC->>DB: validate discount, compute total
+    TPC->>DB: create Order (pending) and Tickets (pending)
+    TPC->>PS: initialise transaction
+    PS->>PSK: POST transaction/initialize
+    PSK-->>PS: authorization_url, reference
+    TPC-->>Web: redirect to Paystack
+    end
+
+    rect rgb(240, 255, 240)
+    Note over Buyer,Q: F2 Payment confirmation (two paths, one outcome)
+    Buyer->>PSK: pay
+    par Browser callback
+        PSK-->>Buyer: redirect to callback
+        Buyer->>PC: GET callback?reference
+        PC->>PS: verify transaction
+        PS->>PSK: GET transaction/verify
+    and Webhook
+        PSK->>PC: POST webhook (x-paystack-signature)
+        PC->>PC: verify HMAC signature
+    end
+    PC->>DB: lock order, skip if already paid
+    PC->>DB: mark Order paid, Tickets active, create Payment
+    PC->>Q: send ticket email
+    end
+
+    rect rgb(255, 248, 235)
+    Note over Staff,DB: F3 Ticket validation and entry
+    Staff->>TC: scan QR
+    TC->>DB: find ticket, check status
+    alt valid and unused
+        TC->>DB: mark ticket used
+        TC-->>Staff: admit
+    else used, pending or cancelled
+        TC-->>Staff: reject
+    end
+    end
