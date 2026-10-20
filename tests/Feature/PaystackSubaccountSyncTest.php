@@ -108,6 +108,9 @@ class PaystackSubaccountSyncTest extends TestCase
             ], 404),
         ]);
 
+        // Syncing only happens for changes made in a system admin context
+        $this->actingAs(User::factory()->create(['is_system_admin' => true]));
+
         // Trigger sync by updating a field
         $this->paymentInfo->update(['business_name' => 'Updated Name']);
 
