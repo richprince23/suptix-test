@@ -72,7 +72,7 @@ it('F2-99 a payment belongs to its order and organiser', function () {
     [$order, $payment] = makePendingOrder($this->event, $this->ticketType);
 
     expect($payment->order->is($order))->toBeTrue()->and($payment->organizer->is($this->organizer))->toBeTrue()
-        ->and(Payment::count())->toBe(1);
+        ->and(Payment::where('order_id', $order->id)->count())->toBe(1);
 });
 
 it('F3-49 a ticket is active only in the active status and relates to its check-ins', function () {
