@@ -4,15 +4,12 @@ use App\Jobs\AssignOrganizerAdminRole;
 use App\Models\Organizer;
 use App\Models\PaymentInfo;
 use App\Models\User;
-
 use Illuminate\Support\Facades\Queue;
 use Spatie\Permission\Models\Role;
 
-
-
 beforeEach(function () {
     $this->seed();
-    
+
     // Create the Organizer Admin role
     Role::firstOrCreate(['name' => 'Organizer Admin']);
 });
@@ -166,7 +163,6 @@ test('job does not assign duplicate roles', function () {
     expect($user->fresh()->roles->count())->toBe($rolesBefore);
     expect($user->fresh()->hasRole('Organizer Admin'))->toBeTrue();
 });
-
 
 test('observer triggers job when status changes to approved', function () {
     Queue::fake();

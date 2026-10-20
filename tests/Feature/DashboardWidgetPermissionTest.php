@@ -9,14 +9,11 @@ use App\Filament\Widgets\TicketsSoldChartWidget;
 use App\Filament\Widgets\UpcomingEventsWidget;
 use App\Models\Organizer;
 use App\Models\User;
-
 use Spatie\Permission\Models\Role;
-
-
 
 beforeEach(function () {
     $this->seed();
-    
+
     // Create roles
     Role::firstOrCreate(['name' => 'Organizer Admin']);
     Role::firstOrCreate(['name' => 'Event Manager']);
@@ -32,10 +29,10 @@ test('organizer admin can view all widgets', function () {
         'description' => 'Test organizer',
     ]);
     $organizer->users()->attach($user->id);
-    
+
     $user->assignRole('Organizer Admin');
     $this->actingAs($user);
-    
+
     // Organizer Admin should be able to view all widgets
     expect(EventsOverviewWidget::canView())->toBeTrue();
     expect(SalesOverviewWidget::canView())->toBeTrue();
@@ -55,10 +52,10 @@ test('event manager has limited widget access', function () {
         'description' => 'Test organizer',
     ]);
     $organizer->users()->attach($user->id);
-    
+
     $user->assignRole('Event Manager');
     $this->actingAs($user);
-    
+
     // Event Manager should have limited access
     expect(EventsOverviewWidget::canView())->toBeTrue();
     expect(SalesOverviewWidget::canView())->toBeTrue(); // Has view_payments permission
@@ -78,10 +75,10 @@ test('customer service has very limited widget access', function () {
         'description' => 'Test organizer',
     ]);
     $organizer->users()->attach($user->id);
-    
+
     $user->assignRole('Customer Service');
     $this->actingAs($user);
-    
+
     // Customer Service should have very limited access
     expect(EventsOverviewWidget::canView())->toBeTrue();
     expect(SalesOverviewWidget::canView())->toBeTrue(); // Has view_payments permission
@@ -101,10 +98,10 @@ test('users without roles cannot view sensitive widgets', function () {
         'description' => 'Test organizer',
     ]);
     $organizer->users()->attach($user->id);
-    
+
     // User without any roles
     $this->actingAs($user);
-    
+
     // Should not be able to view any widgets
     expect(EventsOverviewWidget::canView())->toBeFalse();
     expect(SalesOverviewWidget::canView())->toBeFalse();
@@ -118,7 +115,7 @@ test('users without roles cannot view sensitive widgets', function () {
 test('system admin cannot view organizer widgets', function () {
     $user = User::factory()->create(['is_system_admin' => true]);
     $this->actingAs($user);
-    
+
     // System admin should not see organizer widgets
     expect(EventsOverviewWidget::canView())->toBeFalse();
     expect(SalesOverviewWidget::canView())->toBeFalse();

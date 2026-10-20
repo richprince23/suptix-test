@@ -5,10 +5,7 @@ use App\Models\PaymentInfo;
 use App\Models\SystemAdmin;
 use App\Models\User;
 use App\Notifications\NewPaymentInfoSubmissionNotification;
-
 use Illuminate\Support\Facades\Notification;
-
-
 
 beforeEach(function () {
     $this->seed();
@@ -20,14 +17,14 @@ test('admin receives notification when payment info is created', function () {
 
     // Create test data
     $user = User::factory()->create();
-    
+
     $organizer = Organizer::create([
         'name' => 'Test Organizer',
         'email' => 'test@example.com',
         'phone' => '+233123456789',
         'description' => 'Test organizer description',
     ]);
-    
+
     $organizer->users()->attach($user->id);
 
     // Create payment info (this should trigger notification)
@@ -48,7 +45,7 @@ test('admin receives notification when payment info is created', function () {
     ]);
 
     // Simulate the notification call that happens in the controller
-    $systemAdmin = new SystemAdmin();
+    $systemAdmin = new SystemAdmin;
     Notification::send($systemAdmin, new NewPaymentInfoSubmissionNotification($paymentInfo));
 
     // Assert notification was sent to system admin
@@ -64,14 +61,14 @@ test('admin receives notification when payment info is created', function () {
 test('notification contains correct payment info details', function () {
     // Create test data
     $user = User::factory()->create();
-    
+
     $organizer = Organizer::create([
         'name' => 'Test Organizer',
         'email' => 'test@example.com',
         'phone' => '+233123456789',
         'description' => 'Test organizer description',
     ]);
-    
+
     $organizer->users()->attach($user->id);
 
     $paymentInfo = PaymentInfo::create([
@@ -92,16 +89,16 @@ test('notification contains correct payment info details', function () {
 
     // Create the notification
     $notification = new NewPaymentInfoSubmissionNotification($paymentInfo);
-    $systemAdmin = new SystemAdmin();
+    $systemAdmin = new SystemAdmin;
 
     // Test email content
     $mailMessage = $notification->toMail($systemAdmin);
     expect($mailMessage->subject)->toBe('New Payment Information Submission - Suptix');
-    
+
     // Check that email contains key information
     $emailLines = $mailMessage->introLines;
     $emailBody = implode(' ', $emailLines);
-    
+
     expect($emailBody)->toContain('Test Organizer');
     expect($emailBody)->toContain('Test Business');
     expect($emailBody)->toContain('1234567890');
@@ -118,14 +115,14 @@ test('notification contains correct payment info details', function () {
 
 test('notification is delivered by email only because SMS was removed to reduce costs', function () {
     $user = User::factory()->create();
-    
+
     $organizer = Organizer::create([
         'name' => 'Test Organizer',
         'email' => 'test@example.com',
         'phone' => '+233123456789',
         'description' => 'Test organizer description',
     ]);
-    
+
     $paymentInfo = PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
@@ -142,7 +139,7 @@ test('notification is delivered by email only because SMS was removed to reduce 
     ]);
 
     $notification = new NewPaymentInfoSubmissionNotification($paymentInfo);
-    $systemAdmin = new SystemAdmin();
+    $systemAdmin = new SystemAdmin;
 
     expect($notification->via($systemAdmin))->toBe(['mail']);
 });

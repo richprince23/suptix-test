@@ -4,11 +4,7 @@ use App\Models\Organizer;
 use App\Models\SystemAdmin;
 use App\Models\User;
 use App\Notifications\NewOrganizerSignupNotification;
-
-use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Notification;
-
-
 
 test('system admin receives notification when new organizer signs up', function () {
     // Fake notifications
@@ -36,7 +32,7 @@ test('system admin receives notification when new organizer signs up', function 
     $organizer->users()->attach($user);
 
     // Manually trigger notification to test
-    $systemAdmin = new SystemAdmin();
+    $systemAdmin = new SystemAdmin;
     $systemAdmin->notify(new NewOrganizerSignupNotification($organizer));
 
     // Assert notification was sent
@@ -70,7 +66,7 @@ test('notification contains correct organizer information', function () {
 
     // Create notification
     $notification = new NewOrganizerSignupNotification($organizer);
-    $systemAdmin = new SystemAdmin();
+    $systemAdmin = new SystemAdmin;
 
     // Test SMS content
     $smsContent = $notification->toSms($systemAdmin);

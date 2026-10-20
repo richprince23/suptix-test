@@ -7,11 +7,13 @@ use App\Mail\TicketEmail;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentInfo;
+use App\Notifications\OrderConfirmationSms;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class PaystackService
 {
@@ -619,7 +621,7 @@ class PaystackService
                             'new_system_admin_balance' => $paymentInfo->fresh()->system_admin_balance,
                         ]);
 
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('Failed to record transaction for balance tracking', [
                             'payment_info_id' => $paymentInfo->id,
                             'reference' => $paymentData['reference'],
@@ -637,12 +639,12 @@ class PaystackService
                 // Send SMS notification if phone number is provided
                 if ($order->buyer_phone) {
                     try {
-                        $order->notify(new \App\Notifications\OrderConfirmationSms($order));
+                        $order->notify(new OrderConfirmationSms($order));
                         Log::info('Order confirmation SMS queued', [
                             'order_id' => $order->id,
                             'phone' => $order->buyer_phone,
                         ]);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Log::error('Failed to queue order confirmation SMS', [
                             'order_id' => $order->id,
                             'phone' => $order->buyer_phone,
@@ -687,7 +689,7 @@ class PaystackService
      */
     private function generatePaymentReference(Order $order): string
     {
-        return 'SUP_'.$order->order_number.'_'.time().'_'.strtolower(\Illuminate\Support\Str::random(6));
+        return 'SUP_'.$order->order_number.'_'.time().'_'.strtolower(Str::random(6));
     }
 
     /**

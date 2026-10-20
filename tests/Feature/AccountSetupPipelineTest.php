@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\Organizer;
 use App\Models\PaymentInfo;
 use App\Models\User;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
