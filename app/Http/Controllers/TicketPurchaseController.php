@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\TicketResponse;
 use App\Models\TicketType;
+use App\Services\PaystackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -75,7 +76,7 @@ class TicketPurchaseController extends Controller
         // Get discount if provided
         $appliedDiscount = null;
         if ($request->discount_id) {
-            $appliedDiscount = \App\Models\Discount::find($request->discount_id);
+            $appliedDiscount = Discount::find($request->discount_id);
             if ($appliedDiscount && $appliedDiscount->is_active) {
                 // Calculate discount amount for display
                 $subtotal = collect($request->ticket_selections)->sum(function ($selection) use ($ticketTypes) {
@@ -95,7 +96,7 @@ class TicketPurchaseController extends Controller
             'ticketTypes' => $ticketTypes,
             'ticketSelections' => $request->ticket_selections,
             'appliedDiscount' => $appliedDiscount,
-            'custom_fields' => $customFields
+            'custom_fields' => $customFields,
         ]);
     }
 
@@ -105,7 +106,7 @@ class TicketPurchaseController extends Controller
     public function purchase(Request $request, Event $event)
     {
         // Honeypot protection
-        if (!empty($request->input('honeypot'))) {
+        if (! empty($request->input('honeypot'))) {
             Log::warning('Ticket purchase spam attempt detected', [
                 'event_id' => $event->id,
                 'honeypot_value' => $request->input('honeypot'),
@@ -199,6 +200,14 @@ class TicketPurchaseController extends Controller
                     throw new \Exception('Discount code is no longer active');
                 }
 
+                if ($discount->dateProblem() === 'not_started') {
+                    throw new \Exception('Discount code is not yet active');
+                }
+
+                if ($discount->dateProblem() === 'expired') {
+                    throw new \Exception('Discount code has expired');
+                }
+
                 if ($discount->usage_limit && $discount->used_count >= $discount->usage_limit) {
                     throw new \Exception('Discount code has reached its usage limit');
                 }
@@ -254,9 +263,9 @@ class TicketPurchaseController extends Controller
                         'status' => 'pending',
                     ]);
 
-                    if (!empty($attendee['custom_fields'])) {
+                    if (! empty($attendee['custom_fields'])) {
                         foreach ($attendee['custom_fields'] as $fieldId => $value) {
-                            if (!empty($value)) {
+                            if (! empty($value)) {
                                 TicketResponse::create([
                                     'ticket_id' => $ticket->id,
                                     'event_form_field_id' => $fieldId,
@@ -277,12 +286,12 @@ class TicketPurchaseController extends Controller
 
             // Initialize payment immediately
             try {
-                $paystackService = app(\App\Services\PaystackService::class);
+                $paystackService = app(PaystackService::class);
                 $paymentResult = $paystackService->initializePayment($order);
 
                 if ($paymentResult['success']) {
                     // Use Inertia::location for external redirects
-                    return \Inertia\Inertia::location($paymentResult['data']['authorization_url']);
+                    return Inertia::location($paymentResult['data']['authorization_url']);
                 } else {
                     // If payment initialization fails, redirect to confirmation with error
                     return redirect()->route('orders.confirmation', $order->order_number)

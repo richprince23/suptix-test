@@ -62,6 +62,25 @@ class Discount extends Model
         return round(min($amount, $subtotal), 2);
     }
 
+    /**
+     * Why the discount cannot be used today, or null when its dates allow it.
+     * Both dates are inclusive: a code is valid for the whole of valid_until.
+     */
+    public function dateProblem(): ?string
+    {
+        $today = now()->startOfDay();
+
+        if ($this->valid_from && $today->lt($this->valid_from->copy()->startOfDay())) {
+            return 'not_started';
+        }
+
+        if ($this->valid_until && $today->gt($this->valid_until->copy()->startOfDay())) {
+            return 'expired';
+        }
+
+        return null;
+    }
+
     public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Discount;
 use App\Models\Event;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -45,16 +44,16 @@ class DiscountController extends Controller
             ], 422);
         }
 
-        // Check validity period
-        $now = Carbon::now();
-        if ($discount->valid_from && $now->lt($discount->valid_from)) {
+        // Check validity period (both dates are inclusive)
+        $dateProblem = $discount->dateProblem();
+        if ($dateProblem === 'not_started') {
             return response()->json([
                 'valid' => false,
                 'message' => 'This discount code is not yet active',
             ], 422);
         }
 
-        if ($discount->valid_until && $now->gt($discount->valid_until)) {
+        if ($dateProblem === 'expired') {
             return response()->json([
                 'valid' => false,
                 'message' => 'This discount code has expired',
