@@ -20,7 +20,7 @@ beforeEach(function () {
     [$this->organizer, $this->event, $this->ticketType] = makeCheckout(['quantity' => 2000]);
 });
 
-function record(string $id, array $data): void
+function recordMetric(string $id, array $data): void
 {
     File::append(storage_path('logs/performance.jsonl'), json_encode(['id' => $id] + $data)."\n");
 }
@@ -57,7 +57,7 @@ it('P-01 purchase query count does not grow with the number of reads per ticket'
     $ten = queriesFor(fn () => $this->post(route('events.tickets.purchase', $this->event), purchasePayload([[$this->ticketType, 10]])));
 
     $perExtraTicket = ($ten - $one) / 9;
-    record('P-01', ['queries_1_ticket' => $one, 'queries_10_tickets' => $ten, 'queries_per_extra_ticket' => round($perExtraTicket, 2)]);
+    recordMetric('P-01', ['queries_1_ticket' => $one, 'queries_10_tickets' => $ten, 'queries_per_extra_ticket' => round($perExtraTicket, 2)]);
 
     // Each extra ticket costs its insert and little else
     expect($perExtraTicket)->toBeLessThanOrEqual(2.0);
@@ -84,7 +84,7 @@ it('P-02 the event ticket list uses a constant number of queries for 500 tickets
     $ms = timed(function () use (&$large, $url) {
         $large = queriesFor(fn () => $this->getJson($url)->assertOk());
     });
-    record('P-02', ['queries_10_tickets' => $small, 'queries_500_tickets' => $large, 'response_ms_500_tickets' => round($ms, 1)]);
+    recordMetric('P-02', ['queries_10_tickets' => $small, 'queries_500_tickets' => $large, 'response_ms_500_tickets' => round($ms, 1)]);
 
     expect($large)->toBe($small);
 });
@@ -99,8 +99,8 @@ it('P-03 and P-04 scanning and marking tickets stay fast over 100 requests', fun
     $this->actingAs($staff);
     $markMs = $tickets->map(fn ($t) => timed(fn () => $this->patchJson(route('tickets.mark-used', $t))->assertOk()))->all();
 
-    record('P-03', ['median_ms' => round(percentile($scanMs, 50), 1), 'p95_ms' => round(percentile($scanMs, 95), 1), 'requests' => 100]);
-    record('P-04', ['median_ms' => round(percentile($markMs, 50), 1), 'p95_ms' => round(percentile($markMs, 95), 1), 'requests' => 100]);
+    recordMetric('P-03', ['median_ms' => round(percentile($scanMs, 50), 1), 'p95_ms' => round(percentile($scanMs, 95), 1), 'requests' => 100]);
+    recordMetric('P-04', ['median_ms' => round(percentile($markMs, 50), 1), 'p95_ms' => round(percentile($markMs, 95), 1), 'requests' => 100]);
 
     // Threshold set after the first measurement (median 8 ms, 95th percentile 11 ms locally)
     expect(percentile($scanMs, 50))->toBeLessThan(200.0)->and(percentile($scanMs, 95))->toBeLessThan(100.0);
@@ -111,7 +111,7 @@ it('P-05 one charge.success webhook is processed quickly', function () {
     fakePaystackVerify($reference, 20000);
 
     $ms = timed(fn () => postWebhook(['event' => 'charge.success', 'data' => ['reference' => $reference, 'amount' => 20000]])->assertOk());
-    record('P-05', ['processing_ms' => round($ms, 1)]);
+    recordMetric('P-05', ['processing_ms' => round($ms, 1)]);
 
     expect($order->fresh()->status)->toBe('confirmed')->and($ms)->toBeLessThan(2000.0);
 });
@@ -125,7 +125,7 @@ it('P-06 never sells more tickets than the stock when buyers outnumber it', func
     }
 
     $oversold = max(0, Ticket::where('ticket_type_id', $this->ticketType->id)->count() - 5);
-    record('P-06', ['stock' => 5, 'buyers' => 20, 'tickets_sold' => Ticket::where('ticket_type_id', $this->ticketType->id)->count(), 'oversold' => $oversold]);
+    recordMetric('P-06', ['stock' => 5, 'buyers' => 20, 'tickets_sold' => Ticket::where('ticket_type_id', $this->ticketType->id)->count(), 'oversold' => $oversold]);
 
     expect($oversold)->toBe(0)->and($this->ticketType->fresh()->quantity)->toBe(0);
 });
