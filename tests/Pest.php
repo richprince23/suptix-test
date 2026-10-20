@@ -121,6 +121,7 @@ function fakePaystackInitialize(): void
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Ticket;
+use Illuminate\Http\Client\Factory;
 
 /**
  * A pending order with pending tickets and a pending payment that carry the
@@ -163,6 +164,9 @@ function makePendingOrder(Event $event, TicketType $ticketType, int $quantity = 
 /** Fake Paystack's verify endpoint. Amount is in pesewas, as Paystack sends it. */
 function fakePaystackVerify(string $reference, int $amountPesewas, string $status = 'success', array $extra = []): void
 {
+    // Start from a clean HTTP fake: stubs registered earlier would otherwise win
+    Http::swap(new Factory);
+
     Http::fake([
         'api.paystack.co/transaction/verify/*' => Http::response([
             'status' => true,
