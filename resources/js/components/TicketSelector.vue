@@ -177,7 +177,7 @@ watch(
     selectedTickets,
     () => {
         const selections: TicketSelection[] = Object.entries(selectedTickets)
-            .filter(([_, selection]) => selection.quantity > 0)
+            .filter(([, selection]) => selection.quantity > 0)
             .map(([ticketTypeId, selection]) => ({
                 ticket_type_id: Number(ticketTypeId),
                 quantity: selection.quantity,

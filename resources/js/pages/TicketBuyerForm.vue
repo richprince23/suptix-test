@@ -66,14 +66,8 @@
                                 </Label>
                             </div>
                             <!-- Attendee Information -->
-                            <Transition enter-active-class="transition-all duration-500 ease-out"
-                                enter-from-class="opacity-0" enter-to-class="opacity-100"
-                                leave-active-class="transition-all duration-500 ease-in" leave-from-class="opacity-100"
-                                leave-to-class="opacity-0">
 
-                                <!-- <div :class="showTicketHolderInfo == true ? '' : 'hidden'"> -->
-                                <!-- <div v-show="showTicketHolderInfo == true"> -->
-                                <div >
+                                <div>
                                     <h4 class="text-lg font-semibold text-foreground mb-2">Attendee information</h4>
                                     <div v-for="(ticketGroup, index) in ticketGroups" :key="index"
                                         class="border-t pt-6">
@@ -233,7 +227,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </Transition>
                         </form>
                     </div>
                 </div>

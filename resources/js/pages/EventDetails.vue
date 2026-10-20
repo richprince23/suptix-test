@@ -364,20 +364,15 @@ import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
 import HeroSection from '@/components/event/HeroSection.vue';
 import AboutSection from '@/components/event/AboutSection.vue';
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { router } from '@inertiajs/vue3';
-import { computed, reactive, ref, watch } from 'vue';
-import { GoogleMap, AdvancedMarker } from 'vue3-google-map'
-import { Calendar, Clock3, Globe, GlobeIcon, LinkIcon, MapPin, Presentation, AlertTriangle, ChevronRightCircle, ChevronRight } from 'lucide-vue-next';
+import { computed, reactive, ref } from 'vue';
+import { Calendar, Clock3, LinkIcon, MapPin, Presentation } from 'lucide-vue-next';
 import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';
 import TicketSelector from '@/components/TicketSelector.vue';
-import { Select, SelectContent, SelectLabel, SelectItem, SelectTrigger, SelectGroup, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import axios from 'axios';
 
 
@@ -465,26 +460,9 @@ const props = defineProps<{
     errors?: Record<string, string>;
 }>();
 
-const isMapShown = ref(false);
-
-const isMultiDay = computed(() => {
-    return !!(props.event.end_date && props.event.end_date !== props.event.start_date);
-});
-
 const displayStartTime = computed(() => props.event.start_time);
 
 const displayEndTime = computed(() => props.event.end_time);
-
-const formatDateShort = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-    });
-};
-
-const toggleMapView = () => {
-    isMapShown.value = !isMapShown.value;
-}
 
 // Debug: Log the received event data
 // console.log('EventDetails received event:', props.event);
@@ -499,9 +477,6 @@ const validationDiscount = reactive({
     loading: false,
     error: '',
 });
-// Get page instance for accessing props
-const page = usePage();
-
 // Purchase form
 const purchaseForm = reactive({
     buyer_email: '',
@@ -565,14 +540,6 @@ const modernStatusClasses = computed(() => {
     }
 });
 
-
-function toTitleCase(str: string) {
-    str = str.replace('_', ' ');
-    return str.replace(
-        /\w\S*/g,
-        text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
-    );
-}
 
 const scrollToTickets = () => {
     // Small delay to ensure DOM is updated

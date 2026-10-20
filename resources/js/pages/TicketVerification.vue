@@ -89,7 +89,7 @@
                                         <span class="text-gray-600">Name:</span>
                                         <span class="font-medium text-gray-900">{{ ticket.attendee_name }}</span>
                                     </div>
-                                    <div class="flex justify-between">
+                                    <div v-if="ticket.attendee_email" class="flex justify-between">
                                         <span class="text-gray-600">Email:</span>
                                         <span class="font-medium text-gray-900">{{ ticket.attendee_email }}</span>
                                     </div>
@@ -201,7 +201,7 @@ import NavBar from '@/components/NavBar.vue';
 import { Head, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { AlertCircle, CheckCircle, Loader2, Search, XCircle } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 interface TicketType {
     name: string;
@@ -229,7 +229,7 @@ interface Ticket {
     id: number;
     ticket_number: string;
     attendee_name: string;
-    attendee_email: string;
+    attendee_email?: string;
     price: string;
     status: string;
     used_at: string | null;
@@ -243,6 +243,12 @@ const props = defineProps<{
     ticketNumber: string;
     canMarkAsUsed: boolean;
 }>();
+
+// Local copy so the status can change after check-in without mutating the prop
+const ticket = ref<Ticket | null>(props.ticket);
+watch(() => props.ticket, (value) => {
+    ticket.value = value;
+});
 
 const isMarkingUsed = ref(false);
 const searchTicketNumber = ref(props.ticketNumber || '');
@@ -329,18 +335,18 @@ const getStatusMessage = (status: string): string => {
 };
 
 const markAsUsed = async () => {
-    if (!props.ticket || isMarkingUsed.value) return;
+    if (!ticket.value || isMarkingUsed.value) return;
 
     isMarkingUsed.value = true;
 
     try {
-        const response = await axios.patch(`/api/tickets/${props.ticket.id}/mark-used`);
+        const response = await axios.patch(`/api/tickets/${ticket.value.id}/mark-used`);
 
         if (response.data.success) {
             // Update the ticket status locally
-            if (props.ticket) {
-                props.ticket.status = 'used';
-                props.ticket.used_at = response.data.ticket.used_at;
+            if (ticket.value) {
+                ticket.value.status = 'used';
+                ticket.value.used_at = response.data.ticket.used_at;
             }
         }
     } catch (error: any) {
