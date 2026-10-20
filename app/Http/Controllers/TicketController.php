@@ -290,23 +290,23 @@ class TicketController extends Controller
     private function validateQrData(array $qrData, Ticket $ticket): bool
     {
         // Check core ticket details
-        if ($qrData['ticket_number'] !== $ticket->ticket_number ||
-            $qrData['attendee_name'] !== $ticket->attendee_name ||
-            $qrData['price'] != $ticket->price) {
+        if (($qrData['ticket_number'] ?? null) !== $ticket->ticket_number ||
+            ($qrData['attendee_name'] ?? null) !== $ticket->attendee_name ||
+            ! isset($qrData['price']) || $qrData['price'] != $ticket->price) {
             return false;
         }
 
         // Check event details
         if (isset($qrData['event'])) {
-            if ($qrData['event']['title'] !== $ticket->event->title ||
-                $qrData['event']['start_date'] !== $ticket->event->start_date) {
+            if (($qrData['event']['title'] ?? null) !== $ticket->event->title ||
+                ($qrData['event']['start_date'] ?? null) !== $ticket->event->start_date) {
                 return false;
             }
         }
 
         // Check order details
         if (isset($qrData['order'])) {
-            if ($qrData['order']['order_number'] !== $ticket->order->order_number) {
+            if (($qrData['order']['order_number'] ?? null) !== $ticket->order->order_number) {
                 return false;
             }
         }
