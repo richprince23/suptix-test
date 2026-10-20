@@ -380,8 +380,10 @@ class PaymentInfo extends Model
             ]);
         } else {
             // Fallback to percentage calculation
-            $systemAdminAmount = $amount * ((float) $this->percentage_charge / 100);
-            $subaccountAmount = $amount - $systemAdminAmount;
+            // Round the platform share once and give the organiser the remainder, so the
+            // two parts always add up to the amount paid
+            $systemAdminAmount = round($amount * ((float) $this->percentage_charge / 100), 2);
+            $subaccountAmount = round($amount - $systemAdminAmount, 2);
 
             Log::info('Recording transaction with calculated split', [
                 'payment_info_id' => $this->id,
