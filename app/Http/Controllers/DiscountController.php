@@ -70,7 +70,7 @@ class DiscountController extends Controller
         }
 
         // Calculate discount amount
-        $discountAmount = $this->calculateDiscountAmount($discount, $subtotal);
+        $discountAmount = $discount->amountFor((float) $subtotal);
 
         return response()->json([
             'valid' => true,
@@ -82,24 +82,8 @@ class DiscountController extends Controller
                 'value' => $discount->value,
                 'amount' => $discountAmount,
                 'subtotal' => $subtotal,
-                'total' => max(0, $subtotal - $discountAmount),
+                'total' => round(max(0, $subtotal - $discountAmount), 2),
             ],
         ]);
-    }
-
-    /**
-     * Calculate discount amount based on type and value
-     */
-    private function calculateDiscountAmount(Discount $discount, float $subtotal): float
-    {
-        if ($discount->type === 'percentage') {
-            return ($discount->value / 100) * $subtotal;
-        }
-
-        if ($discount->type === 'fixed_amount') {
-            return min($discount->value, $subtotal);
-        }
-
-        return 0;
     }
 }

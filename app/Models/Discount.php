@@ -45,18 +45,36 @@ class Discount extends Model
         return $this->belongsTo(Event::class);
     }
 
+    /**
+     * The discount for a subtotal, rounded to two decimals and never more than
+     * the subtotal itself (so a percentage above 100 cannot exceed the order).
+     */
+    public function amountFor(float $subtotal): float
+    {
+        $subtotal = max(0.0, $subtotal);
+
+        $amount = match ($this->type) {
+            'percentage' => $subtotal * min((float) $this->value, 100.0) / 100,
+            'fixed_amount' => (float) $this->value,
+            default => 0.0,
+        };
+
+        return round(min($amount, $subtotal), 2);
+    }
+
     public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);
     }
 
-    protected static function boot(){
+    protected static function boot()
+    {
         parent::boot();
-        static::creating(function($model){
+        static::creating(function ($model) {
             $model->code = strtoupper(str_replace(' ', '', $model->code));
         });
 
-        static::updating(function($model){
+        static::updating(function ($model) {
             $model->code = strtoupper(str_replace(' ', '', $model->code));
         });
     }

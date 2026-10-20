@@ -84,11 +84,7 @@ class TicketPurchaseController extends Controller
                     return $ticketType ? $ticketType->price * $selection['quantity'] : 0;
                 });
 
-                if ($appliedDiscount->type === 'percentage') {
-                    $appliedDiscount->amount = ($appliedDiscount->value / 100) * $subtotal;
-                } elseif ($appliedDiscount->type === 'fixed_amount') {
-                    $appliedDiscount->amount = min($appliedDiscount->value, $subtotal);
-                }
+                $appliedDiscount->amount = $appliedDiscount->amountFor((float) $subtotal);
             } else {
                 $appliedDiscount = null;
             }
@@ -212,11 +208,7 @@ class TicketPurchaseController extends Controller
                 }
 
                 // Calculate discount amount
-                if ($discount->type === 'percentage') {
-                    $discountAmount = ($discount->value / 100) * $totalAmount;
-                } elseif ($discount->type === 'fixed_amount') {
-                    $discountAmount = min($discount->value, $totalAmount);
-                }
+                $discountAmount = $discount->amountFor((float) $totalAmount);
 
                 // Apply discount
                 $totalAmount = max(0, $totalAmount - $discountAmount);
