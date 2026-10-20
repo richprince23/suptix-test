@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Organizer;
 use App\Models\Ticket;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -298,8 +299,12 @@ class TicketController extends Controller
 
         // Check event details
         if (isset($qrData['event'])) {
+            // The QR code stores the date as the JSON form of a Carbon date, while the event
+            // holds a Carbon instance, so compare the calendar day, not the raw values
+            $qrDate = isset($qrData['event']['start_date']) ? Carbon::parse($qrData['event']['start_date'])->toDateString() : null;
+
             if (($qrData['event']['title'] ?? null) !== $ticket->event->title ||
-                ($qrData['event']['start_date'] ?? null) !== $ticket->event->start_date) {
+                $qrDate !== $ticket->event->start_date->toDateString()) {
                 return false;
             }
         }
