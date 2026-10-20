@@ -195,8 +195,8 @@ class PaystackBalanceService
             } else {
                 // Fallback to manual calculation using percentage from database
                 $percentageCharge = (float) $paymentInfo->percentage_charge;
-                $integrationAmount = $amount * ($percentageCharge / 100);
-                $subaccountAmount = $amount - $integrationAmount;
+                $integrationAmount = round($amount * ($percentageCharge / 100), 2);
+                $subaccountAmount = round($amount - $integrationAmount, 2);
 
                 Log::info('Using fallback calculation for transaction', [
                     'reference' => $transaction['reference'],
@@ -392,8 +392,9 @@ class PaystackBalanceService
         } else {
             // Fallback to manual calculation using percentage from database
             $percentageCharge = (float) $paymentInfo->percentage_charge;
-            $systemAdminAmount = $totalAmount * ($percentageCharge / 100);
-            $subaccountAmount = $totalAmount - $systemAdminAmount;
+            // Round the platform share once; the organiser receives the remainder
+            $systemAdminAmount = round($totalAmount * ($percentageCharge / 100), 2);
+            $subaccountAmount = round($totalAmount - $systemAdminAmount, 2);
         }
 
         return [
