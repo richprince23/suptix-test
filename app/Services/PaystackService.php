@@ -520,6 +520,17 @@ class PaystackService
                     throw new Exception("Payment record not found for reference: {$reference}");
                 }
 
+                // The gateway event must belong to this order (when it says which one)
+                if (isset($metadata['order_id']) && (int) $metadata['order_id'] !== $order->id) {
+                    throw new Exception("Gateway metadata names order {$metadata['order_id']}, not order {$order->id}");
+                }
+
+                // The amount paid must equal the order total (both in pesewas)
+                $expectedPesewas = (int) round($order->total_amount * 100);
+                if (! isset($paymentData['amount']) || (int) round($paymentData['amount']) !== $expectedPesewas) {
+                    throw new Exception('Paid amount '.($paymentData['amount'] ?? 'missing')." does not match the order total of {$expectedPesewas} pesewas");
+                }
+
                 // Check if payment is already processed to prevent duplicate processing
                 if ($payment->status === 'completed' && $order->status === 'confirmed') {
                     Log::info('Payment already processed, skipping duplicate processing', [
