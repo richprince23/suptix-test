@@ -116,7 +116,7 @@ test('notification contains correct payment info details', function () {
     expect($smsMessage)->toContain('1234567890');
 });
 
-test('notification supports both email and SMS channels', function () {
+test('notification is delivered by email only because SMS was removed to reduce costs', function () {
     $user = User::factory()->create();
     
     $organizer = Organizer::create([
@@ -144,7 +144,5 @@ test('notification supports both email and SMS channels', function () {
     $notification = new NewPaymentInfoSubmissionNotification($paymentInfo);
     $systemAdmin = new SystemAdmin();
 
-    // Check that both channels are supported
-    expect($notification->via($systemAdmin))->toContain('mail');
-    expect($notification->via($systemAdmin))->toContain('sms');
+    expect($notification->via($systemAdmin))->toBe(['mail']);
 });
