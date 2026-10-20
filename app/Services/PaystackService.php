@@ -362,8 +362,9 @@ class PaystackService
 
             // Use the subaccount's individual percentage_charge instead of global config
             $platformFeePercentage = $paymentInfo->percentage_charge;
-            $totalAmount = $order->total_amount * 100; // Convert to pesewa
-            $platformFee = ($totalAmount * $platformFeePercentage) / 100;
+            // Paystack expects whole pesewas for both the amount and the charge
+            $totalAmount = (int) round($order->total_amount * 100);
+            $platformFee = (int) round(($totalAmount * $platformFeePercentage) / 100);
             $organizerAmount = $totalAmount - $platformFee;
 
             $paymentData = [
@@ -686,7 +687,7 @@ class PaystackService
      */
     private function generatePaymentReference(Order $order): string
     {
-        return 'SUP_'.$order->order_number.'_'.time();
+        return 'SUP_'.$order->order_number.'_'.time().'_'.strtolower(\Illuminate\Support\Str::random(6));
     }
 
     /**
