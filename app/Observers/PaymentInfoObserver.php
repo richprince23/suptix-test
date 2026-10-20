@@ -61,12 +61,16 @@ class PaymentInfoObserver
     public function updated(PaymentInfo $paymentInfo): void
     {
         // Check if the status was changed to 'approved'
-        if ($paymentInfo->wasChanged('status') && $paymentInfo->status === 'approved') {
+        // Read the stored status: the model's status accessor returns a computed value
+        // ('inactive', 'pending_creation', ...) that is never 'approved'
+        $storedStatus = $paymentInfo->getAttributes()['status'] ?? null;
+
+        if ($paymentInfo->wasChanged('status') && $storedStatus === 'approved') {
             Log::info('PaymentInfo approved, dispatching role assignment job', [
                 'payment_info_id' => $paymentInfo->id,
                 'organizer_id' => $paymentInfo->organizer_id,
                 'old_status' => $paymentInfo->getOriginal('status'),
-                'new_status' => $paymentInfo->status,
+                'new_status' => $storedStatus,
             ]);
 
             // Dispatch the job to assign organizer admin role

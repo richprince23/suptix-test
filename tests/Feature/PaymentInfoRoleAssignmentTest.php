@@ -30,7 +30,7 @@ test('job is dispatched when payment info is approved', function () {
     ]);
     $organizer->users()->attach($user->id);
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -44,7 +44,7 @@ test('job is dispatched when payment info is approved', function () {
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'pending',
-    ]);
+    ]));
 
     // Update status to approved (this should trigger the job via observer)
     $paymentInfo->update(['status' => 'approved']);
@@ -66,7 +66,7 @@ test('job does not run when payment info is not approved', function () {
     ]);
     $organizer->users()->attach($user->id);
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -80,7 +80,7 @@ test('job does not run when payment info is not approved', function () {
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'pending',
-    ]);
+    ]));
 
     // Create and run the job with non-approved status
     $job = new AssignOrganizerAdminRole($paymentInfo);
@@ -101,7 +101,7 @@ test('job assigns organizer admin role when payment info is approved', function 
     ]);
     $organizer->users()->attach($user->id);
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -115,7 +115,7 @@ test('job assigns organizer admin role when payment info is approved', function 
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'approved',
-    ]);
+    ]));
 
     // Create and run the job
     $job = new AssignOrganizerAdminRole($paymentInfo);
@@ -139,7 +139,7 @@ test('job does not assign duplicate roles', function () {
     // Assign role manually first
     $user->assignRole('Organizer Admin');
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -153,7 +153,7 @@ test('job does not assign duplicate roles', function () {
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'approved',
-    ]);
+    ]));
 
     // Count roles before job
     $rolesBefore = $user->roles->count();
@@ -181,7 +181,7 @@ test('observer triggers job when status changes to approved', function () {
     ]);
     $organizer->users()->attach($user->id);
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -195,10 +195,7 @@ test('observer triggers job when status changes to approved', function () {
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'pending',
-    ]);
-
-    // Clear any previous jobs
-    Queue::assertNothingPushed();
+    ]));
 
     // Update status to approved
     $paymentInfo->update(['status' => 'approved']);
@@ -220,7 +217,7 @@ test('observer does not trigger job when status changes to non-approved', functi
     ]);
     $organizer->users()->attach($user->id);
 
-    $paymentInfo = PaymentInfo::create([
+    $paymentInfo = PaymentInfo::withoutEvents(fn () => PaymentInfo::create([
         'organizer_id' => $organizer->id,
         'submitted_by' => $user->id,
         'business_name' => 'Test Business',
@@ -234,11 +231,11 @@ test('observer does not trigger job when status changes to non-approved', functi
         'submitted_at' => now(),
         'is_active' => true,
         'status' => 'pending',
-    ]);
+    ]));
 
     // Update status to rejected (not approved)
     $paymentInfo->update(['status' => 'rejected']);
 
     // Should not have dispatched the job
-    Queue::assertNothingPushed();
+    Queue::assertNotPushed(AssignOrganizerAdminRole::class);
 });
