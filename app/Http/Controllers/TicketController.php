@@ -163,7 +163,12 @@ class TicketController extends Controller
             ], 400);
         }
 
-        $ticket->markAsUsed();
+        if (! $ticket->markAsUsed()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This ticket has already been used.',
+            ], 400);
+        }
 
         $ticket->load(['order', 'responses.field', 'ticketType', 'event.organizer']);
 
@@ -598,7 +603,12 @@ class TicketController extends Controller
             ], 400);
         }
 
-        $ticket->markAsUsed();
+        if (! $ticket->markAsUsed()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This ticket has already been used.',
+            ], 400);
+        }
 
         return response()->json([
             'success' => true,

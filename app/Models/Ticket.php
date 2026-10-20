@@ -82,12 +82,21 @@ class Ticket extends Model
     /**
      * Mark ticket as used
      */
-    public function markAsUsed(): void
+    /**
+     * Admit the ticket. The status change is one conditional update, so when
+     * two scans race only one of them changes the row and gets true.
+     */
+    public function markAsUsed(): bool
     {
-        $this->update([
-            'status' => 'used',
-            'used_at' => now(),
-        ]);
+        $claimed = static::whereKey($this->getKey())
+            ->where('status', 'active')
+            ->update(['status' => 'used', 'used_at' => now()]);
+
+        if ($claimed === 1) {
+            $this->refresh();
+        }
+
+        return $claimed === 1;
     }
 
     public function getEventNameAttribute(): string
