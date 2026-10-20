@@ -48,7 +48,7 @@ class TicketController extends Controller
                 'id' => $ticket->id,
                 'ticket_number' => $ticket->ticket_number,
                 'attendee_name' => $ticket->attendee_name,
-                'attendee_email' => $ticket->attendee_email,
+                ...($canMarkAsUsed ? ['attendee_email' => $ticket->attendee_email] : []),
                 'price' => $ticket->price,
                 'status' => $ticket->status,
                 'used_at' => $ticket->used_at,
@@ -249,10 +249,31 @@ class TicketController extends Controller
                 ], 400);
             }
 
+            // Only an active ticket admits its holder
+            $statusProblem = match ($ticket->status) {
+                'active' => null,
+                'used' => 'This ticket has already been used.',
+                'pending' => 'This ticket has not been paid for.',
+                'cancelled' => 'This ticket has been cancelled.',
+                default => 'This ticket is not valid.',
+            };
+
+            // Personal data is for staff of the ticket's organiser only
+            $user = $request->user('sanctum') ?? $request->user();
+            $isStaff = $user && $user->organizers->contains('id', $ticket->event->organizer_id);
+
+            if ($statusProblem) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $statusProblem,
+                    'ticket' => $this->formatTicketResponse($ticket, $isStaff),
+                ], 400);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Ticket verification successful',
-                'ticket' => $this->formatTicketResponse($ticket),
+                'ticket' => $this->formatTicketResponse($ticket, $isStaff),
             ]);
 
         } catch (\Exception $e) {
@@ -745,13 +766,12 @@ class TicketController extends Controller
     /**
      * Format ticket response for consistent API output
      */
-    private function formatTicketResponse(Ticket $ticket): array
+    private function formatTicketResponse(Ticket $ticket, bool $includePersonalData = true): array
     {
-        return [
+        $response = [
             'id' => $ticket->id,
             'ticket_number' => $ticket->ticket_number,
             'attendee_name' => $ticket->attendee_name,
-            'attendee_email' => $ticket->attendee_email,
             'price' => $ticket->price,
             'status' => $ticket->status,
             'used_at' => $ticket->used_at,
@@ -784,5 +804,11 @@ class TicketController extends Controller
                 ->values()
                 ->toArray(),
         ];
+
+        if ($includePersonalData) {
+            $response['attendee_email'] = $ticket->attendee_email;
+        }
+
+        return $response;
     }
 }
