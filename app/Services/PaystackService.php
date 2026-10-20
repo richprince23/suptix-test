@@ -562,8 +562,10 @@ class PaystackService
                     'purchased_at' => now(),
                 ]);
 
-                // Activate all tickets and create purchase records
-                foreach ($order->tickets as $ticket) {
+                // Activate all tickets and make sure there is one purchase record per ticket
+                $existingPurchases = $order->purchases()->count();
+
+                foreach ($order->tickets as $index => $ticket) {
                     // Only update if not already active
                     if ($ticket->status !== 'active') {
                         $ticket->update([
@@ -571,16 +573,12 @@ class PaystackService
                         ]);
                     }
 
-                    // Check if purchase record already exists to prevent duplicates
-                    $existingPurchase = $order->purchases()
-                        ->where('amount', $ticket->price)
-                        ->first();
-
-                    if (! $existingPurchase) {
-                        // Create purchase record (user_id is null for guest purchases)
+                    // Create the missing purchase records only (a replay adds none)
+                    if ($index >= $existingPurchases) {
+                        // user_id is null for guest purchases, linked via the order relationship
                         $order->purchases()->create([
                             'organizer_id' => $order->organizer_id,
-                            'user_id' => null, // Guest purchases - linked via order relationship
+                            'user_id' => null,
                             'amount' => $ticket->price,
                             'status' => 'completed',
                             'purchased_at' => now(),
