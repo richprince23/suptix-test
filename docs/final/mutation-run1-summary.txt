@@ -1,0 +1,66 @@
+=== app/Models/Discount.php
+  Duration: 28.05s
+  Mutations: 12 untested, 20 tested
+  Score:     62.50%
+  Duration:  45.78s
+=== app/Models/Order.php
+  Duration: 29.54s
+  Mutations: 5 timeout, 9 tested
+  Score:     100.00%
+  Duration:  41.31s
+=== app/Models/Payment.php
+  Duration: 27.84s
+  Mutations: 0 tested
+  Score:     0.00%
+  Duration:  0.00s
+=== app/Models/Ticket.php
+  Duration: 29.16s
+  Mutations: 5 untested, 3 timeout, 12 tested
+  Score:     75.00%
+  Duration:  57.24s
+=== app/Models/TicketType.php
+  Duration: 28.75s
+  Mutations: 16 tested
+  Score:     100.00%
+  Duration:  14.87s
+=== app/Http/Controllers/CheckInController.php
+  Duration: 32.60s
+  Mutations: 9 untested, 5 tested
+  Score:     35.71%
+  Duration:  10.70s
+=== app/Http/Controllers/DiscountController.php
+  Duration: 31.30s
+  Mutations: 19 untested, 50 tested
+  Score:     72.46%
+  Duration:  43.30s
+=== app/Http/Controllers/PaystackController.php
+  Duration: 25.51s
+  Mutations: 14 untested, 28 tested
+  Score:     66.67%
+  Duration:  21.03s
+=== app/Http/Controllers/TicketPurchaseController.php
+  Duration: 23.03s
+  Mutations: 53 untested, 138 tested
+  Score:     72.25%
+  Duration:  100.29s
+=== app/Http/Controllers/PaymentController.php
+  Duration: 13.88s
+  Mutations: 90 untested, 80 tested
+  Score:     47.06%
+  Duration:  46.46s
+=== app/Services/PaystackBalanceService.php
+  Duration: 13.17s
+  Mutations: 162 untested, 1 timeout, 222 tested
+  Score:     57.92%
+  Duration:  90.52s
+=== app/Services/PaystackService.php
+  Duration: 13.61s
+  Mutations: 245 untested, 215 tested
+  Score:     46.74%
+  Duration:  195.91s
+=== app/Http/Controllers/TicketController.php
+  Duration: 13.41s
+  Mutations: 247 untested, 202 tested
+  Score:     44.99%
+  Duration:  162.44s
+DONE

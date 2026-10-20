@@ -1,0 +1,5 @@
+# PHPStan level 5 (in-scope classes, phpstan.neon)
+Note: Using configuration file /Volumes/STORAGE/COV/7020SCN/suptix/phpstan.neon.
+
+ [OK] No errors                                                                 
+

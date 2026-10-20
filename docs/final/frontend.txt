@@ -1,0 +1,9 @@
+# Front end
+## ESLint on the five in-scope files
+(no output above means 0 errors)
+## ESLint, whole repository
+
+✖ 2349 problems (2349 errors, 0 warnings)
+
+## vue-tsc errors
+26

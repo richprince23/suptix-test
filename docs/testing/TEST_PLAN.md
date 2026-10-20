@@ -470,14 +470,4 @@ The baseline suite (clean `suptix_test` database, Pest 4) has 62 tests, 56 passi
 
 ## Appendix C. Metrics table (before and after)
 
-| Measure | Baseline (`da57882`) | Final |
-|---|---|---|
-| Tests (passing / failing) | 62 (56 / 6) | |
-| Line coverage, whole application | 646 of 4,958 (13.0%) | |
-| Method coverage, whole application | 44 of 367 (12.0%) | |
-| Line coverage, in-scope classes | 9 of 1,885 (0.5%) | |
-| Mutation score | Not measured | |
-| PHPStan errors | Not run | |
-| Pint files needing changes (whole repository) | 133 | |
-| ESLint errors (whole repository) | 2,381 | |
-| Defects found / fixed | 0 | |
+See [docs/final/SUMMARY.md](../final/SUMMARY.md) for the completed before and after table.

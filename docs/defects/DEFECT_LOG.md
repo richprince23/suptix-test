@@ -34,8 +34,9 @@ Severity: **High** = money, admission or personal data is wrong; **Medium** = a 
 | DEF-24 | F3 | The scan statistics endpoint failed with a 500 on every call | F3-46 | The hourly and daily queries were built on the same query builder, so the second grouped by a column that does not exist | `c673fbe` | Medium |
 | DEF-25 | F3 | Any signed-in user could verify tickets of any organiser; the statistics and entry history endpoints did not check that the event belonged to the organiser in the URL; a mismatched ticket came back with the holder's details | F3-35, F3-36, F3-44 | Missing authorisation checks on organiser endpoints | `af82aed` | High |
 | DEF-26 | All | 30 ESLint errors on the five in-scope front-end files (28 unused imports and declarations in `EventDetails`, a mutated prop in `TicketVerification`, an always-on `Transition`, an unused variable) | ESLint | Dead code and a prop mutation | `22e160b` | Low |
+| DEF-27 | F3 | Scanning the QR code printed on a PDF ticket failed with 'QR code data does not match database records' for every ticket | F3-62 | The QR payload holds the event date as the JSON form of a date; `validateQrData` compared it with a Carbon instance using `!==`, which is never equal | `1410209` | High |
 
-**Summary:** 26 code defects (8 High, 13 Medium, 5 Low) in about 1,850 in-scope lines, a density of about 14 per thousand lines. By flow: F1 5, F2 11, F3 8, all 2 (the two static analysis findings).
+**Summary:** 27 code defects (9 High, 13 Medium, 5 Low) in about 1,850 in-scope lines, a density of about 14.6 per thousand lines. By flow: F1 5, F2 11, F3 9, all 2 (the two static analysis findings).
 
 ## Defects in tests and environment
 
