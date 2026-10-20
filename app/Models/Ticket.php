@@ -21,7 +21,6 @@ class Ticket extends Model
         'attendee_email',
         'price',
         'status',
-        'is_used',
         'used_at',
         'cancelled_at',
         'notes',
@@ -29,7 +28,6 @@ class Ticket extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'is_used' => 'boolean',
         'used_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
