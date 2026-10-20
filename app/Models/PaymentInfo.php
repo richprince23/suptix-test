@@ -86,6 +86,7 @@ class PaymentInfo extends Model
     ];
 
     // Relationships
+    /** @return BelongsTo<Organizer, $this> */
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);

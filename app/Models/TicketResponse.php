@@ -16,11 +16,13 @@ class TicketResponse extends Model
         'value',
     ];
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
+    /** @return BelongsTo<EventFormField, $this> */
     public function field(): BelongsTo
     {
         return $this->belongsTo(EventFormField::class, 'event_form_field_id');

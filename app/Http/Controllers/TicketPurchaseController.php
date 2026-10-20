@@ -85,7 +85,7 @@ class TicketPurchaseController extends Controller
                     return $ticketType ? $ticketType->price * $selection['quantity'] : 0;
                 });
 
-                $appliedDiscount->amount = $appliedDiscount->amountFor((float) $subtotal);
+                $appliedDiscount->setAttribute('amount', $appliedDiscount->amountFor((float) $subtotal));
             } else {
                 $appliedDiscount = null;
             }

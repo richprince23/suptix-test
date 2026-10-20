@@ -5,6 +5,9 @@ namespace App\Models;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 use Str;
 
@@ -35,67 +38,80 @@ class Organizer extends Model implements HasAvatar
     {
         return $this->logo_url;
     }
-    public function users()
+    /** @return BelongsToMany<User, $this> */
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
-    public function events()
+    /** @return HasMany<Event, $this> */
+    public function events(): HasMany
     {
         return $this->hasMany(Event::class);
     }
 
-    public function tickets()
+    /** @return HasMany<Ticket, $this> */
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
-    public function orders()
+    /** @return HasMany<Order, $this> */
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function ticketTypes()
+    /** @return HasMany<TicketType, $this> */
+    public function ticketTypes(): HasMany
     {
         return $this->hasMany(TicketType::class);
     }
 
-    public function purchases()
+    /** @return HasMany<Purchase, $this> */
+    public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
     }
 
-    public function payments()
+    /** @return HasMany<Payment, $this> */
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function discounts()
+    /** @return HasMany<Discount, $this> */
+    public function discounts(): HasMany
     {
         return $this->hasMany(Discount::class);
     }
 
-    public function discountUsers()
+    /** @return HasMany<DiscountUser, $this> */
+    public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);
     }
 
-    public function reservations()
+    /** @return HasMany<Reservation, $this> */
+    public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
     }
 
-    public function reservationTypes()
+    /** @return HasMany<ReservationType, $this> */
+    public function reservationTypes(): HasMany
     {
         return $this->hasMany(ReservationType::class);
     }
 
-    public function paymentInfo()
+    /** @return HasOne<PaymentInfo, $this> */
+    public function paymentInfo(): HasOne
     {
         return $this->hasOne(PaymentInfo::class);
     }
 
-    public function paymentInfos()
+    /** @return HasOne<PaymentInfo, $this> */
+    public function paymentInfos(): HasOne
     {
         return $this->hasOne(PaymentInfo::class);
     }
@@ -130,7 +146,8 @@ class Organizer extends Model implements HasAvatar
     //        return $this->morphMany(Address::class, 'addressable');
     //    }
 
-    public function subscriptions()
+    /** @return HasMany<OrganizerSubscription, $this> */
+    public function subscriptions(): HasMany
     {
         return $this->hasMany(OrganizerSubscription::class);
     }

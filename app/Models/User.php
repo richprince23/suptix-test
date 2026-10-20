@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
@@ -60,22 +62,26 @@ class User extends Authenticatable implements FilamentUser, HasTenants, RenewPas
         ];
     }
 
-    public function organizers()
+    /** @return BelongsToMany<Organizer, $this> */
+    public function organizers(): BelongsToMany
     {
         return $this->belongsToMany(Organizer::class);
     }
 
-    public function organizer()
+    /** @return BelongsToMany<Organizer, $this> */
+    public function organizer(): BelongsToMany
     {
         return $this->belongsToMany(Organizer::class);
     }
 
-    public function purchases()
+    /** @return HasMany<Purchase, $this> */
+    public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
     }
 
-    public function discountUsers()
+    /** @return HasMany<DiscountUser, $this> */
+    public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);
     }

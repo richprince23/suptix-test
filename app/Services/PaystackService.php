@@ -21,7 +21,7 @@ class PaystackService
 
     public function __construct()
     {
-        $this->secretKey = config('services.paystack.secret_key', env('PAYSTACK_SECRET_KEY'));
+        $this->secretKey = config('services.paystack.secret_key');
         $this->baseUrl = 'https://api.paystack.co';
     }
 
@@ -710,10 +710,6 @@ class PaystackService
     private function sendPaymentConfirmationEmails(Order $order): void
     {
         try {
-            // Check if notification emails have already been sent by looking at the database
-            // We'll check if we have already sent emails recently for this order
-            $recentEmailLog = Log::getLogger()->getHandlers();
-
             // Simple check: if order was purchased more than 1 minute ago, emails were likely already sent
             if ($order->purchased_at && $order->purchased_at->diffInMinutes(now()) > 1) {
                 Log::info('Payment confirmation emails likely already sent for this order', [

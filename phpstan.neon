@@ -1,0 +1,20 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        # Classes in scope for the quality study (flows F1 to F3)
+        - app/Http/Controllers/TicketPurchaseController.php
+        - app/Http/Controllers/DiscountController.php
+        - app/Http/Controllers/PaymentController.php
+        - app/Http/Controllers/PaystackController.php
+        - app/Http/Controllers/TicketController.php
+        - app/Http/Controllers/CheckInController.php
+        - app/Models/Discount.php
+        - app/Models/Order.php
+        - app/Models/Payment.php
+        - app/Models/Ticket.php
+        - app/Models/TicketType.php
+        - app/Services/PaystackService.php
+        - app/Services/PaystackBalanceService.php

@@ -550,7 +550,7 @@ class TicketController extends Controller
             $qrCodeBase64 = $qrCodeData ? 'data:image/png;base64,'.base64_encode($qrCodeData) : null;
 
             // Ensure price is properly set (fallback to ticket type price if needed)
-            $ticketPrice = $ticket->price ?? $ticket->ticketType?->price ?? 0;
+            $ticketPrice = $ticket->price ?? $ticket->ticketType->price ?? 0;
 
             // Generate PDF using dompdf with higher quality settings
             $pdf = app('dompdf.wrapper');

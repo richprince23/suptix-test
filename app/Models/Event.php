@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Str;
 
@@ -48,7 +50,8 @@ class Event extends Model
         'cover_image_url',
     ];
 
-    public function organizer()
+    /** @return BelongsTo<Organizer, $this> */
+    public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
@@ -58,32 +61,38 @@ class Event extends Model
         return $this->end_date && $this->end_date->gt($this->start_date);
     }
 
-    public function tickets()
+    /** @return HasMany<Ticket, $this> */
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
-    public function ticketTypes()
+    /** @return HasMany<TicketType, $this> */
+    public function ticketTypes(): HasMany
     {
         return $this->hasMany(TicketType::class);
     }
 
-    public function orders()
+    /** @return HasMany<Order, $this> */
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function discounts()
+    /** @return HasMany<Discount, $this> */
+    public function discounts(): HasMany
     {
         return $this->hasMany(Discount::class);
     }
 
-    public function reservations()
+    /** @return HasMany<Reservation, $this> */
+    public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
     }
 
-    public function formFields()
+    /** @return HasMany<EventFormField, $this> */
+    public function formFields(): HasMany
     {
         return $this->hasMany(EventFormField::class)
             ->where('is_active', true)

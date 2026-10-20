@@ -35,11 +35,13 @@ class Discount extends Model
         'is_active' => 'boolean',
     ];
 
+    /** @return BelongsTo<Organizer, $this> */
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
+    /** @return BelongsTo<Event, $this> */
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
@@ -53,11 +55,9 @@ class Discount extends Model
     {
         $subtotal = max(0.0, $subtotal);
 
-        $amount = match ($this->type) {
-            'percentage' => $subtotal * min((float) $this->value, 100.0) / 100,
-            'fixed_amount' => (float) $this->value,
-            default => 0.0,
-        };
+        $amount = $this->type === 'percentage'
+            ? $subtotal * min((float) $this->value, 100.0) / 100
+            : (float) $this->value;
 
         return round(min($amount, $subtotal), 2);
     }
@@ -70,17 +70,18 @@ class Discount extends Model
     {
         $today = now()->startOfDay();
 
-        if ($this->valid_from && $today->lt($this->valid_from->copy()->startOfDay())) {
+        if ($today->lt($this->valid_from->copy()->startOfDay())) {
             return 'not_started';
         }
 
-        if ($this->valid_until && $today->gt($this->valid_until->copy()->startOfDay())) {
+        if ($today->gt($this->valid_until->copy()->startOfDay())) {
             return 'expired';
         }
 
         return null;
     }
 
+    /** @return HasMany<DiscountUser, $this> */
     public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);

@@ -40,41 +40,49 @@ class Order extends Model
         'is_admin_order' => 'boolean',
     ];
 
+    /** @return BelongsTo<Organizer, $this> */
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
+    /** @return BelongsTo<Event, $this> */
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
+    /** @return BelongsTo<Discount, $this> */
     public function discount(): BelongsTo
     {
         return $this->belongsTo(Discount::class);
     }
 
+    /** @return HasMany<Ticket, $this> */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
 
+    /** @return HasMany<Payment, $this> */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
+    /** @return HasMany<Purchase, $this> */
     public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
     }
 
+    /** @return HasMany<DiscountUser, $this> */
     public function discountUsers(): HasMany
     {
         return $this->hasMany(DiscountUser::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by_user_id');

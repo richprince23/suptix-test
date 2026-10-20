@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Str;
 
@@ -32,37 +33,44 @@ class Ticket extends Model
         'cancelled_at' => 'datetime',
     ];
 
+    /** @return BelongsTo<Order, $this> */
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
+    /** @return BelongsTo<Event, $this> */
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
+    /** @return BelongsTo<TicketType, $this> */
     public function ticketType(): BelongsTo
     {
         return $this->belongsTo(TicketType::class);
     }
 
-    public function responses()
+    /** @return HasMany<TicketResponse, $this> */
+    public function responses(): HasMany
     {
         return $this->hasMany(TicketResponse::class);
     }
 
+    /** @return BelongsTo<Organizer, $this> */
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
-    public function purchases()
+    /** @return HasMany<Purchase, $this> */
+    public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
     }
 
-    public function checkIns()
+    /** @return HasMany<CheckIn, $this> */
+    public function checkIns(): HasMany
     {
         return $this->hasMany(CheckIn::class);
     }
@@ -99,7 +107,7 @@ class Ticket extends Model
 
     public function getEventNameAttribute(): string
     {
-        return $this->event->event_name;
+        return $this->event->title;
     }
 
     /**

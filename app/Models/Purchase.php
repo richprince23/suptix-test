@@ -21,16 +21,19 @@ class Purchase extends Model
         'purchased_at' => 'datetime',
     ];
 
+    /** @return BelongsTo<Organizer, $this> */
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<Order, $this> */
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

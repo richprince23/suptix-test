@@ -5,6 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TicketType extends Model
 {
@@ -32,17 +34,20 @@ class TicketType extends Model
         'total_capacity',
     ];
 
-    public function event()
+    /** @return BelongsTo<Event, $this> */
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
     }
 
-    public function organizer()
+    /** @return BelongsTo<Organizer, $this> */
+    public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
-    public function tickets()
+    /** @return HasMany<Ticket, $this> */
+    public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
     }
