@@ -152,6 +152,9 @@ class TicketPurchaseController extends Controller
             $discountAmount = 0;
 
             foreach ($request->tickets as $ticketRequest) {
+                // Form posts send the quantity as a string; compare as an integer
+                $ticketRequest['quantity'] = (int) $ticketRequest['quantity'];
+
                 // Use pessimistic locking to prevent race conditions
                 $ticketType = TicketType::lockForUpdate()->findOrFail($ticketRequest['ticket_type_id']);
 
