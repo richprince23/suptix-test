@@ -37,7 +37,7 @@ class TicketFactory extends Factory
 
     public function used(): static
     {
-        return $this->state(fn () => ['status' => 'used', 'is_used' => true, 'used_at' => now()]);
+        return $this->state(fn () => ['status' => 'used', 'used_at' => now()]);
     }
 
     public function cancelled(): static

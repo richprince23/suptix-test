@@ -1,0 +1,902 @@
+
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                    0.30s  
+
+   PASS  Tests\Unit\PaystackSignatureTest
+  ✓ it F2-50 accepts the correct HMAC-SHA512 of the payload              0.06s  
+  ✓ it F2-51 rejects a payload that differs by one byte                  0.04s  
+  ✓ it F2-51 rejects a signature made with a different secret            0.04s  
+  ✓ it F2-53 accepts an empty payload with a matching signature          0.04s  
+
+   PASS  Tests\Feature\AccountSetupPipelineTest
+  ✓ payment info submission triggers auto approval with default setting… 0.36s  
+  ✓ payment info submission assigns organizer admin role to first user   0.09s  
+  ✓ payment info submission does not assign role when admin already exi… 0.09s  
+  ✓ complete automated flow on payment info submission                   0.09s  
+  ✓ paystack subaccount creation triggered after approval                0.09s  
+
+   FAIL  Tests\Feature\Api\V2\AuthTest
+  ⨯ user can register                                                    0.12s  
+  ✓ user can login                                                       0.07s  
+  ✓ login fails with invalid credentials                                 0.26s  
+  ✓ honeypot protection in register                                      0.05s  
+  ✓ honeypot protection in login                                         0.05s  
+
+   PASS  Tests\Feature\DashboardWidgetPermissionTest
+  ✓ organizer admin can view all widgets                                 0.39s  
+  ✓ event manager has limited widget access                              0.27s  
+  ✓ customer service has very limited widget access                      0.28s  
+  ✓ users without roles cannot view sensitive widgets                    0.27s  
+  ✓ system admin cannot view organizer widgets                           0.24s  
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ returns a successful response                                        0.11s  
+
+   FAIL  Tests\Feature\Orders\IncompleteOrderCleanupTest
+  ✓ it F4-01 deletes an old pending order with its tickets and pending…  0.09s  
+  ✓ it F4-02 restores the reserved stock for the deleted tickets         0.07s  
+  ✓ it F4-03 keeps an order at 14 minutes 59 seconds and removes one at… 0.08s  
+  ✓ it F4-04 never deletes a confirmed order                             0.06s  
+  ⨯ it F4-05 gives the discount use back when its unpaid order is delet… 0.08s  
+  ✓ it F4-06 a dry run changes nothing                                   0.08s  
+  ✓ it F4-08 the clean-up command is scheduled every fifteen minutes     0.07s  
+
+   PASS  Tests\Feature\OrganizerSignupNotificationTest
+  ✓ system admin receives notification when new organizer signs up       0.05s  
+  ✓ notification contains correct organizer information                  0.04s  
+
+   FAIL  Tests\Feature\Payment\BalanceRecordingTest
+  ✓ it F2-60 takes the split from Paystack fees_split, converted from p… 0.05s  
+  ✓ it F2-61 without fees_split the percentage charge decides the split… 0.05s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (10.0)  0.05s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (33.33… 0.05s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (99.99… 0.05s  
+  ⨯ it F2-62 the two parts add up to the transaction amount with (250.5… 0.05s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (1000.… 0.05s  
+  ✓ it F2-63 balances and counters accumulate over two transactions      0.06s  
+  ✓ it F2-64 handles the boundary charges 0% and 100% with dataset "F2-… 0.05s  
+  ✓ it F2-64 handles the boundary charges 0% and 100% with dataset "F2-… 0.05s  
+  ✓ it F2-65 a pending transaction raises the pending counter, not the…  0.05s  
+  ⨯ it F2-66 the recorded parts still add up to the volume after 100 sm… 0.76s  
+
+   FAIL  Tests\Feature\Payment\PaymentCallbackTest
+  ✓ it F2-10 sends a callback without a reference to the failed page     0.08s  
+  ✓ it F2-11 sends the buyer to the failed page when verification fails… 0.08s  
+  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.07s  
+  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.07s  
+  ✓ it F2-13 confirms the order, completes the payment and activates th… 0.11s  
+  ✓ it F2-14 returns 404 on the success page for an order that is not c… 0.08s  
+  ⨯ it F2-15 records one purchase per ticket, even when the tickets hav… 0.10s  
+  ⨯ it F2-16 does not confirm the order when the paid amount is lower t… 0.10s  
+  ⨯ it F2-17 does not confirm an order when the gateway metadata names…  0.11s  
+  ✓ it F2-18 a replayed callback does not add purchases, balances or em… 0.13s  
+  ✓ it F2-19 sends one confirmation email and no SMS when there is no p… 0.14s  
+  ✓ it F2-19 queues the confirmation SMS when the buyer gave a phone nu… 0.12s  
+  ✓ it F2-13 total volume and balances are recorded for the organiser    0.10s  
+
+   FAIL  Tests\Feature\Payment\PaymentInitializationTest
+  ✓ it F2-01 initialisation creates a pending payment and stores the re… 0.09s  
+  ✓ it F2-02 and F2-03 send whole pesewas for the amount and the platfo… 0.08s  
+  ⨯ it F2-02 and F2-03 send whole pesewas for the amount and the platfo… 0.08s  
+  ✓ it F2-04 refuses to initialise an order that is already confirmed    0.08s  
+  ✓ it F2-05 refuses an organiser without a Paystack subaccount          0.07s  
+  ✓ it F2-06 leaves no new payment behind when Paystack rejects the req… 0.07s  
+  ✓ it F2-07 handles a gateway failure without changing the order        0.07s  
+  ⨯ it F2-08 gives two initialisations in the same second different ref… 0.09s  
+  ✓ it F2-09 takes the fee bearer from the organiser payment info        0.09s  
+
+   FAIL  Tests\Feature\Payment\PaystackWebhookTest
+  ✓ it F2-30 valid signature, known reference, pending payment: payment… 0.11s  
+  ✓ it F2-31 valid signature, known reference, completed payment: no se… 0.10s  
+  ✓ it F2-32 valid signature, unknown reference: 404                     0.07s  
+  ✓ it F2-33 valid signature, reference missing from the payload: 400    0.07s  
+  ✓ it F2-34 invalid signature (wrong secret), known reference: 400 and… 0.07s  
+  ✓ it F2-35 invalid signature (payload altered after signing): 400      0.07s  
+  ⨯ it F2-36 signature header missing, known reference: 400 and not a s… 0.08s  
+  ✓ it F2-37 empty signature, known reference: 400                       0.07s  
+  ✓ it F2-38 valid signature, unhandled event type: 200 and no state ch… 0.07s  
+  ✓ it F2-40 two identical charge.success webhooks credit the balances…  0.10s  
+  ⨯ it F2-41 charge.success for an amount lower than the order total do… 0.12s  
+  ⨯ it F2-42 a dispute webhook marks the payment as disputed and keeps…  0.08s  
+  ⨯ it F2-44 the webhook route is exempt from CSRF but still needs a va… 0.08s  
+
+   FAIL  Tests\Feature\PaymentInfoNotificationTest
+  ✓ admin receives notification when payment info is created             0.27s  
+  ✓ notification contains correct payment info details                   0.31s  
+  ⨯ notification supports both email and SMS channels                    0.28s  
+
+   FAIL  Tests\Feature\PaymentInfoRoleAssignmentTest
+  ⨯ job is dispatched when payment info is approved                      0.26s  
+  ⨯ job does not run when payment info is not approved                   0.28s  
+  ✓ job assigns organizer admin role when payment info is approved       0.29s  
+  ✓ job does not assign duplicate roles                                  0.28s  
+  ⨯ observer triggers job when status changes to approved                0.24s  
+  ⨯ observer does not trigger job when status changes to non-approved    0.26s  
+
+   FAIL  Tests\Feature\PaystackSubaccountSyncTest
+  ✓ it can determine when to sync with paystack                          0.13s  
+  ⨯ it handles sync errors gracefully                                    0.10s  
+  ✓ it can clear sync errors                                             0.09s  
+  ✓ it can perform manual sync                                           0.09s  
+  ✓ it throws exception for manual sync without subaccount code          0.12s  
+  ✓ it updates payment info with paystack response data                  0.11s  
+  ✓ paystack service provides user friendly error messages               0.09s  
+
+   FAIL  Tests\Feature\Purchase\DiscountValidationTest
+  ✓ it F1-60 accepts a valid code and returns the amount and the new to… 0.07s  
+  ✓ it F1-61 rejects an unknown code with 422                            0.07s  
+  ✓ it F1-61 rejects an inactive code as unknown                         0.07s  
+  ✓ it F1-62 rejects a code that belongs to another event                0.08s  
+  ✓ it F1-63 rejects a code that is not yet active                       0.08s  
+  ✓ it F1-64 rejects an expired code                                     0.07s  
+  ⨯ it F1-64 accepts a code on its last valid day                        0.07s  
+  ✓ it F1-65 rejects a code that has reached its usage limit             0.07s  
+  ✓ it F1-66 rejects a negative subtotal                                 0.07s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.07s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.07s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.08s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.07s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.08s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.07s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.08s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.07s  
+  ⨯ it F1-44 caps a percentage above 100 at the subtotal in the validat… 0.08s  
+
+   FAIL  Tests\Feature\Purchase\TicketPurchaseTest
+  ✓ it F1-01 creates a pending order and ticket, reserves stock and red… 0.11s  
+  ✓ it F1-02 rejects a missing buyer email                               0.06s  
+  ✓ it F1-03 rejects an invalid buyer email                              0.07s  
+  ✓ it F1-04 rejects an empty tickets array                              0.06s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.07s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.08s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.10s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.07s  
+  ✓ it F1-09 rejects an attendee count that differs from the quantity a… 0.07s  
+  ✓ it F1-10 rejects a missing attendee name                             0.06s  
+  ✓ it F1-11 rejects a filled honeypot with a generic message and creat… 0.07s  
+  ✓ it F1-12 rejects an unknown ticket type                              0.07s  
+  ✓ it F1-13 rejects a custom field value over 1000 characters           0.07s  
+  ✓ it F1-14 stores custom field responses as TicketResponse rows        0.09s  
+  ⨯ it F1-15 accepts the quantity as a numeric string from an ordinary…  0.07s  
+  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.07s  
+  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.08s  
+  ✓ it F1-22 sells for published and live events with dataset "F1-22 pu… 0.09s  
+  ✓ it F1-22 sells for published and live events with dataset "F1-22 li… 0.09s  
+  ✓ it F1-25 refuses a ticket type whose sales have not started          0.08s  
+  ✓ it F1-26 refuses a ticket type whose sales have ended                0.07s  
+  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.07s  
+  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.07s  
+  ✓ it F1-28 rejects a ticket type that belongs to a different event     0.08s  
+  ✓ it F1-29 rejects a ticket type with no stock left                    0.08s  
+  ✓ it F1-30 accepts a quantity equal to the remaining stock and leaves… 0.15s  
+  ✓ it F1-31 rejects a quantity one above the remaining stock and leave… 0.12s  
+  ✓ it F1-32 prices two ticket types as the sum of price times quantity  0.18s  
+  ✓ it F1-33 reserves nothing when the second ticket type lacks stock    0.12s  
+  ✓ it F1-40 totals the ticket prices when there is no discount          0.10s  
+  ✓ it F1-41 applies a 10% discount: discount 10, total 90, subtotal 10… 0.16s  
+  ✓ it F1-43 a 100% discount gives a total of 0                          0.19s  
+  ⨯ it F1-44 caps a percentage above 100 at the order value              0.18s  
+  ✓ it F1-45 subtracts a fixed discount smaller than the subtotal        0.17s  
+  ✓ it F1-46 caps a fixed discount larger than the subtotal              0.16s  
+  ✓ it F1-47 rounds a fractional percentage discount to two decimals     0.12s  
+  ✓ it F1-48 rejects an inactive discount                                0.10s  
+  ✓ it F1-49 rejects a discount that belongs to another event            0.10s  
+  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.11s  
+  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.10s  
+  ⨯ it F1-51 rejects an expired discount at purchase                     0.12s  
+  ⨯ it F1-52 rejects a not-yet-valid discount at purchase                0.24s  
+  ✓ it F1-53 increments the discount usage count by one                  0.11s  
+  ✓ it F1-55 ignores a client-supplied price and uses the database pric… 0.11s  
+  ✓ it X-01 ignores mass-assigned order status and amount fields         0.09s  
+  ✓ it F1-70 sells the last ticket once: the second buyer is rejected a… 0.10s  
+  ✓ it F1-72 gives a one-use discount to only one of two buyers          0.13s  
+
+   PASS  Tests\Feature\SmsServiceTest
+  ✓ formats local ten digit ghana number                                 0.07s  
+  ✓ formats nine digit ghana number                                      0.05s  
+  ✓ formats twelve digit ghana number without plus                       0.05s  
+  ✓ returns already formatted e164 number                                0.04s  
+  ✓ returns null for invalid number                                      0.05s  
+  ✓ strips non numeric characters before formatting                      0.05s  
+  ✓ hubtel sends sms successfully                                        0.05s  
+  ✓ hubtel returns failure on invalid phone                              0.04s  
+  ✓ hubtel is configured when credentials present                        0.05s  
+  ✓ hubtel is not configured when credentials missing                    0.06s  
+  ✓ giant sms sends sms successfully                                     0.06s  
+  ✓ giant sms returns failure when api returns false status              0.05s  
+  ✓ giant sms returns failure on invalid phone                           0.05s  
+  ✓ giant sms is configured when credentials present                     0.05s  
+  ✓ giant sms is not configured when credentials missing                 0.05s  
+  ✓ sms service uses primary provider when it succeeds                   0.05s  
+  ✓ sms service falls back to giant sms when hubtel fails                0.05s  
+  ✓ sms service skips unconfigured primary and uses fallback             0.06s  
+  ✓ sms service returns failure when all providers fail                  0.07s  
+  ✓ sms service returns failure when no providers configured             0.05s  
+
+   FAIL  Tests\Feature\Tickets\TicketEntryTest
+  ✓ it F3-01 marks an active ticket as used and records the time         0.10s  
+  ✓ it F3-02 refuses to mark a used ticket again and keeps the first ti… 0.09s  
+  ✓ it F3-03 and F3-04 refuse to mark a pending or cancelled ticket as…  0.09s  
+  ✓ it F3-03 and F3-04 refuse to mark a pending or cancelled ticket as…  0.09s  
+  ✓ it F3-05 scanning an active ticket reports success                   0.08s  
+  ⨯ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.09s  
+  ⨯ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.10s  
+  ⨯ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.08s  
+  ⨯ it F3-09 every fillable attribute of Ticket is a real column         0.08s  
+  ✓ it F3-10 marking a ticket as used without signing in returns 401     0.08s  
+  ✓ it F3-11 a user of another organiser cannot mark the ticket as used  0.09s  
+  ✓ it F3-12 a user of two organisers can check in tickets for either    0.11s  
+  ✓ it F3-13 a user of another organiser cannot look up the ticket by n… 0.09s  
+  ✓ it F3-14 looking up an unknown ticket number returns 404             0.07s  
+  ✓ it F3-15 the ticket number lookup is case-insensitive                0.08s  
+  ⨯ it F3-16 an unauthenticated scan does not return the attendee email  0.08s  
+  ⨯ it F3-17 the public verification page does not show the attendee em… 0.11s  
+  ✓ it F3-18 and F3-19 the event ticket list is limited to the user's o… 0.10s  
+  ✓ it F3-20 finds a ticket from a lower-case ticket number              0.08s  
+  ✓ it F3-21 accepts JSON QR data that matches the ticket                0.08s  
+  ✓ it F3-22 and F3-23 reject JSON QR data that differs from the ticket… 0.08s  
+  ✓ it F3-22 and F3-23 reject JSON QR data that differs from the ticket… 0.09s  
+  ✓ it F3-24 treats plain-text QR data as a ticket number                0.09s  
+  ⨯ it F3-25 answers JSON QR data with missing keys with a client error… 0.09s  
+  ✓ it F3-26 returns 422 when neither qr_data nor ticket_number is sent  0.08s  
+  ✓ it F3-27 trims spaces around a ticket number                         0.09s  
+  ✓ it F3-28 generates unique ticket numbers                             0.06s  
+  ⨯ it F3-30 only one of two stale copies of an active ticket can claim… 0.09s  
+  ⨯ it F3-31 the second claim does not overwrite the first entry time    0.07s  
+  ✓ it F3-33 a ticket from event A cannot be checked in through event B… 0.10s  
+  ✓ it F3-40 redirects a guest from the check-in page to the login       0.08s  
+  ✓ it F3-41 shows the selected event to an organiser user of that even… 0.09s  
+  ✓ it F3-42 does not select an event that belongs to another organiser  0.11s  
+
+   PASS  Tests\Feature\VenueMigrationTest
+  ✓ events table has venue_name and venue_address columns                0.07s  
+  ✓ events table does not have venue_id column                           0.05s  
+  ✓ event stores and retrieves inline venue fields                       0.05s  
+  ✓ event venue fields can be null for online events                     0.05s  
+  ✓ order search returns venue from inline event fields                  0.08s  
+  ✓ order search returns null venue when event has no venue name         0.08s  
+  ✓ order search does not throw unknown column venue_id error            0.08s  
+
+   PASS  Tests\Browser\TicketPurchaseFlowTest
+  ✓ it lets a guest buy two tickets and confirms the order after paymen… 2.93s  
+  ✓ it applies a percentage discount code in the browser before checkou… 1.59s  
+  ✓ it rejects an unknown discount code and keeps the full price         1.52s  
+  ✓ it does not create an order until the buyer submits the form         1.57s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Api\V2\AuthTest > user can register                    
+  Expected response status code [201] but received 422.
+Failed asserting that 422 is identical to 201.
+
+The following errors occurred during the last request:
+
+{
+    "status": "error",
+    "message": "Validation failed",
+    "errors": {
+        "phone": [
+            "The phone field must not be greater than 15 characters."
+        ]
+    }
+}
+
+  at tests/Feature/Api/V2/AuthTest.php:27
+     23▕         ];
+     24▕ 
+     25▕         $response = $this->postJson('/api/v2/auth/register', $userData);
+     26▕ 
+  ➜  27▕         $response->assertStatus(201)
+     28▕             ->assertJsonStructure([
+     29▕                 'status',
+     30▕                 'message',
+     31▕                 'data' => [
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Orders\IncompleteOrderCleanupTest > it F4-05 gives…    
+  Failed asserting that 1 is identical to 0.
+
+  at tests/Feature/Orders/IncompleteOrderCleanupTest.php:86
+     82▕     ageOrder($order, now()->subMinutes(30));
+     83▕ 
+     84▕     cleanup();
+     85▕ 
+  ➜  86▕     expect($discount->fresh()->used_count)->toBe(0);
+     87▕ });
+     88▕ 
+     89▕ it('F4-06 a dry run changes nothing', function () {
+     90▕     $this->ticketType->update(['quantity' => 48]);
+
+  1   tests/Feature/Orders/IncompleteOrderCleanupTest.php:86
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\BalanceRecordingTest > it F2-62 the two par…   
+  Failed asserting that 250.51 is identical to 250.5.
+
+  at tests/Feature/Payment/BalanceRecordingTest.php:48
+     44▕ 
+     45▕     record($info, $amount);
+     46▕ 
+     47▕     $info->refresh();
+  ➜  48▕     expect(round((float) $info->subaccount_balance + (float) $info->system_admin_balance, 2))->toBe(round($amount, 2));
+     49▕ })->with([10.0, 33.33, 99.99, 250.5, 1000.0]);
+     50▕ 
+     51▕ it('F2-63 balances and counters accumulate over two transactions', function () {
+     52▕     $info = paymentInfoWithCharge(10);
+
+  1   tests/Feature/Payment/BalanceRecordingTest.php:48
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\BalanceRecordingTest > it F2-66 the recorde…   
+  Failed asserting that 1.0 is less than 0.01.
+
+  at tests/Feature/Payment/BalanceRecordingTest.php:95
+     91▕     }
+     92▕ 
+     93▕     $info->refresh();
+     94▕     $parts = (float) $info->subaccount_balance + (float) $info->system_admin_balance;
+  ➜  95▕     expect(abs($parts - (float) $info->total_transaction_volume))->toBeLessThan(0.01);
+     96▕ });
+     97▕
+
+  1   tests/Feature/Payment/BalanceRecordingTest.php:95
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaymentCallbackTest > it F2-15 records one…    
+  Failed asserting that 1 is identical to 3.
+
+  at tests/Feature/Payment/PaymentCallbackTest.php:75
+     71▕     fakePaystackVerify($reference, 30000);
+     72▕ 
+     73▕     callback($reference);
+     74▕ 
+  ➜  75▕     expect($order->purchases()->count())->toBe(3);
+     76▕ });
+     77▕ 
+     78▕ it('F2-16 does not confirm the order when the paid amount is lower than the order total', function () {
+     79▕     [$order, $payment, $reference] = makePendingOrder($this->event, $this->ticketType, 1);
+
+  1   tests/Feature/Payment/PaymentCallbackTest.php:75
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaymentCallbackTest > it F2-16 does not con…   
+  Failed asserting that two strings are equal.
+  -'http://localhost/payment/failed'
+  +'http://localhost/payment/success/ORD-CNMC7AQ7UQ'
+  
+
+  at tests/Feature/Payment/PaymentCallbackTest.php:82
+     78▕ it('F2-16 does not confirm the order when the paid amount is lower than the order total', function () {
+     79▕     [$order, $payment, $reference] = makePendingOrder($this->event, $this->ticketType, 1);
+     80▕     fakePaystackVerify($reference, 5000);
+     81▕ 
+  ➜  82▕     callback($reference)->assertRedirect(route('payment.failed'));
+     83▕ 
+     84▕     expect($order->fresh()->status)->toBe('pending')
+     85▕         ->and($payment->fresh()->status)->toBe('pending')
+     86▕         ->and($order->tickets()->pluck('status')->unique()->all())->toBe(['pending']);
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaymentCallbackTest > it F2-17 does not con…   
+  Failed asserting that two strings are identical.
+  -'pending'
+  +'confirmed'
+  
+
+  at tests/Feature/Payment/PaymentCallbackTest.php:96
+     92▕     fakePaystackVerify($reference, 10000, 'success', ['metadata' => ['order_id' => $other->id]]);
+     93▕ 
+     94▕     callback($reference);
+     95▕ 
+  ➜  96▕     expect($order->fresh()->status)->toBe('pending');
+     97▕ });
+     98▕ 
+     99▕ it('F2-18 a replayed callback does not add purchases, balances or emails', function () {
+    100▕     [$order, , $reference] = makePendingOrder($this->event, $this->ticketType, 2);
+
+  1   tests/Feature/Payment/PaymentCallbackTest.php:96
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaymentInitializationTest > it F2-02 and F2…   
+  An expected request was not recorded.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Http/Client/Factory.php:416
+    412▕      * @return void
+    413▕      */
+    414▕     public function assertSent($callback)
+    415▕     {
+  ➜ 416▕         PHPUnit::assertTrue(
+    417▕             $this->recorded($callback)->count() > 0,
+    418▕             'An expected request was not recorded.'
+    419▕         );
+    420▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/Payment/PaymentInitializationTest.php:41
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaymentInitializationTest > it F2-08 gives…    
+  Failed asserting that actual size 1 matches expected size 2.
+
+  at tests/Feature/Payment/PaymentInitializationTest.php:105
+    101▕ 
+    102▕     $references = Http::recorded()
+    103▕         ->filter(fn ($pair) => str_ends_with($pair[0]->url(), '/transaction/initialize'))
+    104▕         ->map(fn ($pair) => $pair[0]['reference']);
+  ➜ 105▕     expect($references)->toHaveCount(2)->and($references->unique())->toHaveCount(2);
+    106▕ 
+    107▕     Carbon::setTestNow();
+    108▕ });
+    109▕
+
+  1   tests/Feature/Payment/PaymentInitializationTest.php:105
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaystackWebhookTest > it F2-36 signature he…   
+  Expected response status code [400] but received 500.
+Failed asserting that 500 is identical to 400.
+
+The following exception occurred during the last request:
+
+TypeError: App\Services\PaystackService::verifyWebhookSignature(): Argument #2 ($signature) must be of type string, null given, called in /Volumes/STORAGE/COV/7020SCN/suptix/app/Http/Controllers/PaymentController.php on line 198 and defined in /Volumes/STORAGE/COV/7020SCN/suptix/app/Services/PaystackService.php:686
+Stack trace:
+
+----------------------------------------------------------------------------------
+
+App\Services\PaystackService::verifyWebhookSignature(): Argument #2 ($signature) must be of type string, null given, called in /Volumes/STORAGE/COV/7020SCN/suptix/app/Http/Controllers/PaymentController.php on line 198
+
+  at tests/Feature/Payment/PaystackWebhookTest.php:79
+     75▕     expect($this->order->fresh()->status)->toBe('pending');
+     76▕ });
+     77▕ 
+     78▕ it('F2-36 signature header missing, known reference: 400 and not a server error', function () {
+  ➜  79▕     postWebhook(chargeSuccess($this->reference), null, false)->assertStatus(400);
+     80▕ 
+     81▕     expect($this->order->fresh()->status)->toBe('pending');
+     82▕ });
+     83▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaystackWebhookTest > it F2-41 charge.succe…   
+  Failed asserting that two strings are identical.
+  -'pending'
+  +'confirmed'
+  
+
+  at tests/Feature/Payment/PaystackWebhookTest.php:115
+    111▕     fakePaystackVerify($this->reference, 5000);
+    112▕ 
+    113▕     postWebhook(chargeSuccess($this->reference, 5000));
+    114▕ 
+  ➜ 115▕     expect($this->order->fresh()->status)->toBe('pending')
+    116▕         ->and($this->payment->fresh()->status)->toBe('pending');
+    117▕ });
+    118▕ 
+    119▕ it('F2-42 a dispute webhook marks the payment as disputed and keeps the tickets', function () {
+
+  1   tests/Feature/Payment/PaystackWebhookTest.php:115
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaystackWebhookTest > it F2-42 a dispute we…   
+  Expected response status code [200] but received 500.
+Failed asserting that 500 is identical to 200.
+
+The following exception occurred during the last request:
+
+PDOException: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'status' at row 1 in /Volumes/STORAGE/COV/7020SCN/suptix/vendor/laravel/framework/src/Illuminate/Database/Connection.php:609
+Stack trace:
+
+Next Illuminate\Database\QueryException: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'status' at row 1 (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: suptix_test, SQL: update `payments` set `status` = disputed, `notes` = Payment disputed - Chargeback, `payments`.`updated_at` = 2026-10-20 20:32:11 where `id` = 195) in /Volumes/STORAGE/COV/7020SCN/suptix/vendor/laravel/framework/src/Illuminate/Database/Connection.php:838
+Stack trace:
+
+----------------------------------------------------------------------------------
+
+SQLSTATE[01000]: Warning: 1265 Data truncated for column 'status' at row 1 (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: suptix_test, SQL: update `payments` set `status` = disputed, `notes` = Payment disputed - Chargeback, `payments`.`updated_at` = 2026-10-20 20:32:11 where `id` = 195)
+
+  at tests/Feature/Payment/PaystackWebhookTest.php:123
+    119▕ it('F2-42 a dispute webhook marks the payment as disputed and keeps the tickets', function () {
+    120▕     postWebhook(['event' => 'charge.dispute.create', 'data' => [
+    121▕         'reason' => 'Chargeback',
+    122▕         'transaction' => ['reference' => $this->reference],
+  ➜ 123▕     ]])->assertOk();
+    124▕ 
+    125▕     expect($this->payment->fresh()->status)->toBe('disputed')
+    126▕         ->and(Ticket::where('order_id', $this->order->id)->count())->toBe(1);
+    127▕ });
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Payment\PaystackWebhookTest > it F2-44 the webhook…    
+  Expected response status code [400] but received 500.
+Failed asserting that 500 is identical to 400.
+
+The following exception occurred during the last request:
+
+TypeError: App\Services\PaystackService::verifyWebhookSignature(): Argument #2 ($signature) must be of type string, null given, called in /Volumes/STORAGE/COV/7020SCN/suptix/app/Http/Controllers/PaymentController.php on line 198 and defined in /Volumes/STORAGE/COV/7020SCN/suptix/app/Services/PaystackService.php:686
+Stack trace:
+
+----------------------------------------------------------------------------------
+
+App\Services\PaystackService::verifyWebhookSignature(): Argument #2 ($signature) must be of type string, null given, called in /Volumes/STORAGE/COV/7020SCN/suptix/app/Http/Controllers/PaymentController.php on line 198
+
+  at tests/Feature/Payment/PaystackWebhookTest.php:130
+    126▕         ->and(Ticket::where('order_id', $this->order->id)->count())->toBe(1);
+    127▕ });
+    128▕ 
+    129▕ it('F2-44 the webhook route is exempt from CSRF but still needs a valid signature', function () {
+  ➜ 130▕     $this->postJson(route('paystack.webhook'), chargeSuccess($this->reference))->assertStatus(400);
+    131▕ 
+    132▕     expect($this->order->fresh()->status)->toBe('pending');
+    133▕ });
+    134▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaymentInfoNotificationTest > notification supports…   
+  Failed asserting that an array contains 'sms'.
+
+  at tests/Feature/PaymentInfoNotificationTest.php:149
+    145▕     $systemAdmin = new SystemAdmin();
+    146▕ 
+    147▕     // Check that both channels are supported
+    148▕     expect($notification->via($systemAdmin))->toContain('mail');
+  ➜ 149▕     expect($notification->via($systemAdmin))->toContain('sms');
+    150▕ });
+
+  1   tests/Feature/PaymentInfoNotificationTest.php:149
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaymentInfoRoleAssignmentTest > job is dispatched w…   
+  The expected [App\Jobs\AssignOrganizerAdminRole] job was not pushed.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/QueueFake.php:121
+    117▕         if (is_numeric($callback)) {
+    118▕             return $this->assertPushedTimes($job, $callback);
+    119▕         }
+    120▕ 
+  ➜ 121▕         PHPUnit::assertTrue(
+    122▕             $this->pushed($job, $callback)->count() > 0,
+    123▕             "The expected [{$job}] job was not pushed."
+    124▕         );
+    125▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/PaymentInfoRoleAssignmentTest.php:53
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaymentInfoRoleAssignmentTest > job does not run wh…   
+  Failed asserting that true is false.
+
+  at tests/Feature/PaymentInfoRoleAssignmentTest.php:90
+     86▕     $job = new AssignOrganizerAdminRole($paymentInfo);
+     87▕     $job->handle();
+     88▕ 
+     89▕     // User should not have the role
+  ➜  90▕     expect($user->fresh()->hasRole('Organizer Admin'))->toBeFalse();
+     91▕ });
+     92▕ 
+     93▕ test('job assigns organizer admin role when payment info is approved', function () {
+     94▕     // Create test data
+
+  1   tests/Feature/PaymentInfoRoleAssignmentTest.php:90
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaymentInfoRoleAssignmentTest > observer triggers j…   
+  The following jobs were pushed unexpectedly:
+
+- Illuminate\Notifications\SendQueuedNotifications
+
+Failed asserting that an array is empty.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/QueueFake.php:331
+    327▕     public function assertNothingPushed()
+    328▕     {
+    329▕         $pushedJobs = implode("\n- ", array_keys($this->jobs));
+    330▕ 
+  ➜ 331▕         PHPUnit::assertEmpty($this->jobs, "The following jobs were pushed unexpectedly:\n\n- $pushedJobs\n");
+    332▕     }
+    333▕ 
+    334▕     /**
+    335▕      * Get all of the jobs matching a truth-test callback.
+
+      +2 vendor frames 
+  3   tests/Feature/PaymentInfoRoleAssignmentTest.php:201
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaymentInfoRoleAssignmentTest > observer does not t…   
+  The following jobs were pushed unexpectedly:
+
+- Illuminate\Notifications\SendQueuedNotifications
+
+Failed asserting that an array is empty.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/QueueFake.php:331
+    327▕     public function assertNothingPushed()
+    328▕     {
+    329▕         $pushedJobs = implode("\n- ", array_keys($this->jobs));
+    330▕ 
+  ➜ 331▕         PHPUnit::assertEmpty($this->jobs, "The following jobs were pushed unexpectedly:\n\n- $pushedJobs\n");
+    332▕     }
+    333▕ 
+    334▕     /**
+    335▕      * Get all of the jobs matching a truth-test callback.
+
+      +2 vendor frames 
+  3   tests/Feature/PaymentInfoRoleAssignmentTest.php:243
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\PaystackSubaccountSyncTest > it handles sync errors…   
+  Failed asserting that false is true.
+
+  at tests/Feature/PaystackSubaccountSyncTest.php:115
+    111▕         // Trigger sync by updating a field
+    112▕         $this->paymentInfo->update(['business_name' => 'Updated Name']);
+    113▕ 
+    114▕         // Should have recorded the sync error
+  ➜ 115▕         $this->assertTrue($this->paymentInfo->hasRecentSyncError());
+    116▕         $this->assertStringContainsString('Invalid subaccount code', $this->paymentInfo->getLastSyncError());
+    117▕     }
+    118▕ 
+    119▕     #[Test]
+
+  1   tests/Feature/PaystackSubaccountSyncTest.php:115
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\DiscountValidationTest > it F1-64 accepts…    
+  Expected response status code [200] but received 422.
+Failed asserting that 422 is identical to 200.
+
+  at tests/Feature/Purchase/DiscountValidationTest.php:77
+     73▕ 
+     74▕ it('F1-64 accepts a code on its last valid day', function () {
+     75▕     codeFor($this, ['valid_from' => now()->subMonth(), 'valid_until' => now()->toDateString()]);
+     76▕ 
+  ➜  77▕     validateCode($this, 'SAVE10')->assertOk()->assertJsonPath('valid', true);
+     78▕ });
+     79▕ 
+     80▕ it('F1-65 rejects a code that has reached its usage limit', function () {
+     81▕     codeFor($this, ['usage_limit' => 3, 'used_count' => 3]);
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\DiscountValidationTest > it F1-44 caps a p…   
+  Failed asserting that 150.0 is identical to 100.0.
+
+  at tests/Feature/Purchase/DiscountValidationTest.php:116
+    112▕     codeFor($this, ['type' => 'percentage', 'value' => 150]);
+    113▕ 
+    114▕     $response = validateCode($this, 'SAVE10', 100)->assertOk();
+    115▕ 
+  ➜ 116▕     expect((float) $response->json('discount.amount'))->toBe(100.0)
+    117▕         ->and((float) $response->json('discount.total'))->toBe(0.0);
+    118▕ });
+    119▕
+
+  1   tests/Feature/Purchase/DiscountValidationTest.php:116
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\TicketPurchaseTest > it F1-15 accepts the…    
+  Session has unexpected errors: 
+
+{
+    "default": [
+        "Number of attendees must match ticket quantity for VIP"
+    ]
+}
+Failed asserting that true is false.
+
+  at tests/Feature/Purchase/TicketPurchaseTest.php:140
+    136▕ it('F1-15 accepts the quantity as a numeric string from an ordinary form post', function () {
+    137▕     $payload = purchasePayload([[$this->ticketType, 2]]);
+    138▕     $payload['tickets'][0]['quantity'] = '2';
+    139▕ 
+  ➜ 140▕     purchase($this->event, $payload)->assertSessionHasNoErrors();
+    141▕     expect(Order::count())->toBe(1)->and(Ticket::count())->toBe(2);
+    142▕ });
+    143▕ 
+    144▕ // ---------------------------------------------------------------- event and ticket-type rules
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\TicketPurchaseTest > it F1-44 caps a perce…   
+  Failed asserting that 150.0 is identical to 100.0.
+
+  at tests/Feature/Purchase/TicketPurchaseTest.php:292
+    288▕ 
+    289▕     purchase($this->event, purchasePayload([[$this->ticketType, 1]], ['discount_id' => $discount->id]));
+    290▕ 
+    291▕     $order = Order::firstOrFail();
+  ➜ 292▕     expect((float) $order->discount_amount)->toBe(100.0)
+    293▕         ->and((float) $order->subtotal_amount)->toBe(100.0)
+    294▕         ->and((float) $order->total_amount)->toBe(0.0);
+    295▕ });
+    296▕
+
+  1   tests/Feature/Purchase/TicketPurchaseTest.php:292
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\TicketPurchaseTest > it F1-51 rejects an e…   
+  Session is missing expected key [errors].
+Failed asserting that false is true.
+
+  at tests/Feature/Purchase/TicketPurchaseTest.php:369
+    365▕ it('F1-51 rejects an expired discount at purchase', function () {
+    366▕     $discount = discountFor($this, ['valid_from' => now()->subMonth(), 'valid_until' => now()->subDay()]);
+    367▕ 
+    368▕     purchase($this->event, purchasePayload([[$this->ticketType, 1]], ['discount_id' => $discount->id]))
+  ➜ 369▕         ->assertSessionHasErrors('error');
+    370▕     expect(Order::count())->toBe(0);
+    371▕ });
+    372▕ 
+    373▕ it('F1-52 rejects a not-yet-valid discount at purchase', function () {
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Purchase\TicketPurchaseTest > it F1-52 rejects a no…   
+  Session is missing expected key [errors].
+Failed asserting that false is true.
+
+  at tests/Feature/Purchase/TicketPurchaseTest.php:377
+    373▕ it('F1-52 rejects a not-yet-valid discount at purchase', function () {
+    374▕     $discount = discountFor($this, ['valid_from' => now()->addDay(), 'valid_until' => now()->addMonth()]);
+    375▕ 
+    376▕     purchase($this->event, purchasePayload([[$this->ticketType, 1]], ['discount_id' => $discount->id]))
+  ➜ 377▕         ->assertSessionHasErrors('error');
+    378▕     expect(Order::count())->toBe(0);
+    379▕ });
+    380▕ 
+    381▕ it('F1-53 increments the discount usage count by one', function () {
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-06 to F3-08 scannin…   
+  Failed asserting that true is identical to false.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:94
+     90▕ 
+     91▕ it('F3-06 to F3-08 scanning a used, pending or cancelled ticket does not report a plain success', function (string $status) {
+     92▕     $ticket = ticketFor($this->event, $status);
+     93▕ 
+  ➜  94▕     scan(['ticket_number' => $ticket->ticket_number])->assertJsonPath('success', false);
+     95▕ })->with([
+     96▕     'F3-06 used' => 'used',
+     97▕     'F3-07 pending' => 'pending',
+     98▕     'F3-08 cancelled' => 'cancelled',
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-06 to F3-08 scannin…   
+  Failed asserting that true is identical to false.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:94
+     90▕ 
+     91▕ it('F3-06 to F3-08 scanning a used, pending or cancelled ticket does not report a plain success', function (string $status) {
+     92▕     $ticket = ticketFor($this->event, $status);
+     93▕ 
+  ➜  94▕     scan(['ticket_number' => $ticket->ticket_number])->assertJsonPath('success', false);
+     95▕ })->with([
+     96▕     'F3-06 used' => 'used',
+     97▕     'F3-07 pending' => 'pending',
+     98▕     'F3-08 cancelled' => 'cancelled',
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-06 to F3-08 scannin…   
+  Failed asserting that true is identical to false.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:94
+     90▕ 
+     91▕ it('F3-06 to F3-08 scanning a used, pending or cancelled ticket does not report a plain success', function (string $status) {
+     92▕     $ticket = ticketFor($this->event, $status);
+     93▕ 
+  ➜  94▕     scan(['ticket_number' => $ticket->ticket_number])->assertJsonPath('success', false);
+     95▕ })->with([
+     96▕     'F3-06 used' => 'used',
+     97▕     'F3-07 pending' => 'pending',
+     98▕     'F3-08 cancelled' => 'cancelled',
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-09 every fillable a…   
+  Failed asserting that two arrays are identical.
+  -Array &0 []
+  +Array &0 [
+  +    0 => 'is_used',
+  +]
+  
+
+  at tests/Feature/Tickets/TicketEntryTest.php:107
+    103▕         ->reject(fn ($attribute) => Schema::hasColumn('tickets', $attribute))
+    104▕         ->values()
+    105▕         ->all();
+    106▕ 
+  ➜ 107▕     expect($missing)->toBe([]);
+    108▕ });
+    109▕ 
+    110▕ // ---------------------------------------------------------------- authorisation
+    111▕
+
+  1   tests/Feature/Tickets/TicketEntryTest.php:107
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-16 an unauthenticat…   
+  Expecting '{"success":true,"message":"Ti…":[]}}' not to contain 'ama@example.com'.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:173
+    169▕     $ticket = ticketFor($this->event);
+    170▕ 
+    171▕     $response = scan(['ticket_number' => $ticket->ticket_number]);
+    172▕ 
+  ➜ 173▕     expect($response->getContent())->not->toContain('ama@example.com');
+    174▕ });
+    175▕ 
+    176▕ it('F3-17 the public verification page does not show the attendee email to a visitor', function () {
+    177▕     $ticket = ticketFor($this->event);
+
+  1   tests/Feature/Tickets/TicketEntryTest.php:173
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-17 the public verif…   
+  Property [ticket.attendee_email] was found while it was expected to be missing.
+Failed asserting that true is not true.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:181
+    177▕     $ticket = ticketFor($this->event);
+    178▕ 
+    179▕     $this->get(route('tickets.verify', $ticket->ticket_number))
+    180▕         ->assertOk()
+  ➜ 181▕         ->assertInertia(fn ($page) => $page->component('TicketVerification')->missing('ticket.attendee_email'));
+    182▕ });
+    183▕ 
+    184▕ it('F3-18 and F3-19 the event ticket list is limited to the user\'s organiser and the event\'s owner', function () {
+    185▕     $other = Organizer::factory()->create();
+
+      +2 vendor frames 
+  3   tests/Feature/Tickets/TicketEntryTest.php:181
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-25 answers JSON QR…    
+  Failed asserting that 500 is less than 500.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:236
+    232▕     $ticket = ticketFor($this->event);
+    233▕ 
+    234▕     $status = scan(['qr_data' => json_encode(['ticket_number' => $ticket->ticket_number])])->status();
+    235▕ 
+  ➜ 236▕     expect($status)->toBeGreaterThanOrEqual(400)->and($status)->toBeLessThan(500);
+    237▕ });
+    238▕ 
+    239▕ it('F3-26 returns 422 when neither qr_data nor ticket_number is sent', function () {
+    240▕     scan([])->assertStatus(422);
+
+  1   tests/Feature/Tickets/TicketEntryTest.php:236
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-30 only one of two…    
+  Failed asserting that null is true.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:268
+    264▕ 
+    265▕     $firstClaim = $first->markAsUsed();
+    266▕     $secondClaim = $second->markAsUsed();
+    267▕ 
+  ➜ 268▕     expect($firstClaim)->toBeTrue()->and($secondClaim)->toBeFalse();
+    269▕ });
+    270▕ 
+    271▕ it('F3-31 the second claim does not overwrite the first entry time', function () {
+    272▕     $ticket = ticketFor($this->event);
+
+  1   tests/Feature/Tickets/TicketEntryTest.php:268
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Tickets\TicketEntryTest > it F3-31 the second claim…   
+  Failed asserting that false is true.
+
+  at tests/Feature/Tickets/TicketEntryTest.php:283
+    279▕ 
+    280▕     Carbon::setTestNow(now()->addMinutes(5));
+    281▕     $second->markAsUsed();
+    282▕ 
+  ➜ 283▕     expect($ticket->fresh()->used_at->equalTo($firstTime))->toBeTrue();
+    284▕     Carbon::setTestNow();
+    285▕ });
+    286▕ 
+    287▕ it('F3-33 a ticket from event A cannot be checked in through event B\'s organiser route', function () {
+
+  1   tests/Feature/Tickets/TicketEntryTest.php:283
+
+
+  Tests:    34 failed, 188 passed (591 assertions)
+  Duration: 30.66s
+
