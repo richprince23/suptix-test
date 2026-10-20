@@ -4,8 +4,8 @@ Baseline: commit `da57882` (clean test database, Pest 4, pcov; `docs/baseline/cl
 
 | Measure | Baseline | Final | Target |
 |---|---|---|---|
-| Tests (passing / failing) | 62 (56 / 6) | 348 (348 / 0) | 100% passing |
-| Test levels | Unit and feature (none on the three flows) | Unit, feature, concurrency simulation, performance, 6 browser tests | Multi-level |
+| Tests (passing / failing) | 62 (56 / 6) | 349 (349 / 0) | 100% passing |
+| Test levels | Unit and feature (none on the three flows) | Unit, feature, concurrency simulation, performance, 7 browser tests | Multi-level |
 | Line coverage, in-scope classes | 9 of 1,885 (0.5%) | 1,709 of 1,852 (92.3%) | At least 80% |
 | Line coverage, whole application | 646 of 4,958 (13.0%) | 2,580 of 4,926 (52.4%) | |
 | Method coverage, whole application | 44 of 367 (12.0%) | 148 of 365 (40.5%) | |
@@ -18,6 +18,6 @@ Baseline: commit `da57882` (clean test database, Pest 4, pcov; `docs/baseline/cl
 | vue-tsc errors | 26 | 26 | No new errors |
 | Scan check response time, 95th percentile | Not measured | 11 ms (local, indicative) | Under 100 ms |
 | Oversold tickets, 20 buyers for 5 tickets | Not tested | 0 | 0 |
-| Defects found and fixed | 0 | 27 code defects (9 High, 13 Medium, 5 Low) | |
+| Defects found and fixed | 0 | 28 code defects (9 High, 14 Medium, 5 Low) | |
 
 Files: `test-run.txt`, `clover.xml`, `scope-coverage.txt`, `phpstan.txt`, `pint.txt`, `frontend.txt`, `MUTATION.md`, `performance.md`. Defects: `../defects/DEFECT_LOG.md`.
