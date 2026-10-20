@@ -338,7 +338,8 @@ class TicketController extends Controller
             ], 400);
         }
 
-        $tickets = $event->tickets()->with(['order', 'ticketType'])->get();
+        // The resource reads the event and organizer of every ticket, so load them in bulk
+        $tickets = $event->tickets()->with(['order', 'ticketType', 'event', 'organizer'])->get();
 
         return response()->json([
             'success' => true,
