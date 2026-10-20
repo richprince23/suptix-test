@@ -394,7 +394,7 @@ Location: `tests/Browser`. These drive a real headless browser (Playwright) agai
 | E-02 | Valid percentage discount code applied on the event page lowers the total shown | E2E | 2 | Written |
 | E-03 | Unknown discount code is rejected and the full price stays | E2E | 2 | Written |
 | E-04 | Reaching the buyer form does not create an order or reserve stock | E2E | 2 | Written |
-| E-05 | Gate staff signs in, opens the check-in page, scans a valid ticket (admitted), scans it again (rejected) | E2E | 1 | To write |
+| E-05 | Gate staff opens the check-in page, searches a valid ticket (admitted), searches it again (refused) | E2E | 1 | Written (`GateCheckInFlowTest`) |
 | E-06 | Sold-out ticket type cannot be purchased from the page | E2E | 3 | To write |
 
 Run: `php artisan test tests/Browser`. First-time setup: `composer require pestphp/pest-plugin-browser --dev`, `npm install --save-dev playwright`, `npx playwright install chromium`. In CI add the same Playwright install step and cache `~/.cache/ms-playwright`.
