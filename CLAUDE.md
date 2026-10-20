@@ -30,6 +30,9 @@ Suptix is a Laravel-based event management system using the TALL stack (Tailwind
 - **Type checking**: `vue-tsc --noEmit`
 
 ### Testing
+- **Test database**: tests use `suptix_test` (set in `phpunit.xml`), never the development database; run `DB_DATABASE=suptix_test php artisan migrate` once
+- **Static analysis**: `./vendor/bin/phpstan analyse` (level 5, in-scope classes in `phpstan.neon`)
+- **Browser tests**: `tests/Browser` (Pest browser plugin, needs `npx playwright install chromium`)
 - **Run all tests**: `composer run test`
 - **Run specific test file**: `php artisan test tests/Feature/DashboardTest.php`
 - **Run with coverage**: `php artisan test --coverage`
@@ -100,7 +103,7 @@ Suptix is a Laravel-based event management system using the TALL stack (Tailwind
 - Utilize factories and seeders for test data
 
 ### Testing
-- Use Pest testing framework for PHP tests
+- Use Pest 4 for PHP tests (use `#[Test]` or `it()`; PHPUnit 12 ignores `/** @test */`)
 - Write feature tests for user-facing functionality
 - Include authentication and authorization tests
 - Test Filament resources and forms

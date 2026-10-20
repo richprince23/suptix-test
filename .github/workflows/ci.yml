@@ -1,0 +1,184 @@
+name: Suptix Workflow
+on:
+  push:
+    branches: [master, staging]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+env:
+  # Classes in scope for the quality study (flows F1 to F3), checked as written
+  PHP_SCOPE: >-
+    app/Http/Controllers/TicketPurchaseController.php
+    app/Http/Controllers/DiscountController.php
+    app/Http/Controllers/PaymentController.php
+    app/Http/Controllers/PaystackController.php
+    app/Http/Controllers/TicketController.php
+    app/Http/Controllers/CheckInController.php
+    app/Models/Discount.php app/Models/Order.php app/Models/Payment.php
+    app/Models/Ticket.php app/Models/TicketType.php
+    app/Services/PaystackService.php app/Services/PaystackBalanceService.php
+    database/factories tests
+  VUE_SCOPE: >-
+    resources/js/pages/EventDetails.vue
+    resources/js/pages/TicketBuyerForm.vue
+    resources/js/pages/TicketVerification.vue
+    resources/js/pages/AttendeeCheckIn.vue
+    resources/js/components/TicketSelector.vue
+
+jobs:
+  quality:
+    name: Style and static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci
+
+      # Checkers, not fixers: a style problem fails the build
+      - name: Pint (check only)
+        run: ./vendor/bin/pint --test $PHP_SCOPE
+
+      - name: PHPStan level 5
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+      - name: ESLint on the in-scope pages (check only)
+        run: npx eslint $VUE_SCOPE --no-fix --max-warnings 0
+
+      - name: Type check must not exceed the recorded baseline of 26 inherited errors
+        run: |
+          count=$(npx vue-tsc --noEmit | grep -c "error TS" || true)
+          echo "vue-tsc errors: $count"
+          test "$count" -le 26
+
+  tests:
+    name: Tests and coverage
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: suptix_test
+          MYSQL_ROOT_PASSWORD: secret
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: suptix_test
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: pcov
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan ziggy:generate
+      - run: npm run build
+
+      - name: Install the browser used by the end-to-end tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Migrate the test database
+        run: php artisan migrate --force
+
+      - name: Run the tests with coverage
+        run: php -d pcov.enabled=1 -d pcov.directory=app artisan test --coverage-clover coverage/clover.xml
+
+      - name: In-scope line coverage must be at least 80%
+        run: php scripts/check-scope-coverage.php coverage/clover.xml 80
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/clover.xml
+
+  mutation:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+    needs: tests
+    if: github.event_name != 'pull_request'
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: suptix_test
+          MYSQL_ROOT_PASSWORD: secret
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: suptix_test
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: pcov
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: npm ci
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan ziggy:generate
+      - run: npm run build
+      - run: php artisan migrate --force
+
+      # Covered lines of the in-scope classes only; the browser suite is left out
+      # because it is slow and the unit and feature tests already cover the logic
+      - name: Mutation score must be at least 60%
+        run: >-
+          php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest
+          --mutate --covered-only --parallel --min=60 --testsuite=Unit,Feature
+          --class='App\Http\Controllers\TicketPurchaseController,App\Http\Controllers\DiscountController,App\Http\Controllers\PaymentController,App\Http\Controllers\PaystackController,App\Http\Controllers\TicketController,App\Http\Controllers\CheckInController,App\Models\Discount,App\Models\Order,App\Models\Payment,App\Models\Ticket,App\Models\TicketType,App\Services\PaystackService,App\Services\PaystackBalanceService'

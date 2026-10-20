@@ -19,15 +19,13 @@ Suptix is a modern, scalable event management and ticketing platform designed fo
 - Event creation with rich descriptions, cover banners, schedules, and locations.
 - Categorization across diverse event types (Educational, Corporate, Social, Cultural, Sports).
 - Event lifecycle management (Draft, Published, Live, Canceled, Past).
-- Search-engine-optimized event landing pages with dynamic meta tags, OpenGraph tags, and sitemaps.
 - Location integration with Google Maps and venue management.
 
-### Ticketing and RSVP Engine
+### Ticketing
 - Multi-tier ticketing with configurable pricing, capacity caps, and availability windows.
 - Dynamic discount code validation and redemption.
 - Automated QR code issuance for all confirmed orders.
 - Direct PDF ticket generation (DomPDF / client-side) and automated transactional email dispatch.
-- RSVP credit purchasing and quota tracking for free or guest-list events.
 
 ### African Payment Processing (Paystack)
 - Seamless checkout experience powered by Paystack.
@@ -51,7 +49,6 @@ Suptix is a modern, scalable event management and ticketing platform designed fo
 ### Multi-Channel Communication
 - Transactional SMS notifications supported via Hubtel and GiantSMS providers with fallback.
 - Transactional emails for order confirmations, ticket deliveries, and event updates.
-- Newsletter subscription and self-service unsubscription management.
 
 ---
 
@@ -64,7 +61,7 @@ Suptix is a modern, scalable event management and ticketing platform designed fo
 - Admin Panel: Filament v3
 - Database & ORM: SQLite (local) / MySQL (production) with Eloquent ORM
 - Background Queues: Database / Redis queue worker
-- Testing Framework: Pest PHP 3.x
+- Testing Framework: Pest 4 (PHPUnit 12) with the browser plugin (Playwright), Larastan (PHPStan level 5), Pest mutation testing
 
 ### Frontend
 - Framework: Vue 3 (Composition API)
@@ -92,7 +89,7 @@ suptix/
 │   │   ├── Controllers/   # Web and API controllers
 │   │   └── Middleware/    # HTTP middleware (auth, sanitization, honeypot)
 │   ├── Models/            # Eloquent data models (Event, Order, Ticket, Organizer, etc.)
-│   └── Services/          # Domain services (Payment, SEO, SMS, TicketService)
+│   └── Services/          # Domain services (Payment, SMS, TicketService)
 ├── config/                # Application configuration files
 ├── database/
 │   ├── factories/         # Model factories for testing and seeding
@@ -107,10 +104,10 @@ suptix/
 ├── routes/
 │   ├── api.php            # Mobile and external REST endpoints
 │   ├── web.php            # Web client routes and Inertia endpoints
-│   ├── ticket-purchase.php# Ticket order and checkout workflows
-│   └── settings.php       # Account and profile settings
+│   └── ticket-purchase.php# Ticket order and checkout workflows
 └── tests/
-    ├── Feature/           # Feature integration tests (Pest)
+    ├── Browser/           # End-to-end tests in a real browser (Pest browser plugin)
+    ├── Feature/           # Feature integration tests (Pest): Purchase, Payment, Tickets, Orders, Models, Performance
     └── Unit/              # Isolated unit tests
 ```
 
@@ -223,22 +220,46 @@ If preferred, services can be launched in separate terminal sessions:
 ## Testing and Quality Assurance
 
 ### Automated Tests
-Run the test suite using Pest PHP:
+The suite runs against a dedicated MySQL database, `suptix_test` (set in `phpunit.xml`), and every test uses `DatabaseTransactions`, never `RefreshDatabase`. Create the database and migrate it once:
 ```bash
-composer run test
+php artisan tinker --execute="DB::statement('CREATE DATABASE IF NOT EXISTS suptix_test');"
+DB_DATABASE=suptix_test php artisan migrate
 ```
-Or run directly through Artisan:
+Install the browser used by the end-to-end tests once (`npm install` then):
 ```bash
-php artisan test
-php artisan test --coverage
+npx playwright install chromium
+```
+Run the tests:
+```bash
+php artisan test                          # all suites: Unit, Feature, Browser
+php artisan test --testsuite=Unit,Feature # without the browser tests
 ```
 
+### Coverage, static analysis and mutation testing
+```bash
+# line coverage (pcov), then the in-scope gate used in CI (at least 80%)
+php -d pcov.enabled=1 -d pcov.directory=app artisan test --coverage-clover coverage/clover.xml
+php scripts/check-scope-coverage.php coverage/clover.xml 80
+
+# static analysis (PHPStan level 5 on the in-scope classes, see phpstan.neon)
+./vendor/bin/phpstan analyse
+
+# mutation testing on one class (covered lines only)
+php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --mutate --covered-only --class='App\Models\Discount' --testsuite=Unit,Feature
+```
+
+### Quality documentation
+- [Test strategy](docs/testing/TEST_STRATEGY.md) and [test plan](docs/testing/TEST_PLAN.md) with the case catalogue.
+- [Defect log](docs/defects/DEFECT_LOG.md) and the test run taken before any fix.
+- [Baseline coverage](docs/baseline/clover-cleandb.xml) and the final measurements in `docs/final/`.
+- The GitHub Actions workflow in `.github/workflows/ci.yml` runs style, static analysis, tests with coverage and mutation testing.
+
 ### Code Formatting and Linting
-- Format PHP code with Laravel Pint:
+- Format PHP code with Laravel Pint (use `./vendor/bin/pint --test` to check without changing files):
   ```bash
   php artisan pint
   ```
-- Lint frontend assets:
+- Lint frontend assets (`npm run lint` fixes files; `npx eslint <files> --no-fix` only checks):
   ```bash
   npm run lint
   ```
@@ -282,7 +303,6 @@ Additional reference documentation is available in the repository:
 - `MOBILE_API_DOCUMENTATION.md` - Mobile verification and check-in workflows.
 - `FLUTTER_SCANNING_APP_GUIDE.md` - Architecture and integration guide for Flutter scanning clients.
 - `SMS_SETUP.md` - Setup and failover configuration for Hubtel and GiantSMS.
-- `SEO_IMPLEMENTATION.md` - Schema and meta tag specifications.
 
 ---
 
