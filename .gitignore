@@ -31,3 +31,4 @@ code-coverage.txt
 docs/pending-issues
 eslint.txt
 pint.txt
+/tests/Browser/Screenshots
