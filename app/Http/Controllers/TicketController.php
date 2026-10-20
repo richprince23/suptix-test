@@ -354,6 +354,10 @@ class TicketController extends Controller
 
     public function verifyTicket(Organizer $organizer, Event $event, Request $request)
     {
+        if ($refusal = $this->refuseUnlessOrganiserEvent($organizer, $event)) {
+            return $refusal;
+        }
+
         $request->validate([
             'ticket_number' => 'required_without:qr_data|string',
             'qr_data' => 'required_without:ticket_number|string',
@@ -417,7 +421,6 @@ class TicketController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'This ticket is not valid for this event',
-                'ticket' => $this->formatTicketResponse($ticket),
             ], 403);
         }
 
@@ -426,7 +429,6 @@ class TicketController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'This ticket\'s event is not valid for this organizer',
-                'ticket' => $this->formatTicketResponse($ticket),
             ], 403);
         }
 
@@ -644,13 +646,8 @@ class TicketController extends Controller
      */
     public function getTicketEntryHistory(Organizer $organizer, Event $event, Request $request)
     {
-        // Check if user is authenticated and authorized
-        $user = Auth::user();
-        if (! $user->organizers->contains('id', $organizer->id)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to view this data.',
-            ], 403);
+        if ($refusal = $this->refuseUnlessOrganiserEvent($organizer, $event)) {
+            return $refusal;
         }
 
         $limit = $request->get('limit', 50);
@@ -691,13 +688,8 @@ class TicketController extends Controller
      */
     public function getEventStatistics(Organizer $organizer, Event $event)
     {
-        // Check if user is authenticated and authorized
-        $user = Auth::user();
-        if (! $user->organizers->contains('id', $organizer->id)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to view this data.',
-            ], 403);
+        if ($refusal = $this->refuseUnlessOrganiserEvent($organizer, $event)) {
+            return $refusal;
         }
 
         $totalTickets = Ticket::where('event_id', $event->id)->count();
@@ -722,13 +714,8 @@ class TicketController extends Controller
      */
     public function getTicketScanStatistics(Organizer $organizer, Event $event, Request $request)
     {
-        // Check if user is authenticated and authorized
-        $user = Auth::user();
-        if (! $user->organizers->contains('id', $organizer->id)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to view this data.',
-            ], 403);
+        if ($refusal = $this->refuseUnlessOrganiserEvent($organizer, $event)) {
+            return $refusal;
         }
 
         $dateFrom = $request->get('date_from');
@@ -767,6 +754,31 @@ class TicketController extends Controller
     /**
      * Format ticket response for consistent API output
      */
+    /**
+     * Refuse a request unless the signed-in user belongs to the organiser and the
+     * event belongs to that organiser. Returns the refusal, or null when allowed.
+     */
+    private function refuseUnlessOrganiserEvent(Organizer $organizer, Event $event): ?JsonResponse
+    {
+        $user = Auth::user();
+
+        if (! $user || ! $user->organizers->contains('id', $organizer->id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to view this data.',
+            ], 403);
+        }
+
+        if ($event->organizer_id !== $organizer->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This event does not belong to the specified organizer.',
+            ], 400);
+        }
+
+        return null;
+    }
+
     private function formatTicketResponse(Ticket $ticket, bool $includePersonalData = true): array
     {
         $response = [
