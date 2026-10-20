@@ -435,7 +435,7 @@ Setup (do once):
 
 ---
 
-### A.8 P Performance and scalability (Chapter 4 evidence)
+### A.8 P Performance and scalability
 
 The marking rubric asks for performance metrics and benchmarking. Keep these small and repeatable.
 
