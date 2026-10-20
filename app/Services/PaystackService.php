@@ -693,8 +693,12 @@ class PaystackService
     /**
      * Verify webhook signature
      */
-    public function verifyWebhookSignature(string $payload, string $signature): bool
+    public function verifyWebhookSignature(string $payload, ?string $signature): bool
     {
+        if ($signature === null || $signature === '') {
+            return false;
+        }
+
         $computedSignature = hash_hmac('sha512', $payload, $this->secretKey);
 
         return hash_equals($signature, $computedSignature);
