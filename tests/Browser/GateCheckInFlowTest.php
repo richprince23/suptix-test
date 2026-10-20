@@ -34,7 +34,10 @@ beforeEach(function () {
 
 function searchTicket($page, string $ticketNumber)
 {
-    return $page->type('#ticketNumber', $ticketNumber)->click('button:has-text("Search Ticket")');
+    return $page->typeSlowly('#ticketNumber', $ticketNumber, typingDelay())
+        ->wait(pause())
+        ->click('button:has-text("Search Ticket")')
+        ->wait(pause());
 }
 
 it('E-05 admits an active ticket once and refuses it on the second scan', function () {
@@ -45,6 +48,7 @@ it('E-05 admits an active ticket once and refuses it on the second scan', functi
         ->assertSee('Valid Ticket')
         ->assertSee('Ama Mensah')
         ->click('button:has-text("Check In Attendee")')
+        ->wait(pause())
         ->assertSee('Ticket Already Used');
 
     expect($this->ticket->fresh()->status)->toBe('used')->and($this->ticket->fresh()->used_at)->not->toBeNull();

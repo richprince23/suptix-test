@@ -87,14 +87,18 @@ it('lets a guest buy two tickets and confirms the order after payment', function
 
     $page->assertSee($this->event->title)
         ->click('button:has-text("+")')
+        ->wait(pause())
         ->click('button:has-text("+")')
+        ->wait(pause())
         ->assertSee('Continue - GHS 200')
         ->click('button:has-text("Continue - GHS")')
+        ->wait(pause())
         ->assertSee('Buyer Information')
-        ->type('#buyer_email', 'buyer@example.com')
-        ->type('#attendee_name_0_0', 'Ama Mensah')
-        ->type('#attendee_name_0_1', 'Kofi Boateng')
+        ->typeSlowly('#buyer_email', 'buyer@example.com', typingDelay())
+        ->typeSlowly('#attendee_name_0_0', 'Ama Mensah', typingDelay())
+        ->typeSlowly('#attendee_name_0_1', 'Kofi Boateng', typingDelay())
         ->click('button:has-text("Proceed to Payment")')
+        ->wait(pause())
         ->assertSee('Payment Successful!');
 
     $order = Order::where('buyer_email', 'buyer@example.com')->firstOrFail();
@@ -117,9 +121,12 @@ it('applies a percentage discount code in the browser before checkout', function
 
     visit(route('events.show', $this->event))
         ->click('button:has-text("+")')
+        ->wait(pause())
         ->click('button:has-text("+")')
-        ->type('input[placeholder="Discount code (optional)"]', 'SAVE10')
+        ->wait(pause())
+        ->typeSlowly('input[placeholder="Discount code (optional)"]', 'SAVE10', typingDelay())
         ->click('button:has-text("Apply")')
+        ->wait(pause())
         ->assertSee('Ten percent discount applied')
         ->assertSee('Continue - GHS 180');
 });
@@ -127,8 +134,10 @@ it('applies a percentage discount code in the browser before checkout', function
 it('rejects an unknown discount code and keeps the full price', function () {
     visit(route('events.show', $this->event))
         ->click('button:has-text("+")')
-        ->type('input[placeholder="Discount code (optional)"]', 'NOSUCHCODE')
+        ->wait(pause())
+        ->typeSlowly('input[placeholder="Discount code (optional)"]', 'NOSUCHCODE', typingDelay())
         ->click('button:has-text("Apply")')
+        ->wait(pause())
         ->assertDontSee('discount applied')
         ->assertSee('Continue - GHS 100');
 });
@@ -136,7 +145,9 @@ it('rejects an unknown discount code and keeps the full price', function () {
 it('does not create an order until the buyer submits the form', function () {
     visit(route('events.show', $this->event))
         ->click('button:has-text("+")')
+        ->wait(pause())
         ->click('button:has-text("Continue - GHS")')
+        ->wait(pause())
         ->assertSee('Buyer Information');
 
     expect(Order::count())->toBe(0)

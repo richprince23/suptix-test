@@ -196,3 +196,18 @@ function postWebhook(array $payload, ?string $signature = null, bool $withHeader
 
     return test()->call('POST', route('paystack.webhook'), [], [], [], $server, $body);
 }
+
+/*
+ * Browser tests normally run headless and fast. Set BROWSER_DEMO=1 and add
+ * --headed to watch them: the browser opens, types keystroke by keystroke and
+ * pauses between steps, like a Selenium demo.
+ */
+function typingDelay(): int
+{
+    return env('BROWSER_DEMO') ? 70 : 0;
+}
+
+function pause(): float
+{
+    return env('BROWSER_DEMO') ? 1.0 : 0.0;
+}

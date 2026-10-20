@@ -235,6 +235,17 @@ php artisan test                          # all suites: Unit, Feature, Browser
 php artisan test --testsuite=Unit,Feature # without the browser tests
 ```
 
+### Watching the browser tests run
+The browser tests run headless and fast by default (and in CI). To watch them like a Selenium demo, with a visible browser, keystroke-by-keystroke typing and a pause after each click:
+```bash
+composer run test:browser:watch
+# the same thing by hand:
+BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser --headed
+# one test only:
+BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser/TicketPurchaseFlowTest.php --filter="lets a guest" --headed
+```
+`--headed` cannot be combined with `--parallel`. Use `composer run test:browser` for the normal headless run.
+
 ### Coverage, static analysis and mutation testing
 ```bash
 # line coverage (pcov), then the in-scope gate used in CI (at least 80%)
