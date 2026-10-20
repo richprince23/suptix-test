@@ -60,14 +60,17 @@
 
 
                             <div class="flex items-center space-x-3">
-                                <Checkbox id="showInfo" @change="showAttendeeInfo" />
+                                <Checkbox
+                                    id="showInfo"
+                                    :model-value="showTicketHolderInfo"
+                                    @update:model-value="(value) => (showTicketHolderInfo = value === true)"
+                                />
                                 <Label for="showInfo" class="cursor-pointer font-normal">
                                     Customize Attendee Information
                                 </Label>
                             </div>
-                            <!-- Attendee Information -->
-
-                                <div>
+                            <!-- Attendee information, shown when the buyer chooses to customise it -->
+                                <div v-show="showTicketHolderInfo" id="attendee-information">
                                     <h4 class="text-lg font-semibold text-foreground mb-2">Attendee information</h4>
                                     <div v-for="(ticketGroup, index) in ticketGroups" :key="index"
                                         class="border-t pt-6">
@@ -369,13 +372,6 @@ const form = ref({
 
 const showTicketHolderInfo = ref(false)
 
-const showAttendeeInfo =()=> {
-
-     showTicketHolderInfo.value = !showTicketHolderInfo.value
-
-     console.log(showTicketHolderInfo.value)
-}
-
 const hasRequiredCustomFields = computed(() =>
     props.custom_fields?.some((field) => field.is_required) ?? false
 )
@@ -430,7 +426,7 @@ const initializeTicketGroups = () => {
             ticketType,
             quantity: selection.quantity,
             attendees: Array.from({ length: selection.quantity }, () => ({
-                name: 'Guest',
+                name: '', // filled in by the buyer when customising; sent as "Guest" otherwise
                 email: form.value.buyer_email,
                 custom_fields: initializeAttendeeCustomFields(),
             }))
@@ -533,7 +529,7 @@ const submitPurchase = () => {
         ticket_type_id: group.ticketType.id,
         quantity: group.quantity,
         attendees: group.attendees.map(attendee => ({
-            name: attendee.name,
+            name: showTicketHolderInfo.value && attendee.name.trim() ? attendee.name.trim() : 'Guest',
             email: attendee.email || null,
             custom_fields: attendee.custom_fields,
         }))

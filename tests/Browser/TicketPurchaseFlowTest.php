@@ -11,12 +11,15 @@ use App\Models\TicketType;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Route;
 
 /*
  * End-to-end tests for flows F1 (purchase and pricing) and F2 (payment
- * confirmation) driven through a real browser. Paystack is faked: the
- * "authorization_url" it returns points back at this application's own
- * callback route, so no external page or real money is involved.
+ * confirmation) driven through a real browser. Paystack's API is faked, and
+ * the "authorization_url" it returns points at a stand-in checkout page served
+ * by this test (a card form with a Pay button) that sends the browser back to
+ * the application's own callback route. The buyer therefore goes through the
+ * whole payment step without an external page or real money.
  */
 
 beforeEach(function () {
@@ -41,6 +44,29 @@ beforeEach(function () {
 
     $this->reference = null;
 
+    // Stand-in for Paystack's hosted checkout page
+    Route::get('/fake-paystack/checkout/{reference}', function (string $reference) {
+        $order = Order::where('payment_reference', $reference)->firstOrFail();
+        $amount = number_format((float) $order->total_amount, 2);
+        $callback = route('payment.callback');
+
+        return response(<<<HTML
+        <!doctype html>
+        <html lang="en"><head><meta charset="utf-8"><title>Paystack checkout (test mode)</title></head>
+        <body style="font-family: sans-serif; max-width: 420px; margin: 60px auto;">
+            <h1>Paystack checkout (test mode)</h1>
+            <p>Order {$order->order_number}</p>
+            <form method="get" action="{$callback}">
+                <input type="hidden" name="reference" value="{$reference}">
+                <p><label>Card number<br><input id="card-number" style="width:100%"></label></p>
+                <p><label>Expiry<br><input id="card-expiry" style="width:100%"></label></p>
+                <p><label>CVV<br><input id="card-cvv" style="width:100%"></label></p>
+                <button type="submit" style="padding: 10px 20px;">Pay GHS {$amount}</button>
+            </form>
+        </body></html>
+        HTML);
+    });
+
     Http::fake([
         'api.paystack.co/transaction/initialize' => function ($request) {
             $this->reference = $request['reference'];
@@ -49,7 +75,7 @@ beforeEach(function () {
                 'status' => true,
                 'message' => 'Authorization URL created',
                 'data' => [
-                    'authorization_url' => route('payment.callback', ['reference' => $request['reference']]),
+                    'authorization_url' => url('/fake-paystack/checkout/'.$request['reference']),
                     'access_code' => 'test_access_code',
                     'reference' => $request['reference'],
                 ],
@@ -82,7 +108,7 @@ beforeEach(function () {
     ]);
 });
 
-it('lets a guest buy two tickets and confirms the order after payment', function () {
+it('lets a guest buy two tickets, pay at the checkout and see the purchased tickets', function () {
     $page = visit(route('events.show', $this->event));
 
     $page->assertSee($this->event->title)
@@ -95,20 +121,64 @@ it('lets a guest buy two tickets and confirms the order after payment', function
         ->wait(pause())
         ->assertSee('Buyer Information')
         ->typeSlowly('#buyer_email', 'buyer@example.com', typingDelay())
+        ->typeSlowly('#buyer_phone', '0201234567', typingDelay())
+        ->assertAttribute('#showInfo', 'aria-checked', 'false')
+        ->click('#showInfo')
+        ->wait(pause())
+        ->assertAttribute('#showInfo', 'aria-checked', 'true')
+        ->assertVisible('#attendee_name_0_0')
         ->typeSlowly('#attendee_name_0_0', 'Ama Mensah', typingDelay())
         ->typeSlowly('#attendee_name_0_1', 'Kofi Boateng', typingDelay())
-        ->click('button:has-text("Proceed to Payment")')
         ->wait(pause())
-        ->assertSee('Payment Successful!');
+        ->click('button:has-text("Proceed to Payment")')
+        // payment step at the (stand-in) Paystack checkout
+        ->assertSee('Paystack checkout (test mode)')
+        ->typeSlowly('#card-number', '4084 0840 8408 4081', typingDelay())
+        ->typeSlowly('#card-expiry', '12/30', typingDelay())
+        ->typeSlowly('#card-cvv', '408', typingDelay())
+        ->wait(pause())
+        ->click('button:has-text("Pay GHS 200.00")')
+        // back in the application: payment confirmed
+        ->assertSee('Payment Successful!')
+        ->wait(pause() * 3)
+        ->click('a:has-text("View Order Details")')
+        ->assertSee('Ama Mensah')
+        ->assertSee('Kofi Boateng')
+        ->wait(pause() * 3);
 
     $order = Order::where('buyer_email', 'buyer@example.com')->firstOrFail();
 
     expect($order->status)->toBe('confirmed')
         ->and((float) $order->total_amount)->toBe(200.0)
-        ->and($order->tickets)->toHaveCount(2)
+        ->and($order->buyer_phone)->toBe('0201234567')
+        ->and($order->tickets->pluck('attendee_name')->sort()->values()->all())->toBe(['Ama Mensah', 'Kofi Boateng'])
         ->and($order->tickets->pluck('status')->unique()->all())->toBe(['active'])
         ->and($this->ticketType->fresh()->quantity)->toBe(18)
         ->and(Payment::where('order_id', $order->id)->value('status'))->toBe('completed');
+});
+
+it('keeps the attendee fields hidden until the buyer ticks the checkbox and then uses default names', function () {
+    $page = visit(route('events.show', $this->event));
+
+    $page->click('button:has-text("+")')
+        ->click('button:has-text("Continue - GHS")')
+        ->assertSee('Buyer Information')
+        ->assertAttributeContains('#attendee-information', 'style', 'display: none')
+        ->click('#showInfo')
+        ->wait(pause())
+        ->assertVisible('#attendee_name_0_0')
+        ->click('#showInfo')
+        ->wait(pause())
+        ->assertAttributeContains('#attendee-information', 'style', 'display: none')
+        ->typeSlowly('#buyer_email', 'quick@example.com', typingDelay())
+        ->click('button:has-text("Proceed to Payment")')
+        ->typeSlowly('#card-number', '4084 0840 8408 4081', typingDelay())
+        ->click('button:has-text("Pay GHS 100.00")')
+        ->assertSee('Payment Successful!')
+        ->wait(pause() * 2);
+
+    $order = Order::where('buyer_email', 'quick@example.com')->firstOrFail();
+    expect($order->status)->toBe('confirmed')->and($order->tickets->pluck('attendee_name')->all())->toBe(['Guest']);
 });
 
 it('applies a percentage discount code in the browser before checkout', function () {
