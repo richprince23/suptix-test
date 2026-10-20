@@ -744,12 +744,12 @@ class TicketController extends Controller
             $query->where('used_at', '<=', $dateTo);
         }
 
-        $scansByHour = $query->selectRaw('HOUR(used_at) as hour, COUNT(*) as count')
+        $scansByHour = (clone $query)->selectRaw('HOUR(used_at) as hour, COUNT(*) as count')
             ->groupBy('hour')
             ->orderBy('hour')
             ->get();
 
-        $scansByDay = $query->selectRaw('DATE(used_at) as date, COUNT(*) as count')
+        $scansByDay = (clone $query)->selectRaw('DATE(used_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
