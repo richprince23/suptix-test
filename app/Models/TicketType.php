@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TicketType extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'event_id',
         'organizer_id',

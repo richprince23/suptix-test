@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Str;
 
 class Organizer extends Model implements HasAvatar
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'email',
