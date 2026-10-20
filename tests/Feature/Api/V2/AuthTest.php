@@ -17,7 +17,7 @@ class AuthTest extends TestCase
         $userData = [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'phone' => '+233201234567',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
