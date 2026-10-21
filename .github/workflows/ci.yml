@@ -175,10 +175,12 @@ jobs:
       - run: npm run build
       - run: php artisan migrate --force
 
-      # Covered lines of the in-scope classes only; the browser suite is left out
-      # because it is slow and the unit and feature tests already cover the logic
+      # Covered lines of exactly the 13 in-scope files (named by path, because a
+      # class name also matches longer names such as PaymentInfo); the browser
+      # suite is left out because it is slow and the unit and feature tests
+      # already cover the logic
       - name: Mutation score must be at least 60%
         run: >-
           php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest
           --mutate --covered-only --parallel --min=60 --testsuite=Unit,Feature
-          --class='App\Http\Controllers\TicketPurchaseController,App\Http\Controllers\DiscountController,App\Http\Controllers\PaymentController,App\Http\Controllers\PaystackController,App\Http\Controllers\TicketController,App\Http\Controllers\CheckInController,App\Models\Discount,App\Models\Order,App\Models\Payment,App\Models\Ticket,App\Models\TicketType,App\Services\PaystackService,App\Services\PaystackBalanceService'
+          --path='app/Http/Controllers/TicketPurchaseController.php,app/Http/Controllers/DiscountController.php,app/Http/Controllers/PaymentController.php,app/Http/Controllers/PaystackController.php,app/Http/Controllers/TicketController.php,app/Http/Controllers/CheckInController.php,app/Models/Discount.php,app/Models/Order.php,app/Models/Payment.php,app/Models/Ticket.php,app/Models/TicketType.php,app/Services/PaystackService.php,app/Services/PaystackBalanceService.php'
