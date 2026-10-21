@@ -244,6 +244,13 @@ BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser --headed
 # one test only:
 BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser/TicketPurchaseFlowTest.php --filter="lets a guest" --headed
 ```
+#### Paying on the real Paystack test checkout
+`tests/Browser/PaystackTestModeCheckoutTest.php` goes through the real Paystack test environment instead of the stand-in checkout page: the app calls Paystack's API with the `sk_test_` key from `.env`, the browser lands on Paystack's hosted checkout, pays with Paystack's published test card and returns to the application. No money moves. It is skipped unless `PAYSTACK_LIVE=1`, and always skipped if the key in `.env` is not a test key.
+```bash
+composer run test:browser:paystack
+```
+Paystack's checkout sits behind a Cloudflare "Verify you are human" check. The test does not touch it: when it appears, tick the box in the browser window yourself and the test carries on (it waits up to two minutes). It needs at least one subaccount in your Paystack test account, and it will not run in CI.
+
 `--headed` cannot be combined with `--parallel`. Use `composer run test:browser` for the normal headless run.
 
 ### Coverage, static analysis and mutation testing

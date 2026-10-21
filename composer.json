@@ -82,7 +82,8 @@
             "@php artisan test"
         ],
         "test:browser": "@php artisan test tests/Browser",
-        "test:browser:watch": "BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser --headed"
+        "test:browser:watch": "BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser --headed",
+        "test:browser:paystack": "PAYSTACK_LIVE=1 BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser/PaystackTestModeCheckoutTest.php --headed"
     },
     "extra": {
         "laravel": {
