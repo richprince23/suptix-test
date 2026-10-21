@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <NavBar text-color="text-black" background-color="bg-white " class="fixed z-20 w-full backdrop-blur border-bs border-gray-200 shadow-xs" />
 
@@ -170,6 +171,10 @@
                                             <a href="tel:+233541341222" class="text-blue-600 hover:text-blue-700">+233 541 341 222</a>
                                         </div>
                                     </div> -->
+                                    <div class="flex items-center">
+                                        <MessageSquare class="h-4 w-4 text-gray-400 mr-2" />
+                                        <a :href="route('request-demo')" class="text-blue-600 hover:text-blue-700">Request a demo</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -229,6 +234,7 @@
 <script setup lang="ts">
 import Footer from '@/components/Footer.vue';
 import NavBar from '@/components/NavBar.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { BarChart, HeadphonesIcon, Mail, MessageSquare, Phone, Shield, TrendingUp, Users, Zap } from 'lucide-vue-next';
 
 defineProps<{

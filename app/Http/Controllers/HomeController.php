@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\SeoService;
 use Inertia\Inertia;
 
 class HomeController extends Controller
@@ -37,6 +38,8 @@ class HomeController extends Controller
         // $orderCount = Order::count();
         $userCount = User::count();
 
+        // Set home page SEO using SEOTools
+        SeoService::setHomeSEO();
 
         return Inertia::render('Home', [
             'upcomingEvents' => $upcomingEvents,
@@ -46,6 +49,7 @@ class HomeController extends Controller
                 'totalTicketsSold' => $ticketsCount,
                 'happyCustomers' => (int) $userCount + (int) $ticketsCount, // add total
             ],
+            'seo' => SeoService::homePage(),
         ]);
     }
 }

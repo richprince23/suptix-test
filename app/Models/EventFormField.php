@@ -28,4 +28,9 @@ class EventFormField extends Model
     {
         return $this->belongsTo(Event::class);
     }
+
+    public function responses()
+    {
+        return $this->hasMany(RsvpResponse::class);
+    }
 }

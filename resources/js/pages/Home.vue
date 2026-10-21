@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <Toaster :close-button="true" />
     <div class="min-h-screen overflow-hidden bg-background text-foreground" ref="pageContainer">
         <!-- Hero Content Section with Video Background -->
@@ -47,6 +48,10 @@
                                 class="bg-primary w-full sm:w-auto cursor-pointer hover:bg-primary/90 text-primary-foreground px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg text-base sm:text-lg">
                                 Get Started
                             </button>
+                            <Link :href="route('request-demo')"
+                                class="border-2 w-full sm:w-auto cursor-pointer border-foreground text-white hover:bg-foreground hover:text-background px-8 py-3 rounded-full font-semibold transition-all duration-300 text-base sm:text-lg">
+                            Request Demo
+                            </Link>
                         </div>
 
                         <div
@@ -656,6 +661,129 @@
         </section>
 
 
+        <!-- Demo Request Section -->
+        <section class="bg-background relative" id="demo-section">
+            <div class="bg-image absolute inset-0 z-0 blur-xss">
+                <img src="/images/party.jpg" alt="" class="w-full h-full object-cover object-center" />
+            </div>
+            <div
+                class="relative bg-black/60 mx-auto w-full px-4 sm:px-6 lg:px-8 gap-8 flex flex-col md:flex-row justify-start md:justify-between items-center py-16 md:py-24">
+                <div class="text-center mb-10 md:mb-0 w-full md:w-1/2 md:pr-8">
+                    <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">See the power in action</h2>
+                    <p class="text-xl text-white ">
+                        Discover how Suptix can revolutionize your event management process with a hands-on,
+                        personalized demonstration.
+                        Our team will walk you through the platform's powerful features, from seamless ticketing and
+                        real-time analytics to advanced attendee engagement tools.
+                    </p>
+                </div>
+
+                <div class="w-full md:w-1/2 bg-card border border-border rounded-3xl p-6 sm:p-10 md:p-12">
+                    <h2 class="text-2xl font-bold text-foreground mb-6">Send us a message</h2>
+                    <form @submit.prevent="submitForm" class="space-y-6">
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-foreground/80 mb-2">
+                                    First Name *
+                                </label>
+                                <Input v-model="form.firstName" placeholder="John" type="text" id="firstName" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-foreground/80 mb-2">
+                                    Last Name *
+                                </label>
+                                <Input v-model="form.lastName" placeholder="Doe" type="text" id="lastName" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div class="">
+                                <label for="email" class="block text-sm font-medium text-foreground/80 mb-2">
+                                    Email Address *
+                                </label>
+                                <Input v-model="form.email" placeholder="eg. someone@acme.com" type="email" id="email"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            </div>
+
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-foreground/80 mb-2">
+                                    Phone Number
+                                </label>
+                                <Input v-model="form.phone" placeholder="eg. 0240123456" type="tel" id="phone"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-foreground/80 mb-2">
+                                Subject *
+                            </label>
+                            <Select v-model="form.subject" id="subject" required>
+                                <SelectTrigger
+                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <SelectValue placeholder="Select a subject" />
+                                </SelectTrigger>
+                                <SelectContent class="bg-background rounded shadow-md">
+                                    <SelectGroup>
+                                        <SelectLabel>Subject</SelectLabel>
+                                        <SelectItem value="general">General Inquiry</SelectItem>
+                                        <SelectItem value="support">Technical Support</SelectItem>
+                                        <SelectItem value="billing">Billing Question</SelectItem>
+                                        <SelectItem value="refund">Refund Request</SelectItem>
+                                        <SelectItem value="organizer">Event Organizer Support</SelectItem>
+                                        <SelectItem value="partnership">Partnership Opportunity</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-foreground/80 mb-2">
+                                Message *
+                            </label>
+                            <Textarea v-model="form.message" id="message" rows="5" required
+                                placeholder="Please provide as much detail as possible..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"></Textarea>
+                        </div>
+
+                        <!-- Honeypot field - hidden from users -->
+                        <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;">
+                            <label for="website">Website (leave blank)</label>
+                            <input v-model="form.honeypot" type="text" id="website" name="website" tabindex="-1"
+                                autocomplete="off" />
+                        </div>
+
+                        <div class="flex items-center">
+                            <input v-model="form.newsletter" type="checkbox" id="newsletter"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                            <label for="newsletter" class="ml-2 text-sm text-foreground/80">
+                                Subscribe to our newsletter for event updates and news
+                            </label>
+                        </div>
+
+                        <button type="submit" :disabled="isSubmitting"
+                            class="w-full rounded-full cursor-pointer bg-primary text-white py-3 px-6  font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span v-if="isSubmitting">Sending...</span>
+                            <span v-else>Send Message</span>
+                        </button>
+                    </form>
+
+                    <!-- Success Message -->
+                    <div v-if="showSuccess" class="mt-6 p-4 bg-green-50 border border-green-200 rounded">
+                        <div class="flex items-center">
+                            <CheckCircle class="h-5 w-5 text-green-600 mr-2" />
+                            <p class="text-green-800">Thank you! Your message has been sent successfully. We'll get back
+                                to you within 24 hours.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <!-- mobile app section -->
          <section class="bg-background py-16 lg:py-24" id="get-started">
             <div class="grid grid-cols-1 md:grid-cols-2 w-full md:max-w-5xl mx-auto items-center">
@@ -692,6 +820,10 @@
                         class="bg-background text-primary px-10 py-3 rounded-full text-xl font-bold hover:bg-muted transition-all duration-300 transform hover:scale-105 shadow-xl">
                         Get Started
                     </a>
+                    <Link :href="route('request-demo')"
+                        class="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary px-10 py-3 rounded-full text-xl font-bold transition-all duration-300">
+                    Schedule Demo
+                    </Link>
                 </div>
             </div>
         </section>
@@ -702,10 +834,13 @@
 
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import Footer from '@/components/Footer.vue';
 import { Link } from '@inertiajs/vue3';
 import { CheckCircle, ChevronDown, MapPin, Users, ArrowRight } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { toast, Toaster } from 'vue-sonner';
+import axios from 'axios';
 import Input from '@/components/ui/input/Input.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 import { Select, SelectContent, SelectItem, SelectLabel, SelectGroup, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -745,6 +880,102 @@ const props = defineProps<{
 
 const pageContainer = ref<HTMLElement>();
 
+const form = ref({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+    newsletter: false,
+    honeypot: ''
+});
+
+const isSubmitting = ref(false);
+const showSuccess = ref(false);
+
+const submitForm = async () => {
+    isSubmitting.value = true;
+
+    try {
+        await axios.post('/api/contact', form.value);
+
+        // Success
+        showSuccess.value = true;
+
+        // Show success toast
+        toast.success('Message sent successfully!', {
+            description: "We'll get back to you within 24 hours.",
+            duration: 5000,
+        });
+
+        // Reset form
+        form.value = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            subject: '',
+            message: '',
+            newsletter: false,
+            honeypot: ''
+        };
+
+        setTimeout(() => {
+            showSuccess.value = false;
+        }, 5000);
+
+    } catch (error: any) {
+        console.error('Form submission error:', error);
+
+        // Handle different types of errors
+        if (error.response && error.response.data && error.response.data.errors) {
+            const errors = error.response.data.errors;
+
+            // Check if it's a honeypot error or generic error
+            if (errors.honeypot) {
+                // Generic error message for honeypot (security)
+                toast.error('Something went wrong', {
+                    description: 'Please try again later or contact support.',
+                    duration: 5000,
+                });
+            } else if (errors.message || errors.email || errors.firstName || errors.lastName || errors.subject) {
+                // Specific validation errors
+                const firstError = Object.values(errors)[0];
+                toast.error('Validation Error', {
+                    description: Array.isArray(firstError) ? firstError[0] : firstError,
+                    duration: 5000,
+                });
+            } else {
+                // Generic error for other validation cases
+                toast.error('Please check your input', {
+                    description: 'Some fields may be missing or invalid.',
+                    duration: 5000,
+                });
+            }
+        } else if (error.response && error.response.status === 422) {
+            // Unprocessable Entity - likely honeypot or validation
+            toast.error('Something went wrong', {
+                description: 'Please try again later or contact support.',
+                duration: 5000,
+            });
+        } else if (error.response && error.response.status >= 500) {
+            // Server error
+            toast.error('Server error', {
+                description: 'Please try again later or contact support.',
+                duration: 5000,
+            });
+        } else {
+            // Network or other errors
+            toast.error('Failed to send message', {
+                description: 'Please check your connection and try again.',
+                duration: 5000,
+            });
+        }
+    } finally {
+        isSubmitting.value = false;
+    }
+};
 
 const scrollToSection = (id: string) => {
     const el = document.getElementById(id);

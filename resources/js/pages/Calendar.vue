@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <NavBar text-color="text-foreground" background-color="bg-transparent " class="fixed z-10 w-full border-b-pink-600/10 shadow-xs backdrop-blur" />
     <div :key="$page.url" class="min-h-screen bg-background">
         <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -111,6 +112,7 @@
 
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { Button } from '@/components/ui/button';
 import { router } from '@inertiajs/vue3';
 import { Calendar as VCalendar } from 'v-calendar';

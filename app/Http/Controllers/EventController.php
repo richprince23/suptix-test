@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use App\Models\Organizer;
+use App\Services\SeoService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,8 +126,11 @@ class EventController extends Controller
             'canceled' => 'Canceled',
         ];
 
+        // Get total events count for SEO
         $totalEvents = Event::whereIn('status', ['published', 'live'])->count();
 
+        // Set events index SEO using SEOTools
+        SeoService::setEventsIndexSEO($totalEvents);
 
         // Get current filters from request
         $currentFilters = collect($request->all())
@@ -152,6 +156,7 @@ class EventController extends Controller
                 'end_date' => $request->input('filter.end_date'),
                 'tags' => $request->input('filter.tags'),
             ], $currentFilters),
+            'seo' => SeoService::eventsIndex($totalEvents),
         ]);
     }
 
@@ -209,9 +214,12 @@ class EventController extends Controller
                 ];
             });
 
+        // Set calendar page SEO using SEOTools
+        SeoService::setCalendarSEO();
 
         return Inertia::render('Calendar', [
             'events' => $events,
+            'seo' => SeoService::calendar(),
             'currentYear' => (int) $year,
             'currentMonth' => (int) $month,
         ]);
@@ -225,7 +233,14 @@ class EventController extends Controller
         // Load relationships and filter ticket types by availability
         $event->load([
             'organizer',
+            'sessions',
             'formFields',
+            'people' => function ($query) {
+                $query->where('is_visible', true);
+            },
+            'allPartners' => function ($query) {
+                $query->where('is_visible', true);
+            },
             'ticketTypes' => function ($query) {
                 $query->available()->where('quantity', '>', 0);
             },
@@ -240,12 +255,14 @@ class EventController extends Controller
         $mapKey = config('services.google_maps.map_key');
         $mapId = config('services.google_maps.map_id');
 
+        SeoService::setEventSEO($event);
 
         $eventArray = $event->toArray();
         $eventArray['ticketTypes'] = $availableTicketTypes->values()->toArray();
 
         return Inertia::render('EventDetails', [
             'event' => $eventArray,
+            'seo' => SeoService::eventShow($event),
             'map_key' => $mapKey,
             'map_id' => $mapId,
             'ticketTypes' => $availableTicketTypes->values()->toArray(),
@@ -259,6 +276,7 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
+        // Redirect to new slug-based URL for SEO
         return redirect()->route('events.show', $event->slug, 301);
     }
 

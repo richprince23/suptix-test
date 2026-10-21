@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Channels\SmsChannel;
+use App\Models\Event;
 use App\Models\PaymentInfo;
+use App\Observers\EventObserver;
 use App\Observers\PaymentInfoObserver;
 use App\Services\HubtelSmsService;
 use Illuminate\Support\Facades\Notification;
@@ -34,5 +36,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model observers
         PaymentInfo::observe(PaymentInfoObserver::class);
+        Event::observe(EventObserver::class);
     }
 }

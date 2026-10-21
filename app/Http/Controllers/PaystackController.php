@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EventCreditPurchase;
 use App\Models\PaymentInfo;
+use App\Services\EventCreditService;
 use App\Services\PaystackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,8 +13,10 @@ class PaystackController extends Controller
 {
     protected PaystackService $paystackService;
 
-    public function __construct(PaystackService $paystackService)
-    {
+    public function __construct(
+        PaystackService $paystackService,
+        protected EventCreditService $creditService,
+    ) {
         $this->paystackService = $paystackService;
     }
 

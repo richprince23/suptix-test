@@ -18,6 +18,11 @@ class PaymentInfoController extends Controller
     public function index()
     {
         return Inertia::render('PaymentInfoSubmission', [
+            'seo' => [
+                'title' => 'Submit Payment Information - Suptix',
+                'description' => 'Submit your payment information to start receiving payments for your events.',
+                'keywords' => 'payment information, bank account, organizer payments',
+            ],
         ]);
     }
 

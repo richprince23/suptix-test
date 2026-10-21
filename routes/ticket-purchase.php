@@ -23,6 +23,11 @@ Route::prefix('events/{event}')->name('events.')->group(function () {
 
     // Validate discount code
     Route::post('discount/validate', [DiscountController::class, 'validateDiscount'])->name('discount.validate');
+
+    // RSVPs
+    Route::get('rsvp', [App\Http\Controllers\RsvpController::class, 'show'])->name('rsvp.show');
+    Route::get('rsvp/check', [App\Http\Controllers\RsvpController::class, 'checkExistingRsvp'])->name('rsvp.check');
+    Route::post('rsvp', [App\Http\Controllers\RsvpController::class, 'reserveSpot'])->name('rsvp.book');
 });
 
 // Order confirmation and management routes

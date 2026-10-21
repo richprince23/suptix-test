@@ -140,7 +140,7 @@
     id: number; slug?: string; title: string; cover_image_url?: string;
     start_date: string; start_time?: string; end_date?: string; end_time?: string;
     mode?: string; online_link?: string; platform_name?: string; is_public_link?: boolean;
-    status: string; venue_name?: string; organizer?: Organizer;
+    status: string; venue_name?: string; organizer?: Organizer; is_rsvp?: boolean;
   }
 
   const props = defineProps<{ event: Event; horizontal?: boolean }>()
@@ -209,6 +209,10 @@
 
   const buyTickets = () => {
     const eventKey = props.event.slug || props.event.id
-    router.visit(route('events.tickets.show', eventKey))
+    if (props.event.is_rsvp) {
+      router.visit(route('events.rsvp.show', eventKey))
+    } else {
+      router.visit(route('events.tickets.show', eventKey))
+    }
   }
   </script>

@@ -24,6 +24,8 @@ class Event extends Model
         'venue_capacity',
         'venue_phone',
         'title',
+        'is_rsvp',
+        'rsvp_closes_at',
         'mode',
         'platform_name',
         'online_link',
@@ -43,6 +45,8 @@ class Event extends Model
         'tags' => 'array',
         'start_date' => 'date',
         'end_date' => 'date',
+        'is_rsvp' => 'boolean',
+        'rsvp_closes_at' => 'datetime',
         'is_public_link' =>'boolean'
     ];
 
@@ -54,6 +58,11 @@ class Event extends Model
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
+    }
+
+    public function creditAccount()
+    {
+        return $this->hasOne(EventCreditAccount::class);
     }
 
     public function isMultiDay(): bool
@@ -79,6 +88,11 @@ class Event extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     /** @return HasMany<Discount, $this> */
     public function discounts(): HasMany
     {
@@ -91,12 +105,50 @@ class Event extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function rsvps()
+    {
+        return $this->hasMany(RSVP::class);
+    }
+
+    public function waitlist()
+    {
+        return $this->hasMany(RsvpWaitlist::class);
+    }
+
+    public function sessions()
+    {
+        return $this->hasMany(EventSession::class)
+            ->orderBy('session_date')
+            ->orderBy('sort_order')
+            ->orderBy('start_time');
+    }
+
+    public function people()
+    {
+        return $this->hasMany(EventPerson::class)->orderBy('sort_order');
+    }
+
     /** @return HasMany<EventFormField, $this> */
     public function formFields(): HasMany
     {
         return $this->hasMany(EventFormField::class)
             ->where('is_active', true)
             ->orderBy('sort_order');
+    }
+
+    public function allPartners()
+    {
+        return $this->hasMany(EventPartner::class)->orderBy('sort_order');
+    }
+
+    public function partners()
+    {
+        return $this->hasMany(EventPartner::class)->where('type', 'partner')->orderBy('sort_order');
+    }
+
+    public function sponsors()
+    {
+        return $this->hasMany(EventPartner::class)->where('type', 'sponsor')->orderBy('sort_order');
     }
 
     // Get the event's cover image URL using proper Laravel Storage methods
@@ -309,7 +361,7 @@ class Event extends Model
                 $routeName = request()->route()->getName();
 
                 // Only redirect for main event routes to maintain SEO-friendly URLs
-                if (in_array($routeName, ['events.show', 'events.tickets.show'])) {
+                if (in_array($routeName, ['events.show', 'events.tickets.show', 'events.rsvp.show'])) {
                     $newUrl = route($routeName, $event->slug);
                     if (request()->fullUrl() !== $newUrl) {
                         abort(redirect($newUrl, 301));

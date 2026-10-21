@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -35,12 +36,15 @@ class CheckInController extends Controller
                         'id' => $event->organizer->id,
                         'name' => $event->organizer->name,
                     ] : null,
+                    'is_rsvp' => $event->is_rsvp,
                 ];
             }
         }
 
+        SeoService::setAttendeeCheckInSEO();
         return Inertia::render('AttendeeCheckIn', [
             'selectedEvent' => $selectedEvent,
+            'seo' => SeoService::attendeeCheckIn(),
         ]);
     }
 }

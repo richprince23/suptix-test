@@ -2,34 +2,53 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Services\SeoService;
 
 // Public routes
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // Support pages
 Route::get('privacy-policy', function () {
+    SeoService::setPrivacyPolicySEO();
     return Inertia::render('PrivacyPolicy', [
+        'seo' => SeoService::privacyPolicy(),
     ]);
 })->name('privacy-policy');
 
 Route::get('terms-of-service', function () {
+    SeoService::setTermsOfServiceSEO();
     return Inertia::render('TermsOfService', [
+        'seo' => SeoService::termsOfService(),
     ]);
 })->name('terms-of-service');
 
 Route::get('refund-policy', function () {
+    SeoService::setRefundPolicySEO();
     return Inertia::render('RefundPolicy', [
+        'seo' => SeoService::refundPolicy(),
     ]);
 })->name('refund-policy');
 
 Route::get('help-center', function () {
+    SeoService::setHelpCenterSEO();
     return Inertia::render('HelpCenter', [
+        'seo' => SeoService::helpCenter(),
     ]);
 })->name('help-center');
 
+Route::get('contact-us', [App\Http\Controllers\ContactController::class, 'index'])->name('contact-us');
 
+// Newsletter routes
+Route::get('newsletter/unsubscribe/{token}', [App\Http\Controllers\NewsletterController::class, 'unsubscribePage'])->name('newsletter.unsubscribe');
+Route::post('newsletter/unsubscribe/{token}', [App\Http\Controllers\NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe.confirm');
+Route::post('api/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
+Route::get('request-demo', [App\Http\Controllers\DemoController::class, 'index'])->name('request-demo');
+Route::post('api/demo-request', [App\Http\Controllers\DemoController::class, 'store'])->name('demo.store');
 
+// SEO routes
+Route::get('sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('robots.txt', [App\Http\Controllers\RobotsController::class, 'index'])->name('robots');
 
 // Event routes
 Route::get('events', [App\Http\Controllers\EventController::class, 'index'])->name('events.index');
@@ -82,6 +101,11 @@ Route::post('api/payment/verify', [App\Http\Controllers\PaymentController::class
 // Paystack webhook route (public, no CSRF protection needed)
 Route::post('paystack/webhook', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('paystack.webhook');
 
+// RSVP credit purchase routes (organizer must be authenticated via Filament)
+Route::middleware(['auth'])->group(function () {
+    Route::post('events/{event}/credits/purchase', [App\Http\Controllers\CreditPurchaseController::class, 'store'])->name('credits.purchase');
+    Route::get('events/{event}/credits/verify', [App\Http\Controllers\CreditPurchaseController::class, 'verify'])->name('credits.verify');
+});
 
 // Paystack API routes (authenticated)
 Route::middleware(['auth'])->prefix('api/paystack')->name('paystack.')->group(function () {
@@ -118,4 +142,6 @@ Route::get('/register', function () {
 Route::post('api/verify-account', [App\Http\Controllers\PaystackController::class, 'verifyAccount'])->name('verify-account');
 
 // Include other route files
+// require __DIR__.'/auth.php';
+require __DIR__.'/settings.php';
 require __DIR__.'/ticket-purchase.php';

@@ -96,6 +96,10 @@ class TicketPurchaseController extends Controller
             'ticketTypes' => $ticketTypes,
             'ticketSelections' => $request->ticket_selections,
             'appliedDiscount' => $appliedDiscount,
+            'seo' => [
+                'title' => "Purchase Tickets - {$event->title}",
+                'description' => "Complete your ticket purchase for {$event->title}",
+            ],
             'custom_fields' => $customFields,
         ]);
     }
