@@ -21,3 +21,5 @@ Run 1 (before the contract tests): 1,006 of 1,862 mutants killed, 54.0%. Final r
 
 Command per class: `php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --mutate --covered-only --parallel --path=<file> --testsuite=Unit,Feature`.
 Survivors are mostly array items inside log context and fields of responses that no test pins, plus equivalent mutants. A run on a checkout that changed branch part-way gave different, invalid figures and was discarded. Raw output: `mutation-final.txt`; first run summary: `mutation-run1-summary.txt`.
+
+GitHub Actions run 39533225880 (`ci.yml`, mutation job, `--path` list of the 13 files): 1,417 of 1,935 mutants killed (1,416 tested, 1 timeout), score 73.23%, in 9m 23s. The local figure above is 74.0%; the 15-mutant difference comes from timeouts and the slower runner.
