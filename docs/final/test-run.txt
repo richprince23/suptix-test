@@ -1,57 +1,57 @@
 
    PASS  Tests\Unit\ExampleTest
-  ✓ that true is true                                                    0.38s  
+  ✓ that true is true                                                    0.40s  
 
    PASS  Tests\Unit\PaystackSignatureTest
-  ✓ it F2-50 accepts the correct HMAC-SHA512 of the payload              0.08s  
-  ✓ it F2-51 rejects a payload that differs by one byte                  0.06s  
-  ✓ it F2-51 rejects a signature made with a different secret            0.06s  
-  ✓ it F2-53 accepts an empty payload with a matching signature          0.06s  
+  ✓ it F2-50 accepts the correct HMAC-SHA512 of the payload              0.07s  
+  ✓ it F2-51 rejects a payload that differs by one byte                  0.05s  
+  ✓ it F2-51 rejects a signature made with a different secret            0.05s  
+  ✓ it F2-53 accepts an empty payload with a matching signature          0.05s  
 
    PASS  Tests\Feature\AccountSetupPipelineTest
-  ✓ payment info submission triggers auto approval with default setting… 0.46s  
+  ✓ payment info submission triggers auto approval with default setting… 0.50s  
   ✓ payment info submission assigns organizer admin role to first user   0.11s  
-  ✓ payment info submission does not assign role when admin already exi… 0.11s  
+  ✓ payment info submission does not assign role when admin already exi… 0.12s  
   ✓ complete automated flow on payment info submission                   0.11s  
-  ✓ paystack subaccount creation triggered after approval                0.11s  
+  ✓ paystack subaccount creation triggered after approval                0.12s  
 
    PASS  Tests\Feature\Api\V2\AuthTest
-  ✓ user can register                                                    0.18s  
-  ✓ user can login                                                       0.09s  
+  ✓ user can register                                                    0.20s  
+  ✓ user can login                                                       0.10s  
   ✓ login fails with invalid credentials                                 0.28s  
   ✓ honeypot protection in register                                      0.07s  
-  ✓ honeypot protection in login                                         0.08s  
+  ✓ honeypot protection in login                                         0.07s  
 
    PASS  Tests\Feature\Contracts\PaymentApiContractsTest
-  ✓ it F2-100 createSubaccount sends the organiser details and stores t… 0.18s  
-  ✓ it F2-100 createSubaccount reports failures with the gateway messag… 0.08s  
+  ✓ it F2-100 createSubaccount sends the organiser details and stores t… 0.19s  
+  ✓ it F2-100 createSubaccount reports failures with the gateway messag… 0.07s  
   ✓ it F2-101 getSubaccount, getSubaccountBalance and updateSubaccount…  0.07s  
-  ✓ it F2-101 the subaccount calls turn exceptions into failed results…  0.07s  
-  ✓ it F2-102 syncSubaccountBalance stores the balance, and reports fal… 0.07s  
+  ✓ it F2-101 the subaccount calls turn exceptions into failed results…  0.08s  
+  ✓ it F2-102 syncSubaccountBalance stores the balance, and reports fal… 0.08s  
   ✓ it F2-103 getBanks and verifyBankAccount send their parameters and…  0.07s  
   ✓ it F2-104 initializePayment sends the full payload and records the…  0.10s  
   ✓ it F2-104 initializePayment explains each way it can fail            0.09s  
   ✓ it F2-105 verifyPayment returns the gateway data or the gateway mes… 0.07s  
-  ✓ it F2-106 processSuccessfulPayment answers for success, repeat, mis… 0.13s  
-  ✓ it F2-107 processSuccessfulPayment reports a missing payment record… 0.09s  
-  ✓ it F2-108 the initialize endpoint answers with the exact payloads    0.18s  
-  ✓ it F2-108 the initialize endpoint passes on a gateway failure messa… 0.09s  
-  ✓ it F2-109 the verify endpoint passes on the gateway message          0.08s  
-  ✓ it F2-110 the webhook answers with the exact messages                0.23s  
-  ✓ it F2-111 a dispute marks the payment with the reason, or with a de… 0.15s  
-  ✓ it F2-112 the callback handles each outcome with the right redirect  0.15s  
-  ✓ it F2-113 a confirmed order records the organiser balance and the p… 0.20s  
+  ✓ it F2-106 processSuccessfulPayment answers for success, repeat, mis… 0.15s  
+  ✓ it F2-107 processSuccessfulPayment reports a missing payment record… 0.12s  
+  ✓ it F2-108 the initialize endpoint answers with the exact payloads    0.19s  
+  ✓ it F2-108 the initialize endpoint passes on a gateway failure messa… 0.11s  
+  ✓ it F2-109 the verify endpoint passes on the gateway message          0.15s  
+  ✓ it F2-110 the webhook answers with the exact messages                0.17s  
+  ✓ it F2-111 a dispute marks the payment with the reason, or with a de… 0.11s  
+  ✓ it F2-112 the callback handles each outcome with the right redirect  0.16s  
+  ✓ it F2-113 a confirmed order records the organiser balance and the p… 0.19s  
 
    PASS  Tests\Feature\Contracts\PurchaseAndBalanceContractsTest
-  ✓ it F1-90 each purchase refusal carries its exact message             0.43s  
+  ✓ it F1-90 each purchase refusal carries its exact message             0.30s  
   ✓ it F1-91 each discount refusal carries its exact message             0.21s  
-  ✓ it F1-92 a stored order carries the buyer, discount and amounts      0.11s  
-  ✓ it F1-93 attendee emails are kept and an empty custom field is not…  0.12s  
-  ✓ it F1-94 the discount endpoint answers with the exact payload and m… 0.15s  
-  ✓ it F1-95 the discount model normalises the code, caps amounts and j… 0.12s  
-  ✓ it F1-96 the buyer form and ticket list pages carry the expected pr… 0.20s  
-  ✓ it F1-97 the buyer form hides a discount that is no longer usable a… 0.12s  
-  ✓ it F1-98 the download route and confirmation page give the order ba… 0.14s  
+  ✓ it F1-92 a stored order carries the buyer, discount and amounts      0.12s  
+  ✓ it F1-93 attendee emails are kept and an empty custom field is not…  0.11s  
+  ✓ it F1-94 the discount endpoint answers with the exact payload and m… 0.12s  
+  ✓ it F1-95 the discount model normalises the code, caps amounts and j… 0.09s  
+  ✓ it F1-96 the buyer form and ticket list pages carry the expected pr… 0.15s  
+  ✓ it F1-97 the buyer form hides a discount that is no longer usable a… 0.11s  
+  ✓ it F1-98 the download route and confirmation page give the order ba… 0.13s  
   ✓ it F2-120 the bank, account and balance endpoints answer with exact… 0.15s  
   ✓ it F2-121 a balance sync returns and stores every figure it calcula… 0.08s  
   ✓ it F2-122 an empty transaction list gives zeroes and a missing last… 0.07s  
@@ -61,357 +61,360 @@
   ✓ it F2-126 a ticket type and an order keep the numbers they derive    0.07s  
 
    PASS  Tests\Feature\Contracts\TicketApiContractsTest
-  ✓ it F3-60 lookup by number returns the full ticket for staff          0.25s  
-  ✓ it F3-60 lookup messages for an unknown ticket and for another orga… 0.12s  
+  ✓ it F3-60 lookup by number returns the full ticket for staff          0.26s  
+  ✓ it F3-60 lookup messages for an unknown ticket and for another orga… 0.13s  
   ✓ it F3-61 scan returns the full ticket to staff and a reduced ticket… 0.12s  
-  ✓ it F3-61 scan messages for each refusal                              0.14s  
-  ✓ it F3-61 scan gives staff of the organiser the email even on a refu… 0.13s  
+  ✓ it F3-61 scan messages for each refusal                              0.13s  
+  ✓ it F3-61 scan gives staff of the organiser the email even on a refu… 0.12s  
   ✓ it F3-62 JSON QR data is checked field by field                      0.20s  
-  ✓ it F3-63 marking as used answers with the updated ticket and the ex… 0.14s  
-  ✓ it F3-64 the event routes answer with the exact payloads and messag… 0.17s  
-  ✓ it F3-65 the organiser mark-as-used route returns the ticket and ex… 0.13s  
-  ✓ it F3-66 the event ticket list, entry history and statistics have e… 0.18s  
-  ✓ it F3-67 the organiser refusals carry the exact messages             0.13s  
-  ✓ it F3-68 the public pages expose the expected props                  0.19s  
+  ✓ it F3-63 marking as used answers with the updated ticket and the ex… 0.15s  
+  ✓ it F3-64 the event routes answer with the exact payloads and messag… 0.19s  
+  ✓ it F3-65 the organiser mark-as-used route returns the ticket and ex… 0.15s  
+  ✓ it F3-66 the event ticket list, entry history and statistics have e… 0.22s  
+  ✓ it F3-67 the organiser refusals carry the exact messages             0.16s  
+  ✓ it F3-68 the public pages expose the expected props                  0.21s  
   ✓ it F3-69 the check-in page passes the selected event with its organ… 0.14s  
 
    PASS  Tests\Feature\DashboardWidgetPermissionTest
-  ✓ organizer admin can view all widgets                                 0.71s  
-  ✓ event manager has limited widget access                              0.46s  
-  ✓ customer service has very limited widget access                      0.47s  
-  ✓ users without roles cannot view sensitive widgets                    0.62s  
-  ✓ system admin cannot view organizer widgets                           0.40s  
+  ✓ organizer admin can view all widgets                                 0.64s  
+  ✓ event manager has limited widget access                              0.52s  
+  ✓ customer service has very limited widget access                      0.41s  
+  ✓ users without roles cannot view sensitive widgets                    0.42s  
+  ✓ system admin cannot view organizer widgets                           0.36s  
 
    PASS  Tests\Feature\ExampleTest
-  ✓ returns a successful response                                        0.11s  
+  ✓ returns a successful response                                        0.10s  
 
    PASS  Tests\Feature\Models\TicketingModelsTest
-  ✓ it F1-34 available quantity adds back cancelled tickets              0.10s  
-  ✓ it F1-35 sold count and total capacity count active and used ticket… 0.10s  
-  ✓ it F1-26 the sales window scopes include open and open-ended types…  0.08s  
-  ✓ it F1-36 a ticket type belongs to its event and organiser            0.08s  
-  ✓ it F2-98 an order can be confirmed, counts its tickets and routes S… 0.09s  
+  ✓ it F1-34 available quantity adds back cancelled tickets              0.09s  
+  ✓ it F1-35 sold count and total capacity count active and used ticket… 0.08s  
+  ✓ it F1-26 the sales window scopes include open and open-ended types…  0.07s  
+  ✓ it F1-36 a ticket type belongs to its event and organiser            0.07s  
+  ✓ it F2-98 an order can be confirmed, counts its tickets and routes S… 0.08s  
   ✓ it F2-98 an order knows its creator, organizer, event and discount…  0.08s  
   ✓ it F2-99 a payment belongs to its order and organiser                0.08s  
   ✓ it F3-49 a ticket is active only in the active status and relates t… 0.08s  
 
    PASS  Tests\Feature\Orders\IncompleteOrderCleanupTest
-  ✓ it F4-01 deletes an old pending order with its tickets and pending…  0.12s  
-  ✓ it F4-02 restores the reserved stock for the deleted tickets         0.10s  
-  ✓ it F4-03 keeps an order at 14 minutes 59 seconds and removes one at… 0.10s  
+  ✓ it F4-01 deletes an old pending order with its tickets and pending…  0.11s  
+  ✓ it F4-02 restores the reserved stock for the deleted tickets         0.09s  
+  ✓ it F4-03 keeps an order at 14 minutes 59 seconds and removes one at… 0.12s  
   ✓ it F4-04 never deletes a confirmed order                             0.08s  
-  ✓ it F4-05 gives the discount use back when its unpaid order is delet… 0.10s  
-  ✓ it F4-06 a dry run changes nothing                                   0.18s  
-  ✓ it F4-08 the clean-up command is scheduled every fifteen minutes     0.11s  
+  ✓ it F4-05 gives the discount use back when its unpaid order is delet… 0.12s  
+  ✓ it F4-06 a dry run changes nothing                                   0.11s  
+  ✓ it F4-08 the clean-up command is scheduled every fifteen minutes     0.09s  
 
    PASS  Tests\Feature\OrganizerSignupNotificationTest
   ✓ system admin receives notification when new organizer signs up       0.07s  
-  ✓ notification contains correct organizer information                  0.08s  
+  ✓ notification contains correct organizer information                  0.06s  
 
    PASS  Tests\Feature\Payment\BalanceRecordingTest
-  ✓ it F2-60 takes the split from Paystack fees_split, converted from p… 0.15s  
-  ✓ it F2-61 without fees_split the percentage charge decides the split… 0.10s  
-  ✓ it F2-62 the two parts add up to the transaction amount with (10.0)  0.09s  
-  ✓ it F2-62 the two parts add up to the transaction amount with (33.33… 0.11s  
+  ✓ it F2-60 takes the split from Paystack fees_split, converted from p… 0.07s  
+  ✓ it F2-61 without fees_split the percentage charge decides the split… 0.07s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (10.0)  0.07s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (33.33… 0.08s  
   ✓ it F2-62 the two parts add up to the transaction amount with (99.99… 0.07s  
-  ✓ it F2-62 the two parts add up to the transaction amount with (250.5… 0.07s  
+  ✓ it F2-62 the two parts add up to the transaction amount with (250.5… 0.08s  
   ✓ it F2-62 the two parts add up to the transaction amount with (1000.… 0.07s  
-  ✓ it F2-63 balances and counters accumulate over two transactions      0.07s  
+  ✓ it F2-63 balances and counters accumulate over two transactions      0.08s  
   ✓ it F2-64 handles the boundary charges 0% and 100% with dataset "F2-… 0.07s  
   ✓ it F2-64 handles the boundary charges 0% and 100% with dataset "F2-… 0.07s  
   ✓ it F2-65 a pending transaction raises the pending counter, not the…  0.07s  
-  ✓ it F2-66 the recorded parts still add up to the volume after 100 sm… 0.98s  
+  ✓ it F2-66 the recorded parts still add up to the volume after 100 sm… 0.97s  
 
    PASS  Tests\Feature\Payment\PaymentCallbackTest
   ✓ it F2-10 sends a callback without a reference to the failed page     0.09s  
   ✓ it F2-11 sends the buyer to the failed page when verification fails… 0.09s  
-  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.10s  
-  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.12s  
-  ✓ it F2-13 confirms the order, completes the payment and activates th… 0.15s  
+  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.09s  
+  ✓ it F2-12 keeps the order pending when Paystack reports a failed or…  0.11s  
+  ✓ it F2-13 confirms the order, completes the payment and activates th… 0.12s  
   ✓ it F2-14 returns 404 on the success page for an order that is not c… 0.10s  
   ✓ it F2-15 records one purchase per ticket, even when the tickets hav… 0.15s  
-  ✓ it F2-16 does not confirm the order when the paid amount is lower t… 0.13s  
-  ✓ it F2-17 does not confirm an order when the gateway metadata names…  0.11s  
+  ✓ it F2-16 does not confirm the order when the paid amount is lower t… 0.11s  
+  ✓ it F2-17 does not confirm an order when the gateway metadata names…  0.12s  
   ✓ it F2-18 a replayed callback does not add purchases, balances or em… 0.15s  
   ✓ it F2-19 sends one confirmation email and no SMS when there is no p… 0.12s  
-  ✓ it F2-19 queues the confirmation SMS when the buyer gave a phone nu… 0.13s  
-  ✓ it F2-13 total volume and balances are recorded for the organiser    0.13s  
+  ✓ it F2-19 queues the confirmation SMS when the buyer gave a phone nu… 0.14s  
+  ✓ it F2-13 total volume and balances are recorded for the organiser    0.15s  
 
    PASS  Tests\Feature\Payment\PaymentInitializationTest
-  ✓ it F2-01 initialisation creates a pending payment and stores the re… 0.11s  
-  ✓ it F2-02 and F2-03 send whole pesewas for the amount and the platfo… 0.11s  
+  ✓ it F2-01 initialisation creates a pending payment and stores the re… 0.12s  
   ✓ it F2-02 and F2-03 send whole pesewas for the amount and the platfo… 0.12s  
-  ✓ it F2-04 refuses to initialise an order that is already confirmed    0.10s  
+  ✓ it F2-02 and F2-03 send whole pesewas for the amount and the platfo… 0.11s  
+  ✓ it F2-04 refuses to initialise an order that is already confirmed    0.11s  
   ✓ it F2-05 refuses an organiser without a Paystack subaccount          0.09s  
-  ✓ it F2-06 leaves no new payment behind when Paystack rejects the req… 0.09s  
-  ✓ it F2-07 handles a gateway failure without changing the order        0.09s  
-  ✓ it F2-08 gives two initialisations in the same second different ref… 0.11s  
-  ✓ it F2-09 takes the fee bearer from the organiser payment info        0.11s  
+  ✓ it F2-06 leaves no new payment behind when Paystack rejects the req… 0.12s  
+  ✓ it F2-07 handles a gateway failure without changing the order        0.12s  
+  ✓ it F2-08 gives two initialisations in the same second different ref… 0.13s  
+  ✓ it F2-09 takes the fee bearer from the organiser payment info        0.12s  
 
    PASS  Tests\Feature\Payment\PaymentPagesAndSubaccountTest
-  ✓ it F2-90 the success page shows a confirmed order grouped by ticket… 0.15s  
-  ✓ it F2-91 the failed page renders                                     0.09s  
-  ✓ it F2-92 the verify endpoint returns the gateway data or a 400       0.08s  
+  ✓ it F2-90 the success page shows a confirmed order grouped by ticket… 0.17s  
+  ✓ it F2-91 the failed page renders                                     0.10s  
+  ✓ it F2-92 the verify endpoint returns the gateway data or a 400       0.10s  
+  ✓ it F2-93 transfer webhooks are acknowledged without changing paymen… 0.10s  
   ✓ it F2-93 transfer webhooks are acknowledged without changing paymen… 0.09s  
-  ✓ it F2-93 transfer webhooks are acknowledged without changing paymen… 0.08s  
-  ✓ it F2-94 creates a subaccount and stores the code returned by Payst… 0.07s  
-  ✓ it F2-94 reports a failed subaccount creation and keeps the record…  0.07s  
+  ✓ it F2-94 creates a subaccount and stores the code returned by Payst… 0.08s  
+  ✓ it F2-94 reports a failed subaccount creation and keeps the record…  0.08s  
   ✓ it F2-94 turns a gateway exception into a failed result              0.07s  
   ✓ it F2-95 reads and updates a subaccount                              0.07s  
   ✓ it F2-96 verifyPayment reports a gateway failure and an exception a… 0.07s  
   ✓ it F2-97 a successful callback for an organiser without a subaccoun… 0.13s  
 
    PASS  Tests\Feature\Payment\PaystackBalanceServiceTest
-  ✓ it F2-80 syncs balances from the transaction list using the verifie… 0.07s  
+  ✓ it F2-80 syncs balances from the transaction list using the verifie… 0.08s  
   ✓ it F2-81 refuses to sync a payment info without a subaccount code    0.06s  
-  ✓ it F2-82 fails clearly when the transaction list cannot be fetched   0.06s  
+  ✓ it F2-82 fails clearly when the transaction list cannot be fetched   0.07s  
   ✓ it F2-82 fails clearly when Paystack answers with status false       0.06s  
-  ✓ it F2-83 falls back to the basic transaction data when verification… 0.06s  
-  ✓ it F2-84 reads the available and ledger balance of a subaccount      0.06s  
-  ✓ it F2-84 throws when the subaccount cannot be read                   0.05s  
-  ✓ it F2-85 syncAll reports a success and a failure separately          0.07s  
-  ✓ it F2-86 processes one transaction that carries its split data       0.06s  
+  ✓ it F2-83 falls back to the basic transaction data when verification… 0.07s  
+  ✓ it F2-84 reads the available and ledger balance of a subaccount      0.07s  
+  ✓ it F2-84 throws when the subaccount cannot be read                   0.06s  
+  ✓ it F2-85 syncAll reports a success and a failure separately          0.08s  
+  ✓ it F2-86 processes one transaction that carries its split data       0.07s  
   ✓ it F2-86 looks the transaction up by reference when only the refere… 0.06s  
   ✓ it F2-86 throws when the transaction cannot be found                 0.06s  
-  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.06s  
-  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.06s  
-  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.08s  
+  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.07s  
+  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.07s  
+  ✓ it F2-87 the single-transaction split adds up to the amount with da… 0.07s  
   ✓ it F2-88 summarises the balances of all approved subaccounts         0.07s  
 
    PASS  Tests\Feature\Payment\PaystackBankAndBalanceTest
-  ✓ it F2-70 verifies a valid account number and returns the account na… 0.09s  
+  ✓ it F2-70 verifies a valid account number and returns the account na… 0.10s  
+  ✓ it F2-71 rejects an account number that is too short or too long wi… 0.09s  
   ✓ it F2-71 rejects an account number that is too short or too long wi… 0.08s  
-  ✓ it F2-71 rejects an account number that is too short or too long wi… 0.08s  
-  ✓ it F2-72 returns 400 when Paystack cannot resolve the account        0.09s  
-  ✓ it F2-73 lists banks with code, name and slug                        0.13s  
-  ✓ it F2-73 returns 400 when the bank list cannot be fetched            0.14s  
-  ✓ it F2-74 bank endpoints require sign-in                              0.10s  
-  ✓ it F2-75 an organiser user can sync the balance of their own subacc… 0.13s  
-  ✓ it F2-76 a user of another organiser cannot sync this subaccount     0.12s  
-  ✓ it F2-77 a failed balance sync answers 400                           0.12s  
+  ✓ it F2-72 returns 400 when Paystack cannot resolve the account        0.08s  
+  ✓ it F2-73 lists banks with code, name and slug                        0.10s  
+  ✓ it F2-73 returns 400 when the bank list cannot be fetched            0.08s  
+  ✓ it F2-74 bank endpoints require sign-in                              0.09s  
+  ✓ it F2-75 an organiser user can sync the balance of their own subacc… 0.10s  
+  ✓ it F2-76 a user of another organiser cannot sync this subaccount     0.09s  
+  ✓ it F2-77 a failed balance sync answers 400                           0.10s  
 
    PASS  Tests\Feature\Payment\PaystackWebhookTest
-  ✓ it F2-30 valid signature, known reference, pending payment: payment… 0.14s  
-  ✓ it F2-31 valid signature, known reference, completed payment: no se… 0.14s  
-  ✓ it F2-32 valid signature, unknown reference: 404                     0.10s  
-  ✓ it F2-33 valid signature, reference missing from the payload: 400    0.10s  
+  ✓ it F2-30 valid signature, known reference, pending payment: payment… 0.13s  
+  ✓ it F2-31 valid signature, known reference, completed payment: no se… 0.13s  
+  ✓ it F2-32 valid signature, unknown reference: 404                     0.09s  
+  ✓ it F2-33 valid signature, reference missing from the payload: 400    0.09s  
   ✓ it F2-34 invalid signature (wrong secret), known reference: 400 and… 0.09s  
-  ✓ it F2-35 invalid signature (payload altered after signing): 400      0.09s  
-  ✓ it F2-36 signature header missing, known reference: 400 and not a s… 0.09s  
+  ✓ it F2-35 invalid signature (payload altered after signing): 400      0.10s  
+  ✓ it F2-36 signature header missing, known reference: 400 and not a s… 0.11s  
   ✓ it F2-37 empty signature, known reference: 400                       0.09s  
-  ✓ it F2-38 valid signature, unhandled event type: 200 and no state ch… 0.09s  
-  ✓ it F2-40 two identical charge.success webhooks credit the balances…  0.12s  
-  ✓ it F2-41 charge.success for an amount lower than the order total do… 0.09s  
+  ✓ it F2-38 valid signature, unhandled event type: 200 and no state ch… 0.10s  
+  ✓ it F2-40 two identical charge.success webhooks credit the balances…  0.13s  
+  ✓ it F2-41 charge.success for an amount lower than the order total do… 0.10s  
   ✓ it F2-42 a dispute webhook marks the payment as disputed and keeps…  0.10s  
-  ✓ it F2-44 the webhook route is exempt from CSRF but still needs a va… 0.09s  
+  ✓ it F2-44 the webhook route is exempt from CSRF but still needs a va… 0.10s  
 
    PASS  Tests\Feature\PaymentInfoNotificationTest
   ✓ admin receives notification when payment info is created             0.33s  
   ✓ notification contains correct payment info details                   0.37s  
-  ✓ notification is delivered by email only because SMS was removed to…  0.34s  
+  ✓ notification is delivered by email only because SMS was removed to…  0.35s  
 
    PASS  Tests\Feature\PaymentInfoRoleAssignmentTest
   ✓ job is dispatched when payment info is approved                      0.33s  
-  ✓ job does not run when payment info is not approved                   0.31s  
+  ✓ job does not run when payment info is not approved                   0.32s  
   ✓ job assigns organizer admin role when payment info is approved       0.32s  
-  ✓ job does not assign duplicate roles                                  0.35s  
-  ✓ observer triggers job when status changes to approved                0.31s  
-  ✓ observer does not trigger job when status changes to non-approved    0.31s  
+  ✓ job does not assign duplicate roles                                  0.34s  
+  ✓ observer triggers job when status changes to approved                0.32s  
+  ✓ observer does not trigger job when status changes to non-approved    0.35s  
 
    PASS  Tests\Feature\PaystackSubaccountSyncTest
-  ✓ it can determine when to sync with paystack                          0.17s  
+  ✓ it can determine when to sync with paystack                          0.18s  
   ✓ it handles sync errors gracefully                                    0.13s  
-  ✓ it can clear sync errors                                             0.15s  
+  ✓ it can clear sync errors                                             0.14s  
   ✓ it can perform manual sync                                           0.13s  
-  ✓ it throws exception for manual sync without subaccount code          0.17s  
-  ✓ it updates payment info with paystack response data                  0.16s  
-  ✓ paystack service provides user friendly error messages               0.14s  
+  ✓ it throws exception for manual sync without subaccount code          0.16s  
+  ✓ it updates payment info with paystack response data                  0.13s  
+  ✓ paystack service provides user friendly error messages               0.13s  
 
    PASS  Tests\Feature\Performance\CheckoutAndScanPerformanceTest
-  ✓ it P-01 purchase query count does not grow with the number of reads… 0.17s  
-  ✓ it P-02 the event ticket list uses a constant number of queries for… 0.33s  
-  ✓ it P-03 and P-04 scanning and marking tickets stay fast over 100 re… 2.91s  
-  ✓ it P-05 one charge.success webhook is processed quickly              0.12s  
-  ✓ it P-06 never sells more tickets than the stock when buyers outnumb… 0.41s  
+  ✓ it P-01 purchase query count does not grow with the number of reads… 0.16s  
+  ✓ it P-02 the event ticket list uses a constant number of queries for… 0.39s  
+  ✓ it P-03 and P-04 scanning and marking tickets stay fast over 100 re… 3.04s  
+  ✓ it P-05 one charge.success webhook is processed quickly              0.13s  
+  ✓ it P-06 never sells more tickets than the stock when buyers outnumb… 0.44s  
 
    PASS  Tests\Feature\Purchase\DiscountValidationTest
   ✓ it F1-60 accepts a valid code and returns the amount and the new to… 0.10s  
-  ✓ it F1-61 rejects an unknown code with 422                            0.08s  
+  ✓ it F1-61 rejects an unknown code with 422                            0.09s  
   ✓ it F1-61 rejects an inactive code as unknown                         0.09s  
-  ✓ it F1-62 rejects a code that belongs to another event                0.12s  
+  ✓ it F1-62 rejects a code that belongs to another event                0.09s  
   ✓ it F1-63 rejects a code that is not yet active                       0.09s  
-  ✓ it F1-64 rejects an expired code                                     0.09s  
+  ✓ it F1-64 rejects an expired code                                     0.08s  
   ✓ it F1-64 accepts a code on its last valid day                        0.09s  
-  ✓ it F1-65 rejects a code that has reached its usage limit             0.10s  
+  ✓ it F1-65 rejects a code that has reached its usage limit             0.09s  
   ✓ it F1-66 rejects a negative subtotal                                 0.09s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.10s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.10s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.11s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
+  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
   ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
   ✓ it F1-67 calculates the discount amount and total for each type and… 0.08s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.08s  
-  ✓ it F1-67 calculates the discount amount and total for each type and… 0.09s  
   ✓ it F1-44 caps a percentage above 100 at the subtotal in the validat… 0.08s  
 
    PASS  Tests\Feature\Purchase\PurchasePagesTest
-  ✓ it F1-80 the short ticket URL redirects to the event page            0.09s  
-  ✓ it F1-81 the buyer form opens with the selected tickets and the app… 0.12s  
-  ✓ it F1-81 the buyer form ignores an inactive discount                 0.11s  
-  ✓ it F1-82 the buyer form refuses a missing selection, a foreign tick… 0.12s  
-  ✓ it F1-83 the buyer form is not offered for an event that cannot be…  0.08s  
-  ✓ it F1-84 opening the buyer form by GET goes back to the event page   0.08s  
-  ✓ it F1-85 lists the ticket types that can be bought and hides sold-o… 0.10s  
-  ✓ it F1-85 answers 422 for the ticket list of an event that cannot be… 0.08s  
-  ✓ it F1-86 the order confirmation page shows the order and 404s for a… 0.13s  
-  ✓ it F1-87 the download route answers for a known order and 404s for…  0.10s  
-  ✓ it F1-88 the purchase answers with the confirmation page when the o… 0.11s  
+  ✓ it F1-80 the short ticket URL redirects to the event page            0.10s  
+  ✓ it F1-81 the buyer form opens with the selected tickets and the app… 0.13s  
+  ✓ it F1-81 the buyer form ignores an inactive discount                 0.12s  
+  ✓ it F1-82 the buyer form refuses a missing selection, a foreign tick… 0.13s  
+  ✓ it F1-83 the buyer form is not offered for an event that cannot be…  0.09s  
+  ✓ it F1-84 opening the buyer form by GET goes back to the event page   0.09s  
+  ✓ it F1-85 lists the ticket types that can be bought and hides sold-o… 0.11s  
+  ✓ it F1-85 answers 422 for the ticket list of an event that cannot be… 0.09s  
+  ✓ it F1-86 the order confirmation page shows the order and 404s for a… 0.25s  
+  ✓ it F1-87 the download route answers for a known order and 404s for…  0.16s  
+  ✓ it F1-88 the purchase answers with the confirmation page when the o… 0.14s  
 
    PASS  Tests\Feature\Purchase\TicketPurchaseTest
-  ✓ it F1-01 creates a pending order and ticket, reserves stock and red… 0.12s  
-  ✓ it F1-02 rejects a missing buyer email                               0.08s  
-  ✓ it F1-03 rejects an invalid buyer email                              0.09s  
-  ✓ it F1-04 rejects an empty tickets array                              0.08s  
-  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.10s  
-  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.11s  
+  ✓ it F1-01 creates a pending order and ticket, reserves stock and red… 0.17s  
+  ✓ it F1-02 rejects a missing buyer email                               0.22s  
+  ✓ it F1-03 rejects an invalid buyer email                              0.15s  
+  ✓ it F1-04 rejects an empty tickets array                              0.14s  
   ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.12s  
-  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.10s  
-  ✓ it F1-09 rejects an attendee count that differs from the quantity a… 0.10s  
-  ✓ it F1-10 rejects a missing attendee name                             0.09s  
-  ✓ it F1-11 rejects a filled honeypot with a generic message and creat… 0.09s  
-  ✓ it F1-12 rejects an unknown ticket type                              0.09s  
-  ✓ it F1-13 rejects a custom field value over 1000 characters           0.08s  
-  ✓ it F1-14 stores custom field responses as TicketResponse rows        0.11s  
-  ✓ it F1-15 accepts the quantity as a numeric string from an ordinary…  0.11s  
-  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.08s  
-  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.09s  
-  ✓ it F1-22 sells for published and live events with dataset "F1-22 pu… 0.10s  
-  ✓ it F1-22 sells for published and live events with dataset "F1-22 li… 0.10s  
-  ✓ it F1-25 refuses a ticket type whose sales have not started          0.09s  
-  ✓ it F1-26 refuses a ticket type whose sales have ended                0.09s  
-  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.09s  
-  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.10s  
-  ✓ it F1-28 rejects a ticket type that belongs to a different event     0.10s  
-  ✓ it F1-29 rejects a ticket type with no stock left                    0.10s  
-  ✓ it F1-30 accepts a quantity equal to the remaining stock and leaves… 0.11s  
-  ✓ it F1-31 rejects a quantity one above the remaining stock and leave… 0.10s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.12s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.21s  
+  ✓ it F1-05 to F1-08 applies the quantity boundaries 0, 1, 10 and 11 w… 0.14s  
+  ✓ it F1-09 rejects an attendee count that differs from the quantity a… 0.13s  
+  ✓ it F1-10 rejects a missing attendee name                             0.10s  
+  ✓ it F1-11 rejects a filled honeypot with a generic message and creat… 0.11s  
+  ✓ it F1-12 rejects an unknown ticket type                              0.10s  
+  ✓ it F1-13 rejects a custom field value over 1000 characters           0.12s  
+  ✓ it F1-14 stores custom field responses as TicketResponse rows        0.13s  
+  ✓ it F1-15 accepts the quantity as a numeric string from an ordinary…  0.12s  
+  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.11s  
+  ✓ it F1-20 and F1-21 refuse to sell for a draft or cancelled event wi… 0.12s  
+  ✓ it F1-22 sells for published and live events with dataset "F1-22 pu… 0.11s  
+  ✓ it F1-22 sells for published and live events with dataset "F1-22 li… 0.12s  
+  ✓ it F1-25 refuses a ticket type whose sales have not started          0.14s  
+  ✓ it F1-26 refuses a ticket type whose sales have ended                0.10s  
+  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.12s  
+  ✓ it F1-25 and F1-26 name the closed ticket type when another type is… 0.20s  
+  ✓ it F1-28 rejects a ticket type that belongs to a different event     0.25s  
+  ✓ it F1-29 rejects a ticket type with no stock left                    0.11s  
+  ✓ it F1-30 accepts a quantity equal to the remaining stock and leaves… 0.14s  
+  ✓ it F1-31 rejects a quantity one above the remaining stock and leave… 0.09s  
   ✓ it F1-32 prices two ticket types as the sum of price times quantity  0.12s  
-  ✓ it F1-33 reserves nothing when the second ticket type lacks stock    0.12s  
-  ✓ it F1-40 totals the ticket prices when there is no discount          0.12s  
-  ✓ it F1-41 applies a 10% discount: discount 10, total 90, subtotal 10… 0.13s  
-  ✓ it F1-43 a 100% discount gives a total of 0                          0.13s  
-  ✓ it F1-44 caps a percentage above 100 at the order value              0.13s  
-  ✓ it F1-45 subtracts a fixed discount smaller than the subtotal        0.11s  
-  ✓ it F1-46 caps a fixed discount larger than the subtotal              0.12s  
-  ✓ it F1-47 rounds a fractional percentage discount to two decimals     0.11s  
-  ✓ it F1-48 rejects an inactive discount                                0.10s  
-  ✓ it F1-49 rejects a discount that belongs to another event            0.10s  
-  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.10s  
-  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.09s  
-  ✓ it F1-51 rejects an expired discount at purchase                     0.10s  
-  ✓ it F1-52 rejects a not-yet-valid discount at purchase                0.09s  
-  ✓ it F1-53 increments the discount usage count by one                  0.11s  
-  ✓ it F1-55 ignores a client-supplied price and uses the database pric… 0.10s  
-  ✓ it X-01 ignores mass-assigned order status and amount fields         0.10s  
-  ✓ it F1-70 sells the last ticket once: the second buyer is rejected a… 0.12s  
-  ✓ it F1-72 gives a one-use discount to only one of two buyers          0.13s  
+  ✓ it F1-33 reserves nothing when the second ticket type lacks stock    0.13s  
+  ✓ it F1-40 totals the ticket prices when there is no discount          0.13s  
+  ✓ it F1-41 applies a 10% discount: discount 10, total 90, subtotal 10… 0.11s  
+  ✓ it F1-43 a 100% discount gives a total of 0                          0.12s  
+  ✓ it F1-44 caps a percentage above 100 at the order value              0.12s  
+  ✓ it F1-45 subtracts a fixed discount smaller than the subtotal        0.12s  
+  ✓ it F1-46 caps a fixed discount larger than the subtotal              0.13s  
+  ✓ it F1-47 rounds a fractional percentage discount to two decimals     0.13s  
+  ✓ it F1-48 rejects an inactive discount                                0.25s  
+  ✓ it F1-49 rejects a discount that belongs to another event            0.11s  
+  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.14s  
+  ✓ it F1-50 applies the usage-limit boundary: limit minus one is accep… 0.14s  
+  ✓ it F1-51 rejects an expired discount at purchase                     0.12s  
+  ✓ it F1-52 rejects a not-yet-valid discount at purchase                0.11s  
+  ✓ it F1-53 increments the discount usage count by one                  0.16s  
+  ✓ it F1-55 ignores a client-supplied price and uses the database pric… 0.13s  
+  ✓ it X-01 ignores mass-assigned order status and amount fields         0.11s  
+  ✓ it F1-70 sells the last ticket once: the second buyer is rejected a… 0.14s  
+  ✓ it F1-72 gives a one-use discount to only one of two buyers          0.17s  
 
    PASS  Tests\Feature\SmsServiceTest
-  ✓ formats local ten digit ghana number                                 0.09s  
+  ✓ formats local ten digit ghana number                                 0.10s  
   ✓ formats nine digit ghana number                                      0.05s  
-  ✓ formats twelve digit ghana number without plus                       0.05s  
-  ✓ returns already formatted e164 number                                0.05s  
-  ✓ returns null for invalid number                                      0.05s  
-  ✓ strips non numeric characters before formatting                      0.05s  
+  ✓ formats twelve digit ghana number without plus                       0.06s  
+  ✓ returns already formatted e164 number                                0.06s  
+  ✓ returns null for invalid number                                      0.06s  
+  ✓ strips non numeric characters before formatting                      0.06s  
   ✓ hubtel sends sms successfully                                        0.07s  
-  ✓ hubtel returns failure on invalid phone                              0.05s  
-  ✓ hubtel is configured when credentials present                        0.05s  
+  ✓ hubtel returns failure on invalid phone                              0.06s  
+  ✓ hubtel is configured when credentials present                        0.06s  
   ✓ hubtel is not configured when credentials missing                    0.06s  
-  ✓ giant sms sends sms successfully                                     0.06s  
-  ✓ giant sms returns failure when api returns false status              0.06s  
-  ✓ giant sms returns failure on invalid phone                           0.05s  
-  ✓ giant sms is configured when credentials present                     0.05s  
-  ✓ giant sms is not configured when credentials missing                 0.05s  
-  ✓ sms service uses primary provider when it succeeds                   0.07s  
-  ✓ sms service falls back to giant sms when hubtel fails                0.05s  
-  ✓ sms service skips unconfigured primary and uses fallback             0.05s  
-  ✓ sms service returns failure when all providers fail                  0.06s  
-  ✓ sms service returns failure when no providers configured             0.05s  
+  ✓ giant sms sends sms successfully                                     0.05s  
+  ✓ giant sms returns failure when api returns false status              0.05s  
+  ✓ giant sms returns failure on invalid phone                           0.06s  
+  ✓ giant sms is configured when credentials present                     0.06s  
+  ✓ giant sms is not configured when credentials missing                 0.06s  
+  ✓ sms service uses primary provider when it succeeds                   0.08s  
+  ✓ sms service falls back to giant sms when hubtel fails                0.07s  
+  ✓ sms service skips unconfigured primary and uses fallback             0.06s  
+  ✓ sms service returns failure when all providers fail                  0.08s  
+  ✓ sms service returns failure when no providers configured             0.06s  
 
    PASS  Tests\Feature\Tickets\OrganiserTicketEndpointsTest
-  ✓ it F3-34 verifies an active ticket of the event, by number or by QR… 0.14s  
+  ✓ it F3-34 verifies an active ticket of the event, by number or by QR… 0.16s  
   ✓ it F3-34 rejects unknown tickets, bad QR data and tickets that are…  0.15s  
   ✓ it F3-35 a user of another organiser cannot verify tickets for this… 0.12s  
-  ✓ it F3-36 a ticket of another event is refused without returning its… 0.13s  
-  ✓ it F3-47 marks a ticket as used through the event route and refuses… 0.15s  
-  ✓ it F3-47 refuses a user who does not belong to the organiser         0.13s  
+  ✓ it F3-36 a ticket of another event is refused without returning its… 0.12s  
+  ✓ it F3-47 marks a ticket as used through the event route and refuses… 0.17s  
+  ✓ it F3-47 refuses a user who does not belong to the organiser         0.12s  
   ✓ it F3-43 event statistics count tickets by status                    0.15s  
-  ✓ it F3-45 entry history lists only used tickets of the event, newest… 0.14s  
-  ✓ it F3-46 scan statistics group the entries by hour and by day        0.14s  
-  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.13s  
-  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.12s  
-  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.14s  
-  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.14s  
-  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.14s  
-  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.14s  
-  ✓ it F3-48 the ticket details page shows the ticket for its number     0.20s  
-  ✓ it F3-48 the ticket details page tolerates an unknown ticket number  0.15s  
+  ✓ it F3-45 entry history lists only used tickets of the event, newest… 0.15s  
+  ✓ it F3-46 scan statistics group the entries by hour and by day        0.15s  
+  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.11s  
+  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.11s  
+  ✓ it F3-44 statistics, history and scan statistics are refused for us… 0.11s  
+  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.10s  
+  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.09s  
+  ✓ it F3-44 an organiser user cannot read another organiser event thro… 0.10s  
+  ✓ it F3-48 the ticket details page shows the ticket for its number     0.13s  
+  ✓ it F3-48 the ticket details page tolerates an unknown ticket number  0.12s  
 
    PASS  Tests\Feature\Tickets\TicketEntryTest
-  ✓ it F3-01 marks an active ticket as used and records the time         0.13s  
+  ✓ it F3-01 marks an active ticket as used and records the time         0.12s  
   ✓ it F3-02 refuses to mark a used ticket again and keeps the first ti… 0.10s  
-  ✓ it F3-03 and F3-04 refuse to mark a pending or cancelled ticket as…  0.11s  
   ✓ it F3-03 and F3-04 refuse to mark a pending or cancelled ticket as…  0.10s  
-  ✓ it F3-05 scanning an active ticket reports success                   0.11s  
+  ✓ it F3-03 and F3-04 refuse to mark a pending or cancelled ticket as…  0.10s  
+  ✓ it F3-05 scanning an active ticket reports success                   0.10s  
   ✓ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.10s  
-  ✓ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.10s  
-  ✓ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.10s  
-  ✓ it F3-09 every fillable attribute of Ticket is a real column         0.09s  
+  ✓ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.11s  
+  ✓ it F3-06 to F3-08 scanning a used, pending or cancelled ticket does… 0.11s  
+  ✓ it F3-09 every fillable attribute of Ticket is a real column         0.10s  
   ✓ it F3-10 marking a ticket as used without signing in returns 401     0.10s  
   ✓ it F3-11 a user of another organiser cannot mark the ticket as used  0.10s  
-  ✓ it F3-12 a user of two organisers can check in tickets for either    0.13s  
-  ✓ it F3-13 a user of another organiser cannot look up the ticket by n… 0.10s  
+  ✓ it F3-12 a user of two organisers can check in tickets for either    0.14s  
+  ✓ it F3-13 a user of another organiser cannot look up the ticket by n… 0.18s  
   ✓ it F3-14 looking up an unknown ticket number returns 404             0.08s  
-  ✓ it F3-15 the ticket number lookup is case-insensitive                0.10s  
-  ✓ it F3-16 an unauthenticated scan does not return the attendee email  0.10s  
-  ✓ it F3-17 the public verification page does not show the attendee em… 0.11s  
-  ✓ it F3-18 and F3-19 the event ticket list is limited to the user's o… 0.11s  
-  ✓ it F3-20 finds a ticket from a lower-case ticket number              0.09s  
+  ✓ it F3-15 the ticket number lookup is case-insensitive                0.11s  
+  ✓ it F3-16 an unauthenticated scan does not return the attendee email  0.12s  
+  ✓ it F3-17 the public verification page does not show the attendee em… 0.13s  
+  ✓ it F3-18 and F3-19 the event ticket list is limited to the user's o… 0.13s  
+  ✓ it F3-20 finds a ticket from a lower-case ticket number              0.10s  
   ✓ it F3-21 accepts JSON QR data that matches the ticket                0.10s  
+  ✓ it F3-22 and F3-23 reject JSON QR data that differs from the ticket… 0.12s  
   ✓ it F3-22 and F3-23 reject JSON QR data that differs from the ticket… 0.10s  
-  ✓ it F3-22 and F3-23 reject JSON QR data that differs from the ticket… 0.09s  
   ✓ it F3-24 treats plain-text QR data as a ticket number                0.10s  
-  ✓ it F3-25 answers JSON QR data with missing keys with a client error… 0.09s  
-  ✓ it F3-26 returns 422 when neither qr_data nor ticket_number is sent  0.08s  
-  ✓ it F3-27 trims spaces around a ticket number                         0.09s  
-  ✓ it F3-28 generates unique ticket numbers                             0.07s  
-  ✓ it F3-30 only one of two stale copies of an active ticket can claim… 0.09s  
-  ✓ it F3-31 the second claim does not overwrite the first entry time    0.08s  
-  ✓ it F3-33 a ticket from event A cannot be checked in through event B… 0.10s  
-  ✓ it F3-40 redirects a guest from the check-in page to the login       0.08s  
-  ✓ it F3-41 shows the selected event to an organiser user of that even… 0.11s  
-  ✓ it F3-42 does not select an event that belongs to another organiser  0.11s  
+  ✓ it F3-25 answers JSON QR data with missing keys with a client error… 0.10s  
+  ✓ it F3-26 returns 422 when neither qr_data nor ticket_number is sent  0.09s  
+  ✓ it F3-27 trims spaces around a ticket number                         0.10s  
+  ✓ it F3-28 generates unique ticket numbers                             0.06s  
+  ✓ it F3-30 only one of two stale copies of an active ticket can claim… 0.08s  
+  ✓ it F3-31 the second claim does not overwrite the first entry time    0.09s  
+  ✓ it F3-33 a ticket from event A cannot be checked in through event B… 0.12s  
+  ✓ it F3-40 redirects a guest from the check-in page to the login       0.10s  
+  ✓ it F3-41 shows the selected event to an organiser user of that even… 0.13s  
+  ✓ it F3-42 does not select an event that belongs to another organiser  0.13s  
 
    PASS  Tests\Feature\VenueMigrationTest
-  ✓ events table has venue_name and venue_address columns                0.08s  
-  ✓ events table does not have venue_id column                           0.06s  
-  ✓ event stores and retrieves inline venue fields                       0.06s  
-  ✓ event venue fields can be null for online events                     0.07s  
-  ✓ order search returns venue from inline event fields                  0.08s  
-  ✓ order search returns null venue when event has no venue name         0.08s  
-  ✓ order search does not throw unknown column venue_id error            0.08s  
+  ✓ events table has venue_name and venue_address columns                0.10s  
+  ✓ events table does not have venue_id column                           0.07s  
+  ✓ event stores and retrieves inline venue fields                       0.07s  
+  ✓ event venue fields can be null for online events                     0.08s  
+  ✓ order search returns venue from inline event fields                  0.09s  
+  ✓ order search returns null venue when event has no venue name         0.10s  
+  ✓ order search does not throw unknown column venue_id error            0.09s  
 
    PASS  Tests\Browser\GateCheckInFlowTest
-  ✓ it E-05 admits an active ticket once and refuses it on the second s… 3.18s  
-  ✓ it E-05 tells the gate when a ticket number does not exist           1.15s  
+  ✓ it E-05 admits an active ticket once and refuses it on the second s… 3.51s  
+  ✓ it E-05 tells the gate when a ticket number does not exist           1.05s  
+
+   WARN  Tests\Browser\PaystackTestModeCheckoutTest
+  - it buys tickets and pays on the real Paystack test checkout → Set PAYSTACK_LIVE=1 to run against the Paystack test environment.
 
    PASS  Tests\Browser\TicketPurchaseFlowTest
-  ✓ it lets a guest buy two tickets, pay at the checkout and see the pu… 2.58s  
-  ✓ it keeps the attendee fields hidden until the buyer ticks the check… 2.52s  
-  ✓ it applies a percentage discount code in the browser before checkou… 1.58s  
-  ✓ it rejects an unknown discount code and keeps the full price         1.41s  
-  ✓ it does not create an order until the buyer submits the form         1.54s  
+  ✓ it lets a guest buy two tickets, pay at the checkout and see the pu… 2.34s  
+  ✓ it keeps the attendee fields hidden until the buyer ticks the check… 2.13s  
+  ✓ it applies a percentage discount code in the browser before checkou… 1.57s  
+  ✓ it rejects an unknown discount code and keeps the full price         1.42s  
+  ✓ it does not create an order until the buyer submits the form         1.09s  
 
-  Tests:    349 passed (1846 assertions)
-  Duration: 59.84s
+  Tests:    1 skipped, 349 passed (1846 assertions)
+  Duration: 60.89s
 

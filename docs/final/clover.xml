@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1792538399">
-  <project timestamp="1792538399" name="Clover Coverage">
+<coverage generated="1792544560">
+  <project timestamp="1792544560" name="Clover Coverage">
     <package name="App\Channels">
       <file name="/Volumes/STORAGE/COV/7020SCN/suptix/app/Channels/SmsChannel.php">
         <class name="App\Channels\SmsChannel" namespace="App\Channels">
