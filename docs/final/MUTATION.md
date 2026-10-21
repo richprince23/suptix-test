@@ -1,6 +1,6 @@
 # Mutation testing (Pest, covered lines of each in-scope class)
 
-Run 1 (before the contract tests): 1,006 of 1,862 mutants killed, 54.0%. Run 2 (after): below.
+Run 1 (before the contract tests): 1,006 of 1,862 mutants killed, 54.0%. Final run (after, on a stable checkout): below.
 
 | Class | Killed | Survived | Score |
 |---|---|---|---|
@@ -15,9 +15,9 @@ Run 1 (before the contract tests): 1,006 of 1,862 mutants killed, 54.0%. Run 2 (
 | `app/Http/Controllers/TicketPurchaseController.php` | 157 | 34 | 82.20% |
 | `app/Http/Controllers/PaymentController.php` | 121 | 49 | 71.18% |
 | `app/Services/PaystackBalanceService.php` | 276 | 113 | 70.95% |
-| `app/Services/PaystackService.php` | 307 | 191 | 61.65% |
+| `app/Services/PaystackService.php` | 308 | 190 | 61.85% |
 | `app/Http/Controllers/TicketController.php` | 378 | 102 | 78.75% |
-| **All in-scope classes** | **1431** | **504** | **74.0%** |
+| **All in-scope classes** | **1432** | **503** | **74.0%** |
 
 Command per class: `php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --mutate --covered-only --parallel --path=<file> --testsuite=Unit,Feature`.
-Survivors are mostly array items inside log context and fields of responses that no test pins, plus equivalent mutants. Raw output: `mutation-final.txt`; first run summary: `mutation-run1-summary.txt`.
+Survivors are mostly array items inside log context and fields of responses that no test pins, plus equivalent mutants. A run on a checkout that changed branch part-way gave different, invalid figures and was discarded. Raw output: `mutation-final.txt`; first run summary: `mutation-run1-summary.txt`.
