@@ -17,7 +17,7 @@
         </testsuite>
         -->
     </testsuites>
-    <source>
+    <!-- <source>
         <include>
             <directory>app</directory>
         </include>
@@ -27,6 +27,23 @@
             <directory>app/Console</directory>
             <directory>app/Exceptions</directory>
         </exclude>
+    </source> -->
+    <source>
+        <include>
+            <file>app/Http/Controllers/TicketPurchaseController.php</file>
+            <file>app/Http/Controllers/DiscountController.php</file>
+            <file>app/Http/Controllers/PaymentController.php</file>
+            <file>app/Http/Controllers/PaystackController.php</file>
+            <file>app/Http/Controllers/TicketController.php</file>
+            <file>app/Http/Controllers/CheckInController.php</file>
+            <file>app/Services/PaystackService.php</file>
+            <file>app/Services/PaystackBalanceService.php</file>
+            <file>app/Models/Discount.php</file>
+            <file>app/Models/Order.php</file>
+            <file>app/Models/Ticket.php</file>
+            <file>app/Models/TicketType.php</file>
+            <file>app/Models/Payment.php</file>
+        </include>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>

@@ -27,21 +27,21 @@ beforeEach(function () {
     ]);
     $organizer->users()->attach($user);
 
-    // Create test venue
-    $venue = Venue::create([
-        'organizer_id' => $organizer->id,
-        'name' => 'Test Venue',
-        'address' => '123 Venue St',
-        'city' => 'Venue City',
-        'state' => 'Venue State',
-        'country' => 'Venue Country',
-        'capacity' => 100
-    ]);
+    // // Create test venue
+    // $venue = Venue::create([
+    //     'organizer_id' => $organizer->id,
+    //     'name' => 'Test Venue',
+    //     'address' => '123 Venue St',
+    //     'city' => 'Venue City',
+    //     'state' => 'Venue State',
+    //     'country' => 'Venue Country',
+    //     'capacity' => 100
+    // ]);
 
     // Create test event
     $this->event = Event::create([
         'organizer_id' => $organizer->id,
-        'venue_id' => $venue->id,
+        'venue' => "Test Venue",
         'title' => 'Test Event',
         'description' => 'A test event',
         'start_date' => now()->addDays(7),
