@@ -7,7 +7,7 @@ Results of the case-study test run on the three in-scope flows (F1 purchase and 
 | Item | Value |
 |---|---|
 | Date | 25 October 2026 (full run after all fixes) |
-| Branch and commit | `original-scope`, `a36bd12`, with the case-study tests restored from `tests/_disabled`, the `EventDetails.vue` import fix (DEF-29) and the test fixes below (all uncommitted) |
+| Branch and commit | `original-scope`, `02b7156`, which restores the case-study tests from `tests/_disabled` and holds the `EventDetails.vue` import fix (DEF-29) and the test fixes below. The final run was made on this tree just before it was committed. |
 | Environment | PHP 8.4.15, Laravel 12.70.0, Pest 4.7.8, MySQL 8.4.5 (database `suptix_test`), PCOV |
 | Provider mode | Fakes; test keys only |
 | Command | `php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --coverage-clover=clover.xml` (all suites: Unit, Feature, Browser) |
