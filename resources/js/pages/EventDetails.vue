@@ -837,7 +837,7 @@ import { Link, usePage } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { router } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { Calendar, Clock3, LinkIcon, MapPin, Presentation } from 'lucide-vue-next';
 import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';

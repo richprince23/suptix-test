@@ -1,32 +1,17 @@
 <?php
 
-use App\Models\User;
+/*
+ * The starter-kit confirm-password routes are not loaded.
+ */
 
-test('confirm password screen can be rendered', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->get('/confirm-password');
-
-    $response->assertStatus(200);
+test('confirm password screen is not served', function () {
+    $this->get('/confirm-password')->assertNotFound();
 });
 
-test('password can be confirmed', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/confirm-password', [
-        'password' => 'password',
-    ]);
-
-    $response->assertRedirect();
-    $response->assertSessionHasNoErrors();
+test('a password cannot be confirmed through the starter-kit route', function () {
+    $this->post('/confirm-password', ['password' => 'password'])->assertNotFound();
 });
 
-test('password is not confirmed with invalid password', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/confirm-password', [
-        'password' => 'wrong-password',
-    ]);
-
-    $response->assertSessionHasErrors();
+test('the confirm password route has no name in the application', function () {
+    expect(Route::has('password.confirm'))->toBeFalse();
 });

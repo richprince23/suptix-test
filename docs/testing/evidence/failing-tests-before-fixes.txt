@@ -1,0 +1,419 @@
+
+   FAIL  Tests\Feature\Auth\AuthenticationTest
+  ⨯ login screen can be rendered                                         0.46s  
+  ⨯ users can authenticate using the login screen                        0.14s  
+  ✓ users can not authenticate with invalid password                     0.10s  
+  ⨯ users can logout                                                     0.11s  
+
+   FAIL  Tests\Feature\Auth\EmailVerificationTest
+  ⨯ email verification screen can be rendered                            0.14s  
+  ⨯ email can be verified                                                0.08s  
+  ⨯ email is not verified with invalid hash                              0.11s  
+
+   FAIL  Tests\Feature\Auth\PasswordConfirmationTest
+  ⨯ confirm password screen can be rendered                              0.10s  
+  ⨯ password can be confirmed                                            0.09s  
+  ⨯ password is not confirmed with invalid password                      0.10s  
+
+   FAIL  Tests\Feature\Auth\PasswordResetTest
+  ⨯ reset password link screen can be rendered                           0.11s  
+  ⨯ reset password link can be requested                                 0.10s  
+  ⨯ reset password screen can be rendered                                0.09s  
+  ⨯ password can be reset with valid token                               0.08s  
+
+   FAIL  Tests\Feature\Auth\RegistrationTest
+  ⨯ registration screen can be rendered                                  0.13s  
+  ⨯ new users can register                                               0.09s  
+
+   FAIL  Tests\Feature\DashboardTest
+  ⨯ guests are redirected to the login page                              0.13s  
+  ⨯ authenticated users can visit the dashboard                          0.08s  
+
+   FAIL  Tests\Feature\EventPartnerTest
+  ✓ can create a partner for an event                                    0.26s  
+  ✓ can create a sponsor with a tier for an event                        0.10s  
+  ✓ logo url returns null when no logo is set                            0.10s  
+  ✓ logo url returns a public storage url when logo is set               0.11s  
+  ⨯ deleting a partner removes its logo from storage                     0.10s  
+  ⨯ updating a partner logo removes the old logo from storage            0.09s  
+  ✓ event partners relationship returns only partner type                0.10s  
+  ✓ event sponsors relationship returns only sponsor type                0.10s  
+  ✓ event all partners relationship returns both types                   0.10s  
+  ✓ all partners are ordered by sort order                               0.09s  
+  ✓ deleting an event removes its partners                               0.11s  
+
+   FAIL  Tests\Feature\RsvpHoneypotTest
+  ⨯ rsvp form accepts valid submission without honeypot                  0.15s  
+  ✓ rsvp form blocks spam with filled honeypot                           0.09s  
+  ✓ honeypot field validation prevents empty field values greater than…  0.09s  
+
+   FAIL  Tests\Feature\RsvpWaitlistTest
+  ✓ waitlist entry is created with auto position                         0.10s  
+  ✓ waitlist positions increment per event                               0.08s  
+  ✓ masked email hides local part                                        0.07s  
+  ✓ masked phone shows only last four digits                             0.07s  
+  ✓ masked phone returns null when no phone                              0.07s  
+  ✓ approve waitlist entry creates rsvp                                  0.09s  
+  ✓ approve waitlist entry marks entry approved                          0.09s  
+  ✓ approve waitlist entry consumes credit slot                          0.09s  
+  ✓ approve waitlist entry throws when no slots                          0.08s  
+  ✓ approve waitlist entry transfers custom fields to rsvp responses     0.10s  
+  ⨯ waitlist confirmation mail is sent on waitlist add                   0.14s  
+  ✓ duplicate waitlist entry is rejected                                 0.24s  
+  ✓ normal rsvp flow unaffected when slots available                     0.17s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\AuthenticationTest > login screen can be rende…   
+  Expected response status code [200] but received 302.
+Failed asserting that 302 is identical to 200.
+
+  at tests/Feature/Auth/AuthenticationTest.php:8
+      4▕ 
+      5▕ test('login screen can be rendered', function () {
+      6▕     $response = $this->get('/login');
+      7▕ 
+  ➜   8▕     $response->assertStatus(200);
+      9▕ });
+     10▕ 
+     11▕ test('users can authenticate using the login screen', function () {
+     12▕     $user = User::factory()->create();
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\AuthenticationTest > users can authenticate us…   
+  The user is not authenticated
+Failed asserting that false is true.
+
+  at tests/Feature/Auth/AuthenticationTest.php:19
+     15▕         'email' => $user->email,
+     16▕         'password' => 'password',
+     17▕     ]);
+     18▕ 
+  ➜  19▕     $this->assertAuthenticated();
+     20▕     $response->assertRedirect(route('dashboard', absolute: false));
+     21▕ });
+     22▕ 
+     23▕ test('users can not authenticate with invalid password', function () {
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\AuthenticationTest > users can logout             
+  The user is authenticated
+Failed asserting that true is false.
+
+  at tests/Feature/Auth/AuthenticationTest.php:39
+     35▕     $user = User::factory()->create();
+     36▕ 
+     37▕     $response = $this->actingAs($user)->post('/logout');
+     38▕ 
+  ➜  39▕     $this->assertGuest();
+     40▕     $response->assertRedirect('/');
+     41▕ });
+     42▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\EmailVerificationTest > email verification scr…   
+  Expected response status code [200] but received 404.
+Failed asserting that 404 is identical to 200.
+
+  at tests/Feature/Auth/EmailVerificationTest.php:13
+      9▕     $user = User::factory()->unverified()->create();
+     10▕ 
+     11▕     $response = $this->actingAs($user)->get('/verify-email');
+     12▕ 
+  ➜  13▕     $response->assertStatus(200);
+     14▕ });
+     15▕ 
+     16▕ test('email can be verified', function () {
+     17▕     $user = User::factory()->unverified()->create();
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\EmailVerificationTest…   RouteNotFoundException   
+  Route [verification.verify] not defined.
+
+  at vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:536
+    532▕             ! is_null($url = call_user_func($this->missingNamedRouteResolver, $name, $parameters, $absolute))) {
+    533▕             return $url;
+    534▕         }
+    535▕ 
+  ➜ 536▕         throw new RouteNotFoundException("Route [{$name}] not defined.");
+    537▕     }
+    538▕ 
+    539▕     /**
+    540▕      * Get the URL for a given route instance.
+
+      +4 vendor frames 
+  5   tests/Feature/Auth/EmailVerificationTest.php:21
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\EmailVerificationTest…   RouteNotFoundException   
+  Route [verification.verify] not defined.
+
+  at vendor/laravel/framework/src/Illuminate/Routing/UrlGenerator.php:536
+    532▕             ! is_null($url = call_user_func($this->missingNamedRouteResolver, $name, $parameters, $absolute))) {
+    533▕             return $url;
+    534▕         }
+    535▕ 
+  ➜ 536▕         throw new RouteNotFoundException("Route [{$name}] not defined.");
+    537▕     }
+    538▕ 
+    539▕     /**
+    540▕      * Get the URL for a given route instance.
+
+      +4 vendor frames 
+  5   tests/Feature/Auth/EmailVerificationTest.php:37
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordConfirmationTest > confirm password sc…   
+  Expected response status code [200] but received 404.
+Failed asserting that 404 is identical to 200.
+
+  at tests/Feature/Auth/PasswordConfirmationTest.php:10
+      6▕     $user = User::factory()->create();
+      7▕ 
+      8▕     $response = $this->actingAs($user)->get('/confirm-password');
+      9▕ 
+  ➜  10▕     $response->assertStatus(200);
+     11▕ });
+     12▕ 
+     13▕ test('password can be confirmed', function () {
+     14▕     $user = User::factory()->create();
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordConfirmationTest > password can be con…   
+  Expected response status code [201, 301, 302, 303, 307, 308] but received 404.
+Failed asserting that false is true.
+
+  at tests/Feature/Auth/PasswordConfirmationTest.php:20
+     16▕     $response = $this->actingAs($user)->post('/confirm-password', [
+     17▕         'password' => 'password',
+     18▕     ]);
+     19▕ 
+  ➜  20▕     $response->assertRedirect();
+     21▕     $response->assertSessionHasNoErrors();
+     22▕ });
+     23▕ 
+     24▕ test('password is not confirmed with invalid password', function () {
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordConfirmationTest > password is not con…   
+  Session is missing expected key [errors].
+Failed asserting that false is true.
+
+  at tests/Feature/Auth/PasswordConfirmationTest.php:31
+     27▕     $response = $this->actingAs($user)->post('/confirm-password', [
+     28▕         'password' => 'wrong-password',
+     29▕     ]);
+     30▕ 
+  ➜  31▕     $response->assertSessionHasErrors();
+     32▕ });
+     33▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordResetTest > reset password link screen…   
+  Expected response status code [200] but received 404.
+Failed asserting that 404 is identical to 200.
+
+  at tests/Feature/Auth/PasswordResetTest.php:10
+      6▕ 
+      7▕ test('reset password link screen can be rendered', function () {
+      8▕     $response = $this->get('/forgot-password');
+      9▕ 
+  ➜  10▕     $response->assertStatus(200);
+     11▕ });
+     12▕ 
+     13▕ test('reset password link can be requested', function () {
+     14▕     Notification::fake();
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordResetTest > reset password link can be…   
+  The expected [Illuminate\Auth\Notifications\ResetPassword] notification was not sent.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/NotificationFake.php:89
+     85▕         if (is_numeric($callback)) {
+     86▕             return $this->assertSentToTimes($notifiable, $notification, $callback);
+     87▕         }
+     88▕ 
+  ➜  89▕         PHPUnit::assertTrue(
+     90▕             $this->sent($notifiable, $notification, $callback)->count() > 0,
+     91▕             "The expected [{$notification}] notification was not sent."
+     92▕         );
+     93▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/Auth/PasswordResetTest.php:20
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordResetTest > reset password screen can…    
+  The expected [Illuminate\Auth\Notifications\ResetPassword] notification was not sent.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/NotificationFake.php:89
+     85▕         if (is_numeric($callback)) {
+     86▕             return $this->assertSentToTimes($notifiable, $notification, $callback);
+     87▕         }
+     88▕ 
+  ➜  89▕         PHPUnit::assertTrue(
+     90▕             $this->sent($notifiable, $notification, $callback)->count() > 0,
+     91▕             "The expected [{$notification}] notification was not sent."
+     92▕         );
+     93▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/Auth/PasswordResetTest.php:30
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\PasswordResetTest > password can be reset with…   
+  The expected [Illuminate\Auth\Notifications\ResetPassword] notification was not sent.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/NotificationFake.php:89
+     85▕         if (is_numeric($callback)) {
+     86▕             return $this->assertSentToTimes($notifiable, $notification, $callback);
+     87▕         }
+     88▕ 
+  ➜  89▕         PHPUnit::assertTrue(
+     90▕             $this->sent($notifiable, $notification, $callback)->count() > 0,
+     91▕             "The expected [{$notification}] notification was not sent."
+     92▕         );
+     93▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/Auth/PasswordResetTest.php:46
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > registration screen can be…    
+  Expected response status code [200] but received 302.
+Failed asserting that 302 is identical to 200.
+
+  at tests/Feature/Auth/RegistrationTest.php:6
+      2▕ 
+      3▕ test('registration screen can be rendered', function () {
+      4▕     $response = $this->get('/register');
+      5▕ 
+  ➜   6▕     $response->assertStatus(200);
+      7▕ });
+      8▕ 
+      9▕ test('new users can register', function () {
+     10▕     $response = $this->post('/register', [
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\Auth\RegistrationTest > new users can register         
+  The user is not authenticated
+Failed asserting that false is true.
+
+  at tests/Feature/Auth/RegistrationTest.php:17
+     13▕         'password' => 'password',
+     14▕         'password_confirmation' => 'password',
+     15▕     ]);
+     16▕ 
+  ➜  17▕     $this->assertAuthenticated();
+     18▕     $response->assertRedirect(route('dashboard', absolute: false));
+     19▕ });
+     20▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\DashboardTest > guests are redirected to the login…    
+  Expected response status code [201, 301, 302, 303, 307, 308] but received 404.
+Failed asserting that false is true.
+
+  at tests/Feature/DashboardTest.php:7
+      3▕ use App\Models\User;
+      4▕ 
+      5▕ test('guests are redirected to the login page', function () {
+      6▕     $response = $this->get('/dashboard');
+  ➜   7▕     $response->assertRedirect('/login');
+      8▕ });
+      9▕ 
+     10▕ test('authenticated users can visit the dashboard', function () {
+     11▕     $user = User::factory()->create();
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\DashboardTest > authenticated users can visit the d…   
+  Expected response status code [200] but received 404.
+Failed asserting that 404 is identical to 200.
+
+  at tests/Feature/DashboardTest.php:15
+     11▕     $user = User::factory()->create();
+     12▕     $this->actingAs($user);
+     13▕ 
+     14▕     $response = $this->get('/dashboard');
+  ➜  15▕     $response->assertStatus(200);
+     16▕ });
+     17▕
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\EventPartnerTest > deleting a partner removes its l…   
+  Found unexpected file or directory at path [event-partners/delete-me.png].
+Failed asserting that true is false.
+
+  at vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemAdapter.php:187
+    183▕ 
+    184▕         $paths = Arr::wrap($path);
+    185▕ 
+    186▕         foreach ($paths as $path) {
+  ➜ 187▕             PHPUnit::assertFalse(
+    188▕                 $this->exists($path), "Found unexpected file or directory at path [{$path}]."
+    189▕             );
+    190▕         }
+    191▕
+
+      +1 vendor frames 
+  2   tests/Feature/EventPartnerTest.php:170
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\EventPartnerTest > updating a partner logo removes…    
+  Found unexpected file or directory at path [event-partners/old-logo.png].
+Failed asserting that true is false.
+
+  at vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemAdapter.php:187
+    183▕ 
+    184▕         $paths = Arr::wrap($path);
+    185▕ 
+    186▕         foreach ($paths as $path) {
+  ➜ 187▕             PHPUnit::assertFalse(
+    188▕                 $this->exists($path), "Found unexpected file or directory at path [{$path}]."
+    189▕             );
+    190▕         }
+    191▕
+
+      +1 vendor frames 
+  2   tests/Feature/EventPartnerTest.php:195
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\RsvpHoneypotTest > rsvp form accepts valid submissi…   
+  Expected response status code [201, 301, 302, 303, 307, 308] but received 404.
+Failed asserting that false is true.
+
+  at tests/Feature/RsvpHoneypotTest.php:69
+     65▕     ];
+     66▕ 
+     67▕     $response = $this->post(route('events.rsvp.book', $this->event->slug), $validData);
+     68▕ 
+  ➜  69▕     $response->assertRedirect();
+     70▕     $response->assertSessionHas('message');
+     71▕     $this->assertDatabaseHas('rsvps', [
+     72▕         'email' => 'john@example.com',
+     73▕         'event_id' => $this->event->id
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\RsvpWaitlistTest > waitlist confirmation mail is se…   
+  The expected [App\Mail\WaitlistConfirmationMail] mailable was not queued.
+Failed asserting that false is true.
+
+  at vendor/laravel/framework/src/Illuminate/Support/Testing/Fakes/MailFake.php:215
+    211▕ 
+    212▕             return;
+    213▕         }
+    214▕ 
+  ➜ 215▕         PHPUnit::assertTrue(
+    216▕             $this->queued($mailable, $callback)->count() > 0,
+    217▕             "The expected [{$mailable}] mailable was not queued."
+    218▕         );
+    219▕     }
+
+      +2 vendor frames 
+  3   tests/Feature/RsvpWaitlistTest.php:227
+
+
+  Tests:    21 failed, 24 passed (72 assertions)
+  Duration: 5.45s
+

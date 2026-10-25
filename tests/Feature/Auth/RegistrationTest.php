@@ -1,19 +1,19 @@
 <?php
 
-test('registration screen can be rendered', function () {
-    $response = $this->get('/register');
+/*
+ * Registration is handled by the Filament admin panel; /register only forwards there.
+ */
 
-    $response->assertStatus(200);
+test('register address sends visitors to the Filament admin registration', function () {
+    $this->get('/register')->assertRedirect(route('filament.admin.auth.register'));
 });
 
-test('new users can register', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+test('Filament admin registration screen can be rendered', function () {
+    $this->get(route('filament.admin.auth.register'))->assertOk();
+});
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+test('the starter-kit registration form is not served', function () {
+    $this->post('/register', ['name' => 'Test User', 'email' => 'test@example.com', 'password' => 'password'])
+        ->assertStatus(405);
+    $this->assertGuest();
 });

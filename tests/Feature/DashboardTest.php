@@ -2,15 +2,17 @@
 
 use App\Models\User;
 
-test('guests are redirected to the login page', function () {
-    $response = $this->get('/dashboard');
-    $response->assertRedirect('/login');
+/*
+ * The starter-kit dashboard route is commented out in routes/web.php: signed-in
+ * users work in the Filament admin panel.
+ */
+
+test('the starter-kit dashboard is not served to guests', function () {
+    $this->get('/dashboard')->assertNotFound();
 });
 
-test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
+test('the starter-kit dashboard is not served to signed-in users', function () {
+    $this->actingAs(User::factory()->create());
 
-    $response = $this->get('/dashboard');
-    $response->assertStatus(200);
+    $this->get('/dashboard')->assertNotFound();
 });

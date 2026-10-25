@@ -268,6 +268,8 @@ php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --mutate --covered
 
 ### Quality documentation
 - [Test strategy](docs/testing/TEST_STRATEGY.md) and [test plan](docs/testing/TEST_PLAN.md) with the case catalogue.
+- [Test case catalogue](docs/testing/TEST_CASES.md): 54 cases for the three flows, each traced to its automated tests and result.
+- [Test results](docs/testing/TEST_RESULTS.md): run record, before and after figures, coverage by class and sign-off, with the raw run output in [docs/testing/evidence/](docs/testing/evidence/).
 - [Defect log](docs/defects/DEFECT_LOG.md) and the test run taken before any fix.
 - [Baseline coverage](docs/baseline/clover-cleandb.xml) and the final measurements in `docs/final/`.
 - The GitHub Actions workflow in `.github/workflows/ci.yml` runs style, static analysis, tests with coverage and mutation testing.

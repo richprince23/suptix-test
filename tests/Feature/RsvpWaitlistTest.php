@@ -224,7 +224,8 @@ class RsvpWaitlistTest extends TestCase
             'phone'      => '0244123456',
         ]);
 
-        Mail::assertQueued(\App\Mail\WaitlistConfirmationMail::class, function ($mail) {
+        // The controller sends the confirmation immediately (sendNow), so it is sent, not queued
+        Mail::assertSent(\App\Mail\WaitlistConfirmationMail::class, function ($mail) {
             return $mail->hasTo('alice@example.com');
         });
     }

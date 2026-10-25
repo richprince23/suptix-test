@@ -122,6 +122,8 @@ class EventPartnerTest extends TestCase
     #[Test]
     public function logo_url_returns_a_public_storage_url_when_logo_is_set(): void
     {
+        // The model reads and deletes logos on the default disk; use the faked public disk whatever FILESYSTEM_DISK is
+        config(['filesystems.default' => 'public']);
         Storage::fake('public');
 
         $organizer = $this->makeOrganizer();
@@ -147,6 +149,8 @@ class EventPartnerTest extends TestCase
     #[Test]
     public function deleting_a_partner_removes_its_logo_from_storage(): void
     {
+        // The model reads and deletes logos on the default disk; use the faked public disk whatever FILESYSTEM_DISK is
+        config(['filesystems.default' => 'public']);
         Storage::fake('public');
         Storage::disk('public')->put('event-partners/delete-me.png', 'fake');
 
@@ -173,6 +177,8 @@ class EventPartnerTest extends TestCase
     #[Test]
     public function updating_a_partner_logo_removes_the_old_logo_from_storage(): void
     {
+        // The model reads and deletes logos on the default disk; use the faked public disk whatever FILESYSTEM_DISK is
+        config(['filesystems.default' => 'public']);
         Storage::fake('public');
         Storage::disk('public')->put('event-partners/old-logo.png', 'fake');
         Storage::disk('public')->put('event-partners/new-logo.png', 'fake');

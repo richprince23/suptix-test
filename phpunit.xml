@@ -11,11 +11,11 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
-        <!-- Disabled with tests/_disabled (see its README); restore both together.
+
         <testsuite name="Browser">
             <directory>tests/Browser</directory>
         </testsuite>
-        -->
+
     </testsuites>
     <!-- <source>
         <include>

@@ -48,6 +48,7 @@ beforeEach(function () {
         'start_time' => '18:00:00',
         'end_date' => now()->addDays(7),
         'end_time' => '22:00:00',
+        'is_rsvp' => true,
         'status' => 'published',
         'slug' => 'test-event',
         'code' => 'TEST001'

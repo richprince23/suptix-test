@@ -1,60 +1,23 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Support\Facades\Notification;
+/*
+ * Password reset is handled by the Filament admin panel; the starter-kit
+ * forgot-password and reset-password routes are not loaded.
+ */
 
-test('reset password link screen can be rendered', function () {
-    $response = $this->get('/forgot-password');
-
-    $response->assertStatus(200);
+test('the starter-kit reset password link screen is not served', function () {
+    $this->get('/forgot-password')->assertNotFound();
 });
 
-test('reset password link can be requested', function () {
-    Notification::fake();
-
-    $user = User::factory()->create();
-
-    $this->post('/forgot-password', ['email' => $user->email]);
-
-    Notification::assertSentTo($user, ResetPassword::class);
+test('a reset link cannot be requested through the starter-kit route', function () {
+    $this->post('/forgot-password', ['email' => 'user@example.com'])->assertNotFound();
 });
 
-test('reset password screen can be rendered', function () {
-    Notification::fake();
-
-    $user = User::factory()->create();
-
-    $this->post('/forgot-password', ['email' => $user->email]);
-
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-        $response = $this->get('/reset-password/'.$notification->token);
-
-        $response->assertStatus(200);
-
-        return true;
-    });
+test('the starter-kit reset password screen and form are not served', function () {
+    $this->get('/reset-password/token')->assertNotFound();
+    $this->post('/reset-password', ['token' => 'token'])->assertNotFound();
 });
 
-test('password can be reset with valid token', function () {
-    Notification::fake();
-
-    $user = User::factory()->create();
-
-    $this->post('/forgot-password', ['email' => $user->email]);
-
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-        $response = $this->post('/reset-password', [
-            'token' => $notification->token,
-            'email' => $user->email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('login'));
-
-        return true;
-    });
+test('Filament admin password reset request screen can be rendered', function () {
+    $this->get('/admin/password-reset/request')->assertOk();
 });
