@@ -42,6 +42,7 @@ class CheckInController extends Controller
         }
 
         SeoService::setAttendeeCheckInSEO();
+
         return Inertia::render('AttendeeCheckIn', [
             'selectedEvent' => $selectedEvent,
             'seo' => SeoService::attendeeCheckIn(),

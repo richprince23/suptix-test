@@ -5,7 +5,6 @@ use App\Models\Organizer;
 use App\Models\RSVP;
 use App\Models\User;
 use App\Models\Venue;
-use Illuminate\Support\Facades\Log;
 
 beforeEach(function () {
     // Create test organizer
@@ -16,14 +15,14 @@ beforeEach(function () {
         'address' => '123 Test St',
         'city' => 'Test City',
         'state' => 'Test State',
-        'country' => 'Test Country'
+        'country' => 'Test Country',
     ]);
 
     // Create test user
     $user = User::create([
         'name' => 'Test User',
         'email' => 'user@test.com',
-        'password' => bcrypt('password')
+        'password' => bcrypt('password'),
     ]);
     $organizer->users()->attach($user);
 
@@ -41,7 +40,7 @@ beforeEach(function () {
     // Create test event
     $this->event = Event::create([
         'organizer_id' => $organizer->id,
-        'venue' => "Test Venue",
+        'venue' => 'Test Venue',
         'title' => 'Test Event',
         'description' => 'A test event',
         'start_date' => now()->addDays(7),
@@ -51,7 +50,7 @@ beforeEach(function () {
         'is_rsvp' => true,
         'status' => 'published',
         'slug' => 'test-event',
-        'code' => 'TEST001'
+        'code' => 'TEST001',
     ]);
 });
 
@@ -71,7 +70,7 @@ test('rsvp form accepts valid submission without honeypot', function () {
     $response->assertSessionHas('message');
     $this->assertDatabaseHas('rsvps', [
         'email' => 'john@example.com',
-        'event_id' => $this->event->id
+        'event_id' => $this->event->id,
     ]);
 });
 
@@ -94,7 +93,7 @@ test('rsvp form blocks spam with filled honeypot', function () {
     // Should NOT create RSVP record
     $this->assertDatabaseMissing('rsvps', [
         'email' => 'spam@bot.com',
-        'event_id' => $this->event->id
+        'event_id' => $this->event->id,
     ]);
 });
 
@@ -115,6 +114,6 @@ test('honeypot field validation prevents empty field values greater than max len
     // Should not create RSVP
     $this->assertDatabaseMissing('rsvps', [
         'email' => 'valid@example.com',
-        'event_id' => $this->event->id
+        'event_id' => $this->event->id,
     ]);
 });

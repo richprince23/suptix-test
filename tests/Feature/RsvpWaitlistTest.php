@@ -3,11 +3,12 @@
 namespace Tests\Feature;
 
 use App\Exceptions\InsufficientCreditsException;
+use App\Mail\WaitlistConfirmationMail;
 use App\Models\Event;
 use App\Models\EventCreditAccount;
+use App\Models\EventFormField;
 use App\Models\Organizer;
 use App\Models\RSVP;
-use App\Models\RsvpCreditSettings;
 use App\Models\RsvpWaitlist;
 use App\Services\EventCreditService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -33,26 +34,26 @@ class RsvpWaitlistTest extends TestCase
         $this->service = app(EventCreditService::class);
 
         $this->organizer = Organizer::create([
-            'name'    => 'Test Org',
-            'email'   => 'org@example.com',
-            'phone'   => '0300000001',
+            'name' => 'Test Org',
+            'email' => 'org@example.com',
+            'phone' => '0300000001',
             'address' => '1 Test St',
-            'city'    => 'Accra',
-            'state'   => 'greater_accra_region',
+            'city' => 'Accra',
+            'state' => 'greater_accra_region',
             'country' => 'ghana',
         ]);
 
         $this->event = Event::create([
             'organizer_id' => $this->organizer->id,
-            'title'        => 'Test RSVP Event',
-            'slug'         => 'test-rsvp-event-' . uniqid(),
-            'code'         => strtoupper(uniqid()),
-            'is_rsvp'      => true,
-            'status'       => 'published',
-            'start_date'   => now()->addDays(7)->toDateString(),
-            'start_time'   => '09:00:00',
-            'event_type'   => 'Conference',
-            'description'  => 'Test event description',
+            'title' => 'Test RSVP Event',
+            'slug' => 'test-rsvp-event-'.uniqid(),
+            'code' => strtoupper(uniqid()),
+            'is_rsvp' => true,
+            'status' => 'published',
+            'start_date' => now()->addDays(7)->toDateString(),
+            'start_time' => '09:00:00',
+            'event_type' => 'Conference',
+            'description' => 'Test event description',
         ]);
 
         $this->account = $this->service->ensureAccountExists($this->event);
@@ -61,10 +62,10 @@ class RsvpWaitlistTest extends TestCase
     public function test_waitlist_entry_is_created_with_auto_position(): void
     {
         $entry = RsvpWaitlist::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Alice Smith',
-            'email'        => 'alice@example.com',
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
         ]);
 
         $this->assertEquals(1, $entry->position);
@@ -116,11 +117,11 @@ class RsvpWaitlistTest extends TestCase
     public function test_approve_waitlist_entry_creates_rsvp(): void
     {
         $entry = RsvpWaitlist::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Alice Smith',
-            'email'        => 'alice@example.com',
-            'phone'        => '0244123456',
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
+            'phone' => '0244123456',
         ]);
 
         $rsvp = $this->service->approveWaitlistEntry($entry);
@@ -136,10 +137,10 @@ class RsvpWaitlistTest extends TestCase
     public function test_approve_waitlist_entry_marks_entry_approved(): void
     {
         $entry = RsvpWaitlist::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Alice Smith',
-            'email'        => 'alice@example.com',
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
         ]);
 
         $this->service->approveWaitlistEntry($entry);
@@ -154,10 +155,10 @@ class RsvpWaitlistTest extends TestCase
         $before = $this->account->used_attendee_slots;
 
         $entry = RsvpWaitlist::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Alice Smith',
-            'email'        => 'alice@example.com',
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
         ]);
 
         $this->service->approveWaitlistEntry($entry);
@@ -171,10 +172,10 @@ class RsvpWaitlistTest extends TestCase
         $this->account->update(['used_attendee_slots' => 100]);
 
         $entry = RsvpWaitlist::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Alice Smith',
-            'email'        => 'alice@example.com',
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
         ]);
 
         $this->expectException(InsufficientCreditsException::class);
@@ -185,29 +186,29 @@ class RsvpWaitlistTest extends TestCase
     public function test_approve_waitlist_entry_transfers_custom_fields_to_rsvp_responses(): void
     {
         // Create a real EventFormField to satisfy the FK constraint
-        $field = \App\Models\EventFormField::create([
-            'event_id'    => $this->event->id,
+        $field = EventFormField::create([
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'label'       => 'Dietary Preference',
-            'type'        => 'text',
+            'label' => 'Dietary Preference',
+            'type' => 'text',
             'is_required' => false,
-            'sort_order'  => 1,
+            'sort_order' => 1,
         ]);
 
         $entry = RsvpWaitlist::create([
-            'event_id'      => $this->event->id,
-            'organizer_id'  => $this->organizer->id,
-            'guest_name'    => 'Alice Smith',
-            'email'         => 'alice@example.com',
+            'event_id' => $this->event->id,
+            'organizer_id' => $this->organizer->id,
+            'guest_name' => 'Alice Smith',
+            'email' => 'alice@example.com',
             'custom_fields' => [$field->id => 'Vegan'],
         ]);
 
         $rsvp = $this->service->approveWaitlistEntry($entry);
 
         $this->assertDatabaseHas('rsvp_responses', [
-            'rsvp_id'             => $rsvp->id,
+            'rsvp_id' => $rsvp->id,
             'event_form_field_id' => $field->id,
-            'value'               => 'Vegan',
+            'value' => 'Vegan',
         ]);
     }
 
@@ -220,12 +221,12 @@ class RsvpWaitlistTest extends TestCase
 
         $this->post("/events/{$this->event->slug}/rsvp", [
             'guest_name' => 'Alice Smith',
-            'email'      => 'alice@example.com',
-            'phone'      => '0244123456',
+            'email' => 'alice@example.com',
+            'phone' => '0244123456',
         ]);
 
         // The controller sends the confirmation immediately (sendNow), so it is sent, not queued
-        Mail::assertSent(\App\Mail\WaitlistConfirmationMail::class, function ($mail) {
+        Mail::assertSent(WaitlistConfirmationMail::class, function ($mail) {
             return $mail->hasTo('alice@example.com');
         });
     }
@@ -236,14 +237,14 @@ class RsvpWaitlistTest extends TestCase
 
         $this->post("/events/{$this->event->slug}/rsvp", [
             'guest_name' => 'Alice Smith',
-            'email'      => 'alice@example.com',
-            'phone'      => '0244123456',
+            'email' => 'alice@example.com',
+            'phone' => '0244123456',
         ]);
 
         $response = $this->post("/events/{$this->event->slug}/rsvp", [
             'guest_name' => 'Alice Smith',
-            'email'      => 'alice@example.com',
-            'phone'      => '0244123456',
+            'email' => 'alice@example.com',
+            'phone' => '0244123456',
         ]);
 
         $response->assertSessionHasErrors('venue_full');
@@ -254,8 +255,8 @@ class RsvpWaitlistTest extends TestCase
     {
         $response = $this->post("/events/{$this->event->slug}/rsvp", [
             'guest_name' => 'Bob Jones',
-            'email'      => 'bob@example.com',
-            'phone'      => '0244123456',
+            'email' => 'bob@example.com',
+            'phone' => '0244123456',
         ]);
 
         $response->assertSessionHasNoErrors();

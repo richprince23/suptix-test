@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventCreditPurchase;
 use App\Models\PaymentInfo;
 use App\Services\EventCreditService;
 use App\Services\PaystackService;

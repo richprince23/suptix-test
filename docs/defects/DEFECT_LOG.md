@@ -69,3 +69,10 @@ Severity: **High** = money, admission or personal data is wrong; **Medium** = a 
 - API v2 reports `used_tickets` and `is_used` from the nonexistent `is_used` column, so it always shows zero used tickets.
 - `Ticket::purchases()` points at a `purchases.ticket_id` column that does not exist (purchases belong to orders), so every API v2 call that uses it raises an SQL error.
 - `PaymentInfo`'s `updated` hook tests `isDirty('status')`, which is always false inside an updated event, so that block never runs.
+
+## Found by static checks while making the CI workflow pass (not counted above)
+
+| Item | Finding | Resolution |
+|---|---|---|
+| `formatDateShort` missing in `EventDetails.vue` | The schedule section calls `formatDateShort` for events with sessions, but the page no longer defined it, so the call would fail at render. The earlier lint clean-up (`22e160b`) removed it as unused; the later restore of the original template used it again. Found by `vue-tsc` (TS2551), not by a failing test | Function restored |
+| Type errors and style failures | `vue-tsc` reported 31 errors against a limit of 26, Pint failed on 5 files, and ESLint on 4 unused variables | Type annotations, formatting and four unused declarations fixed with no change in behaviour; `vue-tsc` now reports 21 |

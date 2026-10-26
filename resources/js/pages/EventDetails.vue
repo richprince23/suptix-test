@@ -967,8 +967,6 @@ const props = defineProps<{
     errors?: Record<string, string>;
 }>();
 
-const isMapShown = ref(false);
-
 const isMultiDay = computed(() => {
     return !!(props.event.end_date && props.event.end_date !== props.event.start_date);
 });
@@ -1016,24 +1014,6 @@ const displayEndTime = computed(() => {
     return props.event.end_time;
 });
 
-const activePeople = computed(() => {
-    const people = props.event.people || [];
-    // If no people have a session assigned, show all (backward compatible)
-    const anyAssigned = people.some(p => p.session_id != null);
-    if (!anyAssigned) return people;
-
-    const activeSessionIds = new Set(activeSessions.value.map(s => s.id));
-    return people.filter(p => p.session_id == null || activeSessionIds.has(p.session_id));
-});
-
-const eventPartners = computed(() =>
-    (props.event.all_partners || []).filter(p => p.type === 'partner')
-);
-
-const eventSponsors = computed(() =>
-    (props.event.all_partners || []).filter(p => p.type === 'sponsor')
-);
-
 // Debug: Log the received event data
 // console.log('EventDetails received event:', props.event);
 // console.log('Event ticket types:', props.event.ticketTypes || 'No ticketTypes property');
@@ -1051,7 +1031,7 @@ const validationDiscount = reactive({
 const rsvpProcessing = ref(false);
 const rsvpSuccess = ref('');
 const rsvpCheckingEmail = ref(false);
-const existingRsvp = ref(null);
+const existingRsvp = ref<any>(null);
 const isUpdatingRsvp = ref(false);
 
 // Report modal state
@@ -1366,6 +1346,13 @@ const formatDate = (dateString: string): string => {
     });
 };
 
+const formatDateShort = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+    });
+};
+
 const formatTime = (timeString: string): string => {
     return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
         hour: 'numeric',
@@ -1564,7 +1551,7 @@ const sendRsvp = () => {
         },
         onSuccess: (page) => {
             console.log('RSVP submission successful', page);
-            const wasUpdate = page.props.flash?.is_update || isUpdatingRsvp.value;
+            const wasUpdate = (page.props as any).flash?.is_update || isUpdatingRsvp.value;
 
             rsvpSuccess.value = wasUpdate
                 ? "Your RSVP has been updated successfully!"

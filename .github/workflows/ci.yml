@@ -1,7 +1,7 @@
 name: Suptix Workflow
 on:
   push:
-    branches: [master, staging]
+    branches: [master, staging, original-scope]
   pull_request:
     branches: [master]
   workflow_dispatch:

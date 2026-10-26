@@ -4,12 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Event;
 use App\Models\EventCreditAccount;
-use App\Models\EventCreditLog;
 use App\Models\EventCreditPurchase;
 use App\Models\Organizer;
 use App\Models\RSVP;
 use App\Models\RsvpCreditSettings;
-use App\Models\User;
 use App\Services\CreditCheckResult;
 use App\Services\EventCreditService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -32,26 +30,26 @@ class EventCreditTest extends TestCase
         $this->service = app(EventCreditService::class);
 
         $this->organizer = Organizer::create([
-            'name'    => 'Test Org',
-            'email'   => 'org@example.com',
-            'phone'   => '0300000001',
+            'name' => 'Test Org',
+            'email' => 'org@example.com',
+            'phone' => '0300000001',
             'address' => '1 Test St',
-            'city'    => 'Accra',
-            'state'   => 'greater_accra_region',
+            'city' => 'Accra',
+            'state' => 'greater_accra_region',
             'country' => 'ghana',
         ]);
 
         $this->event = Event::create([
             'organizer_id' => $this->organizer->id,
-            'title'        => 'Test RSVP Event',
-            'slug'         => 'test-rsvp-event-' . uniqid(),
-            'code'         => strtoupper(uniqid()),
-            'is_rsvp'      => true,
-            'status'       => 'published',
-            'start_date'   => now()->addDays(7)->toDateString(),
-            'start_time'   => '09:00:00',
-            'event_type'   => 'Conference',
-            'description'  => 'Test event description',
+            'title' => 'Test RSVP Event',
+            'slug' => 'test-rsvp-event-'.uniqid(),
+            'code' => strtoupper(uniqid()),
+            'is_rsvp' => true,
+            'status' => 'published',
+            'start_date' => now()->addDays(7)->toDateString(),
+            'start_time' => '09:00:00',
+            'event_type' => 'Conference',
+            'description' => 'Test event description',
         ]);
     }
 
@@ -72,7 +70,7 @@ class EventCreditTest extends TestCase
 
     public function test_ensure_account_exists_is_idempotent(): void
     {
-        $first  = $this->service->ensureAccountExists($this->event);
+        $first = $this->service->ensureAccountExists($this->event);
         $second = $this->service->ensureAccountExists($this->event);
 
         $this->assertEquals($first->id, $second->id);
@@ -129,9 +127,9 @@ class EventCreditTest extends TestCase
 
         $this->assertDatabaseHas('event_credit_logs', [
             'event_id' => $this->event->id,
-            'rsvp_id'  => $rsvp->id,
-            'type'     => 'attendee_consumed',
-            'source'   => 'free_tier',
+            'rsvp_id' => $rsvp->id,
+            'type' => 'attendee_consumed',
+            'source' => 'free_tier',
         ]);
     }
 
@@ -162,19 +160,19 @@ class EventCreditTest extends TestCase
         for ($i = 0; $i < 5; $i++) {
             $ev = Event::create([
                 'organizer_id' => $this->organizer->id,
-                'title'        => 'Aux Event ' . $i,
-                'slug'         => 'aux-event-' . $i . '-' . uniqid(),
-                'code'         => strtoupper(uniqid()),
-                'is_rsvp'      => true,
-                'status'       => 'published',
-                'start_date'   => now()->addDays(7)->toDateString(),
-                'start_time'   => '09:00:00',
-                'event_type'   => 'Conference',
-                'description'  => 'Aux event description',
+                'title' => 'Aux Event '.$i,
+                'slug' => 'aux-event-'.$i.'-'.uniqid(),
+                'code' => strtoupper(uniqid()),
+                'is_rsvp' => true,
+                'status' => 'published',
+                'start_date' => now()->addDays(7)->toDateString(),
+                'start_time' => '09:00:00',
+                'event_type' => 'Conference',
+                'description' => 'Aux event description',
             ]);
 
             EventCreditAccount::where('event_id', $ev->id)->update([
-                'global_daily_email_date'  => now()->toDateString(),
+                'global_daily_email_date' => now()->toDateString(),
                 'global_daily_email_count' => 1,
             ]);
         }
@@ -190,16 +188,16 @@ class EventCreditTest extends TestCase
     public function test_grant_credits_from_purchase_increments_purchased_columns(): void
     {
         $purchase = EventCreditPurchase::create([
-            'event_id'               => $this->event->id,
-            'organizer_id'           => $this->organizer->id,
-            'paystack_reference'     => 'TEST-REF-' . uniqid(),
-            'amount'                 => 45.00,
-            'pack_key'               => 'slots_100',
-            'quantity'               => 1,
+            'event_id' => $this->event->id,
+            'organizer_id' => $this->organizer->id,
+            'paystack_reference' => 'TEST-REF-'.uniqid(),
+            'amount' => 45.00,
+            'pack_key' => 'slots_100',
+            'quantity' => 1,
             'attendee_slots_granted' => 100,
-            'email_credits_granted'  => 100,
-            'sms_credits_granted'    => 0,
-            'status'                 => 'pending',
+            'email_credits_granted' => 100,
+            'sms_credits_granted' => 0,
+            'status' => 'pending',
         ]);
 
         $this->service->grantCreditsFromPurchase($purchase);
@@ -215,25 +213,25 @@ class EventCreditTest extends TestCase
     public function test_grant_credits_writes_log_entries(): void
     {
         $purchase = EventCreditPurchase::create([
-            'event_id'               => $this->event->id,
-            'organizer_id'           => $this->organizer->id,
-            'paystack_reference'     => 'TEST-REF-' . uniqid(),
-            'amount'                 => 45.00,
-            'pack_key'               => 'slots_100',
-            'quantity'               => 1,
+            'event_id' => $this->event->id,
+            'organizer_id' => $this->organizer->id,
+            'paystack_reference' => 'TEST-REF-'.uniqid(),
+            'amount' => 45.00,
+            'pack_key' => 'slots_100',
+            'quantity' => 1,
             'attendee_slots_granted' => 100,
-            'email_credits_granted'  => 100,
-            'sms_credits_granted'    => 0,
-            'status'                 => 'pending',
+            'email_credits_granted' => 100,
+            'sms_credits_granted' => 0,
+            'status' => 'pending',
         ]);
 
         $this->service->grantCreditsFromPurchase($purchase);
 
         $this->assertDatabaseHas('event_credit_logs', [
-            'event_id'    => $this->event->id,
+            'event_id' => $this->event->id,
             'purchase_id' => $purchase->id,
-            'type'        => 'attendee_granted',
-            'source'      => 'purchase',
+            'type' => 'attendee_granted',
+            'source' => 'purchase',
         ]);
     }
 
@@ -249,9 +247,9 @@ class EventCreditTest extends TestCase
 
         $this->assertDatabaseHas('event_credit_logs', [
             'event_id' => $this->event->id,
-            'type'     => 'attendee_granted',
-            'source'   => 'admin_grant',
-            'note'     => 'Testing comp grant',
+            'type' => 'attendee_granted',
+            'source' => 'admin_grant',
+            'note' => 'Testing comp grant',
         ]);
 
         $account->refresh();
@@ -265,10 +263,10 @@ class EventCreditTest extends TestCase
     private function makeRsvp(): RSVP
     {
         return RSVP::create([
-            'event_id'     => $this->event->id,
+            'event_id' => $this->event->id,
             'organizer_id' => $this->organizer->id,
-            'guest_name'   => 'Test Guest',
-            'email'        => 'guest@example.com',
+            'guest_name' => 'Test Guest',
+            'email' => 'guest@example.com',
         ]);
     }
 }

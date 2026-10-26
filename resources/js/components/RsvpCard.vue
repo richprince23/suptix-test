@@ -130,7 +130,7 @@
                     <div class="rounded-lg bg-blue-50 p-4 text-center">
                         <CheckCircle class="mx-auto mb-2 h-8 w-8 text-blue-600" />
                         <p class="font-semibold text-blue-800">Guest Already Checked In</p>
-                        <p class="text-sm text-blue-600">{{ formatDateTime(rsvp.checked_in_at) }}</p>
+                        <p class="text-sm text-blue-600">{{ formatDateTime(rsvp.checked_in_at!) }}</p>
                         <p v-if="rsvp.checked_in_by" class="text-sm text-blue-600">by {{ rsvp.checked_in_by.name }}</p>
                     </div>
                 </div>

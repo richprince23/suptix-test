@@ -367,10 +367,10 @@ interface RsvpData {
     event: Event;
 }
 
-interface SearchResults {
-    type: 'ticket' | 'order' | 'rsvp';
-    data: TicketData | Order | RsvpData;
-}
+type SearchResults =
+    | { type: 'ticket'; data: TicketData }
+    | { type: 'order'; data: Order }
+    | { type: 'rsvp'; data: RsvpData };
 
 interface SelectedEvent {
     id: number;
