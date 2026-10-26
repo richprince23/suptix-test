@@ -350,6 +350,7 @@ Commands to reproduce these results: [run the tests](dev-notes.md#3-running-test
 - Baseline coverage: [coverage-summary.txt](coverage-summary.txt) (whole application, text report), [docs/baseline/](docs/baseline/) (clover files, HTML report and run output).
 - Earlier final measurements: [docs/final/](docs/final/) (see [Appendix D](#appendix-d-earlier-recorded-figures)).
 - [Developer notes and every command](dev-notes.md).
+- [Report tiny draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx): the chapter structure and writing guide the report follows.
 - System design diagrams: [System_Design.mmd](docs/design/System_Design.mmd) and [System_Design_Sequence.mmd](docs/design/System_Design_Sequence.mmd).
 - The GitHub Actions workflow in [.github/workflows/ci.yml](.github/workflows/ci.yml) runs style, static analysis, tests with coverage and mutation testing; the scope gate is [scripts/check-scope-coverage.php](scripts/check-scope-coverage.php).
 
@@ -433,6 +434,7 @@ Additional reference documentation is available in the repository:
 | [docs/final/performance.md](docs/final/performance.md) | Query counts and response times |
 | [docs/final/CI_EVIDENCE.md](docs/final/CI_EVIDENCE.md) | GitHub Actions runs used as evidence |
 | [docs/final/phpstan.txt](docs/final/phpstan.txt), [pint.txt](docs/final/pint.txt), [frontend.txt](docs/final/frontend.txt) | Static analysis, style and front-end lint results |
+| [docs/report/Suptix_SQA_Report_Tiny_Draft.docx](docs/report/Suptix_SQA_Report_Tiny_Draft.docx) | Tiny draft: the chapter-by-chapter writing guide the report follows (chapters 1 to 5) |
 | [docs/design/System_Design.mmd](docs/design/System_Design.mmd), [System_Design_Sequence.mmd](docs/design/System_Design_Sequence.mmd) | Mermaid sources of the design diagrams |
 | [phpunit.xml](phpunit.xml), [phpstan.neon](phpstan.neon), [.github/workflows/ci.yml](.github/workflows/ci.yml) | Test, analysis and pipeline configuration |
 | [scripts/check-scope-coverage.php](scripts/check-scope-coverage.php) | In-scope coverage gate |
