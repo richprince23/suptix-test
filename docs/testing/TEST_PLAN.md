@@ -6,7 +6,7 @@
 | Author | Richard Kweku Aikins (17626923) |
 | Status | Version 1.0, written before the main test implementation |
 | Strategy | [TEST_STRATEGY.md](TEST_STRATEGY.md) |
-| Branch | `slim-core` |
+| Branch | `original-scope` |
 | Due date | 26 October 2026, 18:00 |
 
 ## 1. Introduction

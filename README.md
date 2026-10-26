@@ -342,7 +342,7 @@ Out of scope: Mobile API v2, Filament Admin, and the Providers, Console and Exce
 
 ### Appendix D: Earlier recorded figures
 
-[docs/final/](docs/final/) records an earlier final run on the `slim-core` branch: 350 tests (349 passed, 1 skipped), in-scope coverage 92.3% (1,709 of 1,852 lines) and a mutation score of 74.0%. The results in [Test results](#test-results) come from the later run on `original-scope`, so the totals differ slightly. The mutation, performance and CI figures were not repeated on `original-scope`.
+[docs/final/](docs/final/) holds the figures from the earlier final run, taken before the original features were restored: 350 tests (349 passed, 1 skipped), in-scope coverage 92.3% (1,709 of 1,852 lines) and a mutation score of 74.0%. The results in [Test results](#test-results) come from the later run, so the totals differ slightly. The mutation, performance and CI figures were not repeated on the later run, so they are cited from `docs/final/`.
 
 ### Appendix E: Defect summary
 
