@@ -2,6 +2,8 @@
 
 This repository is a case study in software quality assurance and testing (module 7020SCN). It takes Suptix, a Laravel 12 and Vue 3 event ticketing platform, and applies a risk-based test process to the three flows that carry revenue, payment trust and event entry. It holds the application, the automated tests, the test documentation and the evidence behind the report.
 
+> **Report guide.** This case study was planned and written to the structure of the [Suptix SQA Report Tiny Draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx) (chapters 1 to 5), which was used as the guide throughout. [Appendix G](#appendix-g-report-guide-the-tiny-draft) shows where each part of the draft is answered in this repository.
+
 ---
 
 ## Table of Contents
@@ -22,6 +24,7 @@ This repository is a case study in software quality assurance and testing (modul
   - [Appendix D: Earlier recorded figures](#appendix-d-earlier-recorded-figures)
   - [Appendix E: Defect summary](#appendix-e-defect-summary)
   - [Appendix F: Test ID prefixes](#appendix-f-test-id-prefixes)
+  - [Appendix G: Report guide, the tiny draft](#appendix-g-report-guide-the-tiny-draft)
 - [License](#license)
 
 Every command used in this project is listed in [dev-notes.md](dev-notes.md).
@@ -40,7 +43,7 @@ Every command used in this project is listed in [dev-notes.md](dev-notes.md).
 
 **Out of scope:** Mobile API v2, the Filament admin panel, and the Providers, Console and Exceptions directories. Coverage is reported for the 13 in-scope classes only, never for the whole application.
 
-**Approach.** The work follows the ISO/IEC 29119 document set: a [test strategy](docs/testing/TEST_STRATEGY.md), a [test plan](docs/testing/TEST_PLAN.md), a [54-case catalogue](docs/testing/TEST_CASES.md) and an execution record ([results](docs/testing/TEST_RESULTS.md)). Tests are ranked by risk (Priority 1 blocks sign-off), run against an isolated database with faked Paystack, mail and queue services, and gated in CI. Concurrency tests are simulations, because transactions hide uncommitted rows from other processes.
+**Approach.** The work follows the [report tiny draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx) and the ISO/IEC 29119 document set: a [test strategy](docs/testing/TEST_STRATEGY.md), a [test plan](docs/testing/TEST_PLAN.md), a [54-case catalogue](docs/testing/TEST_CASES.md) and an execution record ([results](docs/testing/TEST_RESULTS.md)). Tests are ranked by risk (Priority 1 blocks sign-off), run against an isolated database with faked Paystack, mail and queue services, and gated in CI. Concurrency tests are simulations, because transactions hide uncommitted rows from other processes.
 
 **Branches.** `original-scope` holds the full study. The baseline is commit `a36bd12` (the inherited tests only). `master` on the Coventry repository follows `original-scope`.
 
@@ -243,7 +246,7 @@ Commands to reproduce these results: [run the tests](dev-notes.md#3-running-test
 - Baseline coverage: [coverage-summary.txt](coverage-summary.txt) (whole application, text report), [docs/baseline/](docs/baseline/) (clover files, HTML report and run output).
 - Earlier final measurements: [docs/final/](docs/final/) (see [Appendix D](#appendix-d-earlier-recorded-figures)).
 - [Developer notes and every command](dev-notes.md).
-- [Report tiny draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx): the chapter structure and writing guide the report follows.
+- [Report tiny draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx): **the guide the report was written to** ([Appendix G](#appendix-g-report-guide-the-tiny-draft)).
 - System design diagrams: [System_Design.mmd](docs/design/System_Design.mmd) and [System_Design_Sequence.mmd](docs/design/System_Design_Sequence.mmd).
 - The CI pipeline and its gates are described in [Continuous integration](#continuous-integration).
 
@@ -305,7 +308,7 @@ Recorded CI runs are in [docs/final/CI_EVIDENCE.md](docs/final/CI_EVIDENCE.md).
 | [docs/final/performance.md](docs/final/performance.md) | Query counts and response times |
 | [docs/final/CI_EVIDENCE.md](docs/final/CI_EVIDENCE.md) | GitHub Actions runs used as evidence |
 | [docs/final/phpstan.txt](docs/final/phpstan.txt), [pint.txt](docs/final/pint.txt), [frontend.txt](docs/final/frontend.txt) | Static analysis, style and front-end lint results |
-| [docs/report/Suptix_SQA_Report_Tiny_Draft.docx](docs/report/Suptix_SQA_Report_Tiny_Draft.docx) | Tiny draft: the chapter-by-chapter writing guide the report follows (chapters 1 to 5) |
+| [docs/report/Suptix_SQA_Report_Tiny_Draft.docx](docs/report/Suptix_SQA_Report_Tiny_Draft.docx) | **The guide the report was written to**: the chapter-by-chapter tiny draft (chapters 1 to 5), see [Appendix G](#appendix-g-report-guide-the-tiny-draft) |
 | [docs/design/System_Design.mmd](docs/design/System_Design.mmd), [System_Design_Sequence.mmd](docs/design/System_Design_Sequence.mmd) | Mermaid sources of the design diagrams |
 | [phpunit.xml](phpunit.xml), [phpstan.neon](phpstan.neon), [.github/workflows/ci.yml](.github/workflows/ci.yml) | Test, analysis and pipeline configuration |
 | [scripts/check-scope-coverage.php](scripts/check-scope-coverage.php) | In-scope coverage gate |
@@ -367,6 +370,23 @@ By flow: F1 7, F2 11, F3 9, general 2. Severity follows the study's severity gui
 | D | Inherited failing tests |
 
 The catalogue IDs in [TEST_CASES.md](docs/testing/TEST_CASES.md) (for example F2-04) are separate from the IDs in the test names (for example F2-16); the catalogue lists which tests cover each case.
+
+### Appendix G: Report guide, the tiny draft
+
+The report was written to [Suptix_SQA_Report_Tiny_Draft.docx](docs/report/Suptix_SQA_Report_Tiny_Draft.docx), a short writing guide with the headings and the content expected in chapters 1 to 5. Its drafting note was followed throughout: bracketed placeholders were replaced with measured results, implementation details were checked against the repository, and proposed tests were not reported as completed tests.
+
+| Tiny draft section | Where it is answered in this repository |
+|---|---|
+| 1.2 System architecture and functional scope (flows F1 to F3, classes, exclusions) | [Case Study Overview](#case-study-overview), [Appendix C](#appendix-c-in-scope-classes-and-coverage) |
+| 2.1 Baseline evaluation (existing tests, `phpunit.xml`, CI, coverage) | [docs/baseline/](docs/baseline/), the baseline column in [Test results](#test-results) |
+| 3.1 System design and implementation | [docs/design/](docs/design/), [Repository Map](#repository-map) |
+| 3.2 Testing strategy | [TEST_STRATEGY.md](docs/testing/TEST_STRATEGY.md), [TEST_PLAN.md](docs/testing/TEST_PLAN.md) |
+| 3.3 Test implementation and results | `tests/`, [TEST_CASES.md](docs/testing/TEST_CASES.md), [TEST_RESULTS.md](docs/testing/TEST_RESULTS.md), [evidence](docs/testing/evidence/) |
+| 3.4 Defect identification and fixes | [DEFECT_LOG.md](docs/defects/DEFECT_LOG.md), [Appendix E](#appendix-e-defect-summary) |
+| 3.5 CI/CD pipeline integration | [Continuous integration](#continuous-integration), [ci.yml](.github/workflows/ci.yml) |
+| 4.1 Metrics (before and after) | [Headline Results](#headline-results), [Test results](#test-results) |
+
+Chapters 2.2, 2.3, 4.2, 4.3 and 5 of the draft (quality models, gap analysis, impact, limitations and conclusions) are discussion in the written report and have no separate file here.
 
 ---
 
