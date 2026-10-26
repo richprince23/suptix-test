@@ -27,6 +27,7 @@ class Organizer extends Model implements HasAvatar
         'website',
         'logo',
         'banner',
+        'rsvp_notification_frequency',
     ];
 
     protected $appends = [
@@ -48,6 +49,11 @@ class Organizer extends Model implements HasAvatar
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    public function creditAccounts()
+    {
+        return $this->hasMany(EventCreditAccount::class);
     }
 
     /** @return HasMany<Ticket, $this> */
@@ -78,6 +84,11 @@ class Organizer extends Model implements HasAvatar
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     /** @return HasMany<Discount, $this> */
@@ -120,6 +131,10 @@ class Organizer extends Model implements HasAvatar
         return $this->hasMany(OrganizerSubscription::class);
     }
 
+    public function eventReports(){
+        return $this->hasMany(EventReport::class);
+    }
+
     // Get the organizer's logo URL using proper Laravel Storage methods
     public function getLogoUrlAttribute()
     {
@@ -140,6 +155,16 @@ class Organizer extends Model implements HasAvatar
 
         // Use the default filesystem disk which Laravel Cloud automatically configures
         return Storage::disk(config('filesystems.default'))->url($this->banner);
+    }
+
+    public function rsvps()
+    {
+        return $this->hasMany(RSVP::class);
+    }
+
+    public function checkins()
+    {
+        return $this->hasMany(RSVP::class);
     }
 
     //    public function addresses(){

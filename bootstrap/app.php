@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetDefaultSEO;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -32,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             HandleAppearance::class,
+            SetDefaultSEO::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
@@ -76,6 +78,23 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('queue:prune-batches --hours=48')
             ->daily()
             ->at('03:30');
+
+        // RSVP Digest Notifications (Cost Optimization)
+        // Hourly digest for organizers who want frequent updates
+        $schedule->job(new \App\Jobs\SendRsvpDigestNotifications('hourly'))
+            ->hourly()
+            ->withoutOverlapping()
+            ->onFailure(function () {
+                \Log::error('Failed to send hourly RSVP digest notifications');
+            });
+
+        // Daily digest for organizers (default, most cost-effective)
+        $schedule->job(new \App\Jobs\SendRsvpDigestNotifications('daily'))
+            ->dailyAt('09:00')  // 9 AM daily
+            ->withoutOverlapping()
+            ->onFailure(function () {
+                \Log::error('Failed to send daily RSVP digest notifications');
+            });
 
     })
     ->withExceptions(function (Exceptions $exceptions) {

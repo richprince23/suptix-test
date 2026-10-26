@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EventCreditPurchase;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\EventCreditService;
 use App\Services\PaystackService;
+use App\Services\SeoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +17,10 @@ use Inertia\Response;
 
 class PaymentController extends Controller
 {
-    public function __construct(private PaystackService $paystackService) {}
+    public function __construct(
+        private PaystackService $paystackService,
+        private EventCreditService $creditService,
+    ) {}
 
     /**
      * Initialize payment for an order
@@ -149,6 +155,7 @@ class PaymentController extends Controller
                     ];
                 })->values(),
             ],
+            'seo' => SeoService::paymentSuccess($order),
         ]);
     }
 
@@ -158,6 +165,7 @@ class PaymentController extends Controller
     public function failed(): Response
     {
         return Inertia::render('Payment/Failed', [
+            'seo' => SeoService::paymentFailed(),
         ]);
     }
 
@@ -246,6 +254,13 @@ class PaymentController extends Controller
         $payment = Payment::where('transaction_id', $reference)->first();
 
         if (! $payment) {
+            // May be a credit purchase payment — check EventCreditPurchase
+            $purchase = EventCreditPurchase::where('paystack_reference', $reference)->first();
+
+            if ($purchase) {
+                return $this->handleCreditPurchaseSuccess($purchase, $reference);
+            }
+
             Log::warning('Payment not found for webhook reference', ['reference' => $reference]);
 
             return response()->json(['message' => 'Payment not found'], 404);
@@ -295,6 +310,35 @@ class PaymentController extends Controller
                 'payment_id' => $payment->id,
                 'current_status' => $payment->status,
             ]);
+        }
+
+        return response()->json(['message' => 'Webhook processed'], 200);
+    }
+
+    private function handleCreditPurchaseSuccess(EventCreditPurchase $purchase, string $reference): JsonResponse
+    {
+        if ($purchase->status === 'completed') {
+            Log::info('Credit purchase already completed, skipping', ['reference' => $reference, 'purchase_id' => $purchase->id]);
+
+            return response()->json(['message' => 'Webhook processed'], 200);
+        }
+
+        try {
+            $this->creditService->grantCreditsFromPurchase($purchase);
+
+            Log::info('Credit purchase completed via webhook', [
+                'reference' => $reference,
+                'purchase_id' => $purchase->id,
+                'event_id' => $purchase->event_id,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to grant credits from webhook', [
+                'reference' => $reference,
+                'purchase_id' => $purchase->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json(['message' => 'Failed to process credit purchase'], 500);
         }
 
         return response()->json(['message' => 'Webhook processed'], 200);

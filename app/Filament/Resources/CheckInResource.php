@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CheckInResource\Pages;
 use App\Models\CheckIn;
 use App\Models\Event;
+use App\Models\RSVP;
 use App\Models\Ticket;
 use Filament\Actions\Exports\Exporter;
 use Filament\Facades\Filament;
@@ -100,10 +101,11 @@ class CheckInResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'Ticket' => 'success',
+                        'RSVP' => 'info',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('ticket_number')
-                    ->label('Ticket Number')
+                    ->label('Ticket/Guest Code')
                     ->searchable()
                     ->placeholder('N/A'),
                 Tables\Columns\TextColumn::make('checked_in_at')
@@ -138,6 +140,7 @@ class CheckInResource extends Resource
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
                         'Ticket' => 'Ticket',
+                        'RSVP' => 'RSVP',
                     ]),
                 Tables\Filters\Filter::make('checked_in_today')
                     ->query(fn (Builder $query): Builder => $query->whereDate('checked_in_at', today()))
@@ -173,7 +176,7 @@ class CheckInResource extends Resource
     }
 
     /**
-     * Get a query that returns checked-in tickets
+     * Get a query that combines checked-in tickets and RSVPs
      */
     public static function getCheckedInAttendees(): Builder
     {
@@ -183,7 +186,7 @@ class CheckInResource extends Resource
             return CheckIn::query()->whereRaw('1 = 0'); // Return empty query
         }
 
-        // Build the checked-in tickets query
+        // Create a union query combining tickets and RSVPs
         $ticketQuery = Ticket::query()
             ->select([
                 'tickets.id',
@@ -200,7 +203,25 @@ class CheckInResource extends Resource
             ->whereNotNull('tickets.used_at')
             ->where('tickets.organizer_id', $organizer->id);
 
-        $unionQuery = $ticketQuery;
+        $rsvpQuery = RSVP::query()
+            ->select([
+                'rsvps.id',
+                'rsvps.guest_name as attendee_name',
+                'rsvps.email as attendee_email',
+                'rsvps.event_id',
+                'rsvps.guest_code as ticket_number',
+                'rsvps.checked_in_at',
+                DB::raw("'RSVP' as type"),
+                'users.name as checked_in_by_name',
+                'rsvps.created_at',
+                'rsvps.updated_at',
+            ])
+            ->leftJoin('users', 'users.id', '=', 'rsvps.checked_in_by')
+            ->where('rsvps.checked_in', true)
+            ->where('rsvps.organizer_id', $organizer->id);
+
+        // Combine both queries using union
+        $unionQuery = $ticketQuery->union($rsvpQuery);
 
         // Create a new query from the union result
         return CheckIn::query()

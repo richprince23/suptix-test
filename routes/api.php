@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventReportController;
+use App\Http\Controllers\GuestVerificationController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
@@ -41,6 +44,18 @@ Route::middleware(['auth:sanctum,web'])->group(function () {
     Route::get('/orders/{orderNumber}', [OrderController::class, 'getOrderByNumber']); // Order lookup
 });
 
+// Guest verification endpoints (RSVP-based)
+Route::prefix('guest')->group(function () {
+    // Public access for guest verification
+    Route::post('/verify-code', [GuestVerificationController::class, 'verifyGuestCode']);
+    Route::post('/verify-event/{eventCode}', [GuestVerificationController::class, 'verifyGuestForEvent']);
+
+    // Authenticated access for check-in and statistics
+    Route::post('/check-in', [GuestVerificationController::class, 'checkInGuest'])
+        ->middleware(['auth:sanctum,web']);
+    Route::get('/event/{eventCode}/statistics', [GuestVerificationController::class, 'getEventRsvpStatistics'])
+        ->middleware(['auth:sanctum,web']);
+});
 
 // Mark ticket as used (requires authentication)
 Route::put('/tickets/{ticket}/mark-used', [TicketController::class, 'markAsUsed'])
@@ -55,9 +70,22 @@ Route::prefix('mobile')->middleware('auth:sanctum')->group(function () {
     // Order lookup for mobile apps
     Route::get('/orders/{orderNumber}', [OrderController::class, 'getOrderByNumber']);
 
+    // Guest verification for mobile apps
+    Route::post('/guest/verify-code', [GuestVerificationController::class, 'verifyGuestCode']);
+    Route::post('/guest/verify-event/{eventCode}', [GuestVerificationController::class, 'verifyGuestForEvent']);
+    Route::post('/guest/check-in', [GuestVerificationController::class, 'checkInGuest']);
+    Route::get('/guest/event/{eventCode}/statistics', [GuestVerificationController::class, 'getEventRsvpStatistics']);
 });
 
 // Organizer-specific routes
+// Newsletter API routes
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe']);
+
+// Event reporting API routes
+Route::post('/events/report', [EventReportController::class, 'store']);
+Route::get('/event-reports/{eventReport}', [EventReportController::class, 'show'])
+    ->middleware('auth:sanctum');
+
 Route::prefix('organizers/{organizer}/events')->middleware('auth:sanctum')->group(function () {
     // Get organizer's events
     Route::get('/', [EventController::class, 'getEvents']);
@@ -82,4 +110,7 @@ Route::prefix('organizers/{organizer}/events')->middleware('auth:sanctum')->grou
 
     // Get ticket scanning statistics
     Route::get('/{event}/tickets/scan-statistics', [TicketController::class, 'getTicketScanStatistics']);
+
+    // Get guest list
+    Route::get('/{event}/guest-list', [GuestVerificationController::class, 'guestList']);
 });

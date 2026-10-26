@@ -114,7 +114,7 @@ it('F1-88 the purchase answers with the confirmation page when the organiser has
 
     $response = $this->post(route('events.tickets.purchase', $event), purchasePayload([[$ticketType, 1]]));
 
-    $order = Order::firstOrFail();
+    $order = Order::where('event_id', $event->id)->firstOrFail();
     $response->assertRedirect(route('orders.confirmation', $order->order_number))->assertSessionHasErrors('payment');
     expect($order->status)->toBe('pending')->and(Ticket::count())->toBe(1);
 });

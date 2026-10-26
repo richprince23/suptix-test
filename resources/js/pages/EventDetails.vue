@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <Toaster :close-button="true" />
 
     <!-- Floating NavBar over hero -->
@@ -13,8 +14,9 @@
         :formatted-date="event.end_date ? `${formatDate(event.start_date)} – ${formatDate(event.end_date)}` : formatDate(event.start_date)"
         :formatted-time="event.end_date && event.end_date !== event.start_date ? `Starts ${formatTime(displayStartTime!)}` : `${formatTime(displayStartTime!)}${displayEndTime ? ' – ' + formatTime(displayEndTime) : ''}`"
         :location="event.mode !== 'online' ? (event.venue_name || undefined) : (event.platform_name || undefined)"
-        :mode="event.mode" :show-ticket-cta="canPurchaseTickets" @get-tickets="scrollToTickets"
-        @share="copyLink" />
+        :mode="event.mode" :show-ticket-cta="!event.is_rsvp && canPurchaseTickets"
+        :show-rsvp-cta="!!event.is_rsvp && canMakeRsvp" @get-tickets="scrollToTickets" @rsvp="scrollToRsvp"
+        @share="copyLink" @report="showReportModal = true" />
 
     <!-- Body -->
     <main class="bg-background">
@@ -26,20 +28,38 @@
                     <!-- About -->
                     <AboutSection :description="event.description" />
 
-                    <!-- Ticket section -->
+                    <!-- Schedule + Speakers combined -->
+                    <ScheduleSection v-if="event.sessions && event.sessions.length" :sessions="event.sessions"
+                        :people="event.people" :is-multi-day="isMultiDay" :sessions-by-date="sessionsByDate"
+                        :active-sessions="activeSessions" :active-day="activeDay" :format-time="formatTime"
+                        :format-date-short="formatDateShort" @change-day="activeDay = $event" />
+
+                    <!-- Standalone speakers (no sessions) -->
+                    <SpeakersGrid
+                        v-if="event.people && event.people.length && !(event.sessions && event.sessions.length)"
+                        :people="event.people" />
+
+                    <!-- Ticket & RSVP section -->
                     <div class="border-t border-border">
                         <div class="max-w-7xl mx-auto px-6 py-16">
-                            <div class="mb-12">
+                            <div v-if="!event.is_rsvp" class="mb-12">
                                 <p class="text-xs font-semibold uppercase tracking-widest text-foreground/40 mb-3">
                                     [Plan]</p>
                                 <h2 class="text-3xl md:text-5xl font-bold text-foreground leading-tight">
                                     Unlock the Experience<br /><span class="text-foreground/40">That Suits You</span>
                                 </h2>
                             </div>
+                            <div v-else class="mb-12">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-foreground/40 mb-3">
+                                    [RSVP]</p>
+                                <h2 class="text-3xl md:text-5xl font-bold text-foreground leading-tight">
+                                    Reserve Your <span class="text-foreground/40">Spot</span>
+                                </h2>
+                            </div>
                             <div class="max-w-2xl">
 
                                 <!-- Ticket Purchase Form -->
-                                <div class="mb-8 lgb p-6 rounded" data-section="tickets">
+                                <div v-if="!event.is_rsvp" class="mb-8 lgb p-6 rounded" data-section="tickets">
                                     <!-- General Error Display -->
                                     <div v-if="errors.error"
                                         class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
@@ -190,6 +210,326 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- RSVP Form -->
+                                <div v-if="event.is_rsvp" class="mb-8 bg-backgrounds lgb rounded p-6"
+                                    data-section="rsvp">
+
+                                    <!-- Success message displayed after form submission -->
+                                    <div v-if="rsvpSuccess" class="p-6">
+                                        <div class="border border-green-500 p-6 text-center bg-green-500/5 rounded-lg">
+                                            <svg class="mx-auto h-16 w-16 text-green-500 mb-4" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            <h3 class="text-xl font-bold text-green-700 mb-2">RSVP Confirmed!</h3>
+                                            <p class="text-green-700 font-medium">{{ rsvpSuccess }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div v-else-if="!canMakeRsvp"
+                                        class="rounded-lg border border-red-300 bg-red-50 p-6 text-center mb-6">
+                                        <div class="flex justify-center">
+                                            <div
+                                                class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                                                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 16.5c-.77.833.192 2.5 1.732 2.5z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <h3 class="text-lg font-semibold text-red-900 mb-2">RSVP Unavailable</h3>
+                                        <p class="text-red-700">{{ unavailabilityMessage }}</p>
+                                        <div v-if="event.organizer?.email || event.organizer?.phone"
+                                            class="mt-4 pt-4 border-t border-red-200">
+                                            <p class="text-sm text-red-600 mb-2">Need assistance? Contact the organizer:
+                                            </p>
+                                            <div class="flex justify-center gap-4">
+                                                <a v-if="event.organizer?.email"
+                                                    :href="'mailto:' + event.organizer.email"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 transition-colors">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                                        </path>
+                                                    </svg>
+                                                    Email
+                                                </a>
+                                                <a v-if="event.organizer?.phone" :href="'tel:' + event.organizer.phone"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-md hover:bg-red-50 transition-colors">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                                        </path>
+                                                    </svg>
+                                                    Call
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form v-else-if="canMakeRsvp && !rsvpSuccess" @submit.prevent="sendRsvp"
+                                        class="space-y-6" id="rsvp-form">
+                                        <div v-if="errors.venue_full"
+                                            class="mb-6 rounded border border-red-200 bg-red-50 p-4">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20"
+                                                        fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <h3 class="text-sm font-medium text-red-800">Booked Out</h3>
+                                                    <p class="mt-1 text-sm text-red-700">{{ errors.venue_full }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h2 class="mb-4 text-lg sm:text-xl font-semibold border-b pb-2">Guest
+                                            Information</h2>
+
+                                        <!-- Honeypot field - hidden from users -->
+                                        <div
+                                            style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;">
+                                            <label for="rsvp_website">Website (leave blank)</label>
+                                            <input v-model="rsvpForm.honeypot" type="text" id="rsvp_website"
+                                                name="website" tabindex="-1" autocomplete="off" />
+                                        </div>
+
+                                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                            <div>
+                                                <Label for="guest_name">Guest Name *</Label>
+                                                <Input id="guest_name" v-model="rsvpForm.guest_name" type="text"
+                                                    required placeholder="Enter your fullname"
+                                                    :class="{ 'border-red-500': errors.guest_name }"
+                                                    class="rounded pri-borders py-5 mt-1" />
+                                                <p v-if="errors.guest_name" class="mt-1 text-sm text-red-600">
+                                                    {{ errors.guest_name }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center justify-between">
+                                                    <Label for="email">Email Address *</Label>
+                                                    <div v-if="rsvpCheckingEmail"
+                                                        class="text-xs foreground/60 flex items-center">
+                                                        <svg class="animate-spin -ml-1 mr-1 h-3 w-3 foreground/60"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                                stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor"
+                                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                            </path>
+                                                        </svg>
+                                                        Checking...
+                                                    </div>
+                                                </div>
+                                                <Input id="email" v-model="rsvpForm.email" type="email" required
+                                                    placeholder="Enter your email" :class="{
+                                                        'border-red-500': errors.email,
+                                                        'border-primary bg-card': isUpdatingRsvp
+                                                    }" class="rounded pri-borders py-5 mt-1" />
+                                                <p v-if="errors.email" class="mt-1 text-sm text-red-600">
+                                                    {{ errors.email }}
+                                                </p>
+                                                <div v-if="isUpdatingRsvp && existingRsvp"
+                                                    class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                    <div class="flex items-center">
+                                                        <svg class="w-4 h-4 text-blue-500 mr-2" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                            </path>
+                                                        </svg>
+                                                        <div class="text-sm">
+                                                            <p class="text-primary font-medium">Existing RSVP Found</p>
+                                                            <p class="text-primary/90">Registered on
+                                                                {{ existingRsvp?.created_at }}.
+                                                                You can
+                                                                update your information below.</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <Label for="phone">Phone Number</Label>
+                                                <Input id="phone" v-model="rsvpForm.phone" type="tel"
+                                                    placeholder="eg. 0240123456"
+                                                    :class="{ 'border-red-500': errors.phone }"
+                                                    class="rounded pri-borders py-5 mt-1" />
+                                                <p v-if="errors.phone" class="mt-1 text-sm text-red-600">
+                                                    {{ errors.phone }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <Label for="referral_source" class="">How did you hear about
+                                                    this event?</Label>
+                                                <Select v-model="rsvpForm.referral_source">
+                                                    <SelectTrigger class=" w-full rounded pri-borders py-5 mt-1">
+                                                        <SelectValue placeholder="Select a source..." />
+                                                    </SelectTrigger>
+
+                                                    <SelectContent
+                                                        class="bg-background rounded pri-borders px-3 py-1 shadow-sm">
+                                                        <SelectGroup>
+                                                            <SelectLabel>Referral Sources</SelectLabel>
+                                                            <SelectItem v-for="option in referralOptions" :key="option"
+                                                                :value="option">
+                                                                {{ option }}
+                                                            </SelectItem>
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                                <p v-if="errors.referral_source" class="mt-1 text-sm text-red-600">
+                                                    {{ errors.referral_source }}
+                                                </p>
+                                            </div>
+                                            <div class="sm:col-span-2">
+                                                <Label for="notes">Anything else you'd like us to know?</Label>
+                                                <Textarea placeholder="Anything we should know? Drop a note."
+                                                    maxlength="250" v-model="rsvpForm.notes"
+                                                    class="rounded pri-borders py-3 mt-1" />
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Custom form fields -->
+                                        <template v-if="event.form_fields && event.form_fields.length > 0">
+                                            <h2 class="text-lg sm:text-xl font-semibold border-b pb-2">Additional
+                                                Information</h2>
+                                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                <template v-for="field in event.form_fields" :key="field.id">
+                                                    <!-- Text input -->
+                                                    <div v-if="field.field_type === 'text'"
+                                                        :class="{ 'sm:col-span-2': field.field_type === 'text' && !field.placeholder }">
+                                                        <Label :for="'field_' + field.id">
+                                                            {{ field.label }}<span v-if="field.is_required"
+                                                                class="text-red-500 ml-1">*</span>
+                                                        </Label>
+                                                        <Input :id="'field_' + field.id"
+                                                            v-model="rsvpForm.custom_fields[field.id] as string"
+                                                            type="text" :placeholder="field.placeholder || ''"
+                                                            :required="field.is_required"
+                                                            class="rounded pri-borders py-5 mt-1"
+                                                            :class="{ 'border-red-500': errors['custom_fields.' + field.id] }" />
+                                                        <p v-if="errors['custom_fields.' + field.id]"
+                                                            class="mt-1 text-sm text-red-600">
+                                                            {{ errors['custom_fields.' + field.id] }}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Textarea -->
+                                                    <div v-else-if="field.field_type === 'textarea'"
+                                                        class="sm:col-span-2">
+                                                        <Label :for="'field_' + field.id">
+                                                            {{ field.label }}<span v-if="field.is_required"
+                                                                class="text-red-500 ml-1">*</span>
+                                                        </Label>
+                                                        <Textarea :id="'field_' + field.id"
+                                                            v-model="rsvpForm.custom_fields[field.id] as string"
+                                                            :placeholder="field.placeholder || ''"
+                                                            :required="field.is_required"
+                                                            class="rounded pri-borders py-3 mt-1"
+                                                            :class="{ 'border-red-500': errors['custom_fields.' + field.id] }" />
+                                                        <p v-if="errors['custom_fields.' + field.id]"
+                                                            class="mt-1 text-sm text-red-600">
+                                                            {{ errors['custom_fields.' + field.id] }}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Select / Dropdown -->
+                                                    <div v-else-if="field.field_type === 'select'">
+                                                        <Label :for="'field_' + field.id">
+                                                            {{ field.label }}<span v-if="field.is_required"
+                                                                class="text-red-500 ml-1">*</span>
+                                                        </Label>
+                                                        <select :id="'field_' + field.id"
+                                                            v-model="rsvpForm.custom_fields[field.id]"
+                                                            :required="field.is_required"
+                                                            class="mt-1 w-full rounded pri-borders py-2 px-3 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                                                            :class="{ 'border-red-500': errors['custom_fields.' + field.id] }">
+                                                            <option value="" disabled>Select an option...</option>
+                                                            <option v-for="opt in field.options" :key="opt.value"
+                                                                :value="opt.value">
+                                                                {{ opt.value }}
+                                                            </option>
+                                                        </select>
+                                                        <p v-if="errors['custom_fields.' + field.id]"
+                                                            class="mt-1 text-sm text-red-600">
+                                                            {{ errors['custom_fields.' + field.id] }}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Radio buttons -->
+                                                    <div v-else-if="field.field_type === 'radio'">
+                                                        <Label>
+                                                            {{ field.label }}<span v-if="field.is_required"
+                                                                class="text-red-500 ml-1">*</span>
+                                                        </Label>
+                                                        <div class="mt-2 space-y-2">
+                                                            <label v-for="opt in field.options" :key="opt.value"
+                                                                class="flex items-center gap-2 text-sm cursor-pointer">
+                                                                <input type="radio" :name="'field_' + field.id"
+                                                                    :value="opt.value"
+                                                                    v-model="rsvpForm.custom_fields[field.id]"
+                                                                    :required="field.is_required"
+                                                                    class="text-primary" />
+                                                                {{ opt.value }}
+                                                            </label>
+                                                        </div>
+                                                        <p v-if="errors['custom_fields.' + field.id]"
+                                                            class="mt-1 text-sm text-red-600">
+                                                            {{ errors['custom_fields.' + field.id] }}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Checkboxes (multi-select) -->
+                                                    <div v-else-if="field.field_type === 'checkbox'"
+                                                        class="sm:col-span-2">
+                                                        <Label>
+                                                            {{ field.label }}<span v-if="field.is_required"
+                                                                class="text-red-500 ml-1">*</span>
+                                                        </Label>
+                                                        <div class="mt-2 grid grid-cols-2 gap-2">
+                                                            <label v-for="opt in field.options" :key="opt.value"
+                                                                class="flex items-center gap-2 text-sm cursor-pointer">
+                                                                <input type="checkbox" :value="opt.value"
+                                                                    v-model="rsvpForm.custom_fields[field.id]"
+                                                                    class="text-primary rounded" />
+                                                                {{ opt.value }}
+                                                            </label>
+                                                        </div>
+                                                        <p v-if="errors['custom_fields.' + field.id]"
+                                                            class="mt-1 text-sm text-red-600">
+                                                            {{ errors['custom_fields.' + field.id] }}
+                                                        </p>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        <div v-if="canSubmitRsvp" class="text-center">
+                                            <Button type="submit" size="lg" :disabled="rsvpProcessing"
+                                                class="rounded w-full py-5 cursor-pointer border bg-primary cursor-pointer sm:w-auto sm:px-6">
+                                                {{ rsvpProcessing ? 'Processing...' : (isUpdatingRsvp ? 'Update RSVP' : 'Secure Your Spot') }}
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Partners & Sponsors -->
+                                <SponsorsSection :partners="event.all_partners" />
 
                                 <!-- Social Links -->
                                 <div class="mb-2  bg-whites p-6 rounded">
@@ -355,20 +695,149 @@
 
     </main>
 
+    <!-- Report Issue Modal -->
+    <Dialog v-model:open="showReportModal">
+        <DialogContent class="sm:max-w-lg">
+            <DialogHeader>
+                <DialogTitle class="flex items-center gap-2">
+                    <AlertTriangle class="w-5 h-5 text-red-600" />
+                    Report Event Issue
+                </DialogTitle>
+                <DialogDescription>
+                    Report an issue with <strong>{{ event.title }}</strong>. The event organizer will be notified.
+                </DialogDescription>
+            </DialogHeader>
+
+            <div v-if="reportSuccess" class="text-center p-4">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-foreground mb-2">Report Submitted Successfully!</h3>
+                <p class="text-foreground/70">{{ reportMessage }}</p>
+            </div>
+
+            <form v-else @submit.prevent="submitReport" class="space-y-4">
+                <!-- Honeypot field - hidden from users -->
+                <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;">
+                    <label for="report_website">Website (leave blank)</label>
+                    <input v-model="reportForm.honeypot" type="text" id="report_website" name="website" tabindex="-1"
+                        autocomplete="off" />
+                </div>
+
+                <!-- Event Information -->
+                <div class="lgb border border-primary/40 rounded-lg p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5 text-primary/90 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 9l6-6m0 0v6m0-6H9" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-blue-900">Reporting issue for:</h4>
+                            <p class="text-sm text-primary font-semibold mt-1">{{ event.title }}</p>
+                            <p class="text-xs text-primary/90 mt-1">
+                                {{ formatDate(event.start_date) }}
+                                <span v-if="event.venue_name"> • {{ event.venue_name }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporter Info -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label for="reporter_name">Your Name</Label>
+                        <Input id="reporter_name" v-model="reportForm.reporter_name"
+                            :placeholder="$page.props.auth?.user?.name || 'Enter your name'" required />
+                    </div>
+                    <div>
+                        <Label for="reporter_email">Your Email</Label>
+                        <Input id="reporter_email" type="email" v-model="reportForm.reporter_email"
+                            :placeholder="$page.props.auth?.user?.email || 'Enter your email'" required />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label for="report_type">Issue Type</Label>
+                        <Select v-model="reportForm.report_type">
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select issue type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="bug">Technical Bug</SelectItem>
+                                <SelectItem value="content_issue">Content Issue</SelectItem>
+                                <SelectItem value="spam">Spam</SelectItem>
+                                <SelectItem value="inappropriate">Inappropriate Content</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Label for="priority">Priority</Label>
+                        <Select v-model="reportForm.priority">
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select priority" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="low">Low</SelectItem>
+                                <SelectItem value="medium">Medium</SelectItem>
+                                <SelectItem value="high">High</SelectItem>
+                                <SelectItem value="urgent">Urgent</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+                <div>
+                    <Label for="subject">Subject</Label>
+                    <Input id="subject" v-model="reportForm.subject" placeholder="Brief description of the issue"
+                        required />
+                </div>
+
+                <div>
+                    <Label for="description">Description</Label>
+                    <Textarea id="description" v-model="reportForm.description"
+                        placeholder="Please provide detailed information about the issue..." class="min-h-[100px]"
+                        required />
+                </div>
+
+                <DialogFooter class="gap-2">
+                    <Button type="button" variant="outline" @click="showReportModal = false"
+                        :disabled="reportSubmitting">
+                        Cancel
+                    </Button>
+                    <Button type="submit" :disabled="reportSubmitting" class="bg-red-600 hover:bg-red-700">
+                        <span v-if="reportSubmitting">Submitting...</span>
+                        <span v-else>Submit Report</span>
+                    </Button>
+                </DialogFooter>
+            </form>
+        </DialogContent>
+    </Dialog>
+
     <!-- Footer -->
     <Footer />
 </template>
 
 <script setup lang="ts">
+import SeoHead from '@/components/SeoHead.vue';
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
 import HeroSection from '@/components/event/HeroSection.vue';
 import AboutSection from '@/components/event/AboutSection.vue';
-import { Link } from '@inertiajs/vue3'
+import SpeakersGrid from '@/components/event/SpeakersGrid.vue';
+import ScheduleSection from '@/components/event/ScheduleSection.vue';
+import SponsorsSection from '@/components/event/SponsorsSection.vue';
+import { Link, usePage } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { router } from '@inertiajs/vue3';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { Calendar, Clock3, LinkIcon, MapPin, Presentation } from 'lucide-vue-next';
 import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';
@@ -419,6 +888,38 @@ interface EventFormField {
     sort_order: number;
 }
 
+interface EventPerson {
+    id: number;
+    name: string;
+    role: string;
+    bio?: string;
+    photo_url?: string;
+    session_id?: number | null;
+}
+
+interface EventSession {
+    id: number;
+    title: string;
+    speaker?: string;
+    description?: string;
+    session_date?: string;
+    start_time: string;
+    end_time?: string;
+    location?: string;
+    sort_order: number;
+}
+
+interface EventPartner {
+    id: number;
+    name: string;
+    type: 'partner' | 'sponsor';
+    logo_url?: string | null;
+    website?: string | null;
+    description?: string | null;
+    tier?: string | null;
+    sort_order: number;
+}
+
 interface Event {
     id: number;
     slug: string;
@@ -433,12 +934,17 @@ interface Event {
     end_time?: string;
     event_type?: string;
     status: string;
+    is_rsvp: boolean;
+    rsvp_closes_at?: string | null;
     tags?: string[];
     venue_name?: string;
     venue_address?: string;
     venue_gps_code?: string;
     venue_capacity?: number;
     venue_phone?: string;
+    sessions?: EventSession[];
+    people?: EventPerson[];
+    all_partners?: EventPartner[];
     form_fields?: EventFormField[];
     online_link?: string;
     platform_name?: string;
@@ -454,15 +960,79 @@ interface TicketSelection {
 
 const props = defineProps<{
     event: Event;
+    seo?: any;
     map_key?: string;
     map_id?: string;
     ticketTypes?: TicketType[];
     errors?: Record<string, string>;
 }>();
 
-const displayStartTime = computed(() => props.event.start_time);
+const isMapShown = ref(false);
 
-const displayEndTime = computed(() => props.event.end_time);
+const isMultiDay = computed(() => {
+    return !!(props.event.end_date && props.event.end_date !== props.event.start_date);
+});
+
+const sessionsByDate = computed(() => {
+    if (!props.event.sessions) return {};
+    const groups: Record<string, EventSession[]> = {};
+    for (const session of props.event.sessions) {
+        const key = session.session_date ?? 'unset';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(session);
+    }
+    return groups;
+});
+
+const activeDay = ref<string>('');
+
+watch(sessionsByDate, (val) => {
+    if (!activeDay.value) {
+        const keys = Object.keys(val);
+        if (keys.length > 0) activeDay.value = keys[0];
+    }
+}, { immediate: true });
+
+const activeSessions = computed(() => {
+    if (!isMultiDay.value) return props.event.sessions || [];
+    return sessionsByDate.value[activeDay.value] || [];
+});
+
+// When sessions exist, derive display times from first/last session
+const displayStartTime = computed(() => {
+    const sessions = props.event.sessions;
+    if (sessions && sessions.length > 0) {
+        return sessions[0].start_time;
+    }
+    return props.event.start_time;
+});
+
+const displayEndTime = computed(() => {
+    const sessions = props.event.sessions;
+    if (sessions && sessions.length > 0) {
+        const last = sessions[sessions.length - 1];
+        return last.end_time ?? null;
+    }
+    return props.event.end_time;
+});
+
+const activePeople = computed(() => {
+    const people = props.event.people || [];
+    // If no people have a session assigned, show all (backward compatible)
+    const anyAssigned = people.some(p => p.session_id != null);
+    if (!anyAssigned) return people;
+
+    const activeSessionIds = new Set(activeSessions.value.map(s => s.id));
+    return people.filter(p => p.session_id == null || activeSessionIds.has(p.session_id));
+});
+
+const eventPartners = computed(() =>
+    (props.event.all_partners || []).filter(p => p.type === 'partner')
+);
+
+const eventSponsors = computed(() =>
+    (props.event.all_partners || []).filter(p => p.type === 'sponsor')
+);
 
 // Debug: Log the received event data
 // console.log('EventDetails received event:', props.event);
@@ -477,6 +1047,40 @@ const validationDiscount = reactive({
     loading: false,
     error: '',
 });
+// RSVP form state
+const rsvpProcessing = ref(false);
+const rsvpSuccess = ref('');
+const rsvpCheckingEmail = ref(false);
+const existingRsvp = ref(null);
+const isUpdatingRsvp = ref(false);
+
+// Report modal state
+const showReportModal = ref(false);
+const reportForm = reactive({
+    reporter_name: '',
+    reporter_email: '',
+    report_type: 'other',
+    subject: '',
+    description: '',
+    priority: 'medium',
+    honeypot: '',
+});
+const reportSubmitting = ref(false);
+const reportSuccess = ref(false);
+const reportMessage = ref('');
+
+// Get page instance for accessing props
+const page = usePage();
+
+// Pre-populate reporter fields for authenticated users when modal opens
+watch(showReportModal, (newValue: boolean) => {
+    if (newValue && page.props.auth?.user) {
+        // Pre-populate with user's information if authenticated
+        reportForm.reporter_name = page.props.auth.user.name || '';
+        reportForm.reporter_email = page.props.auth.user.email || '';
+    }
+});
+
 // Purchase form
 const purchaseForm = reactive({
     buyer_email: '',
@@ -485,7 +1089,39 @@ const purchaseForm = reactive({
     honeypot: '',
 });
 
+// RSVP form
+const rsvpForm = reactive<{
+    guest_name: string;
+    email: string;
+    phone: string;
+    referral_source: string;
+    notes: string;
+    honeypot: string;
+    custom_fields: Record<number, string | string[]>;
+}>({
+    guest_name: '',
+    email: '',
+    phone: '',
+    referral_source: '',
+    notes: '',
+    honeypot: '',
+    custom_fields: {},
+});
+
 const errors = computed(() => props.errors || {});
+const referralOptions = [
+    'LinkedIn',
+    'Facebook',
+    'Instagram',
+    'Twitter/X',
+    'Friend or Family',
+    'Flyer or Poster',
+    'Email Newsletter',
+    'Community',
+    'Website',
+    'Other'
+];
+
 // Calculate current status based on event timing (same logic as backend)
 const currentStatus = computed(() => {
     // Don't auto-update certain statuses
@@ -562,6 +1198,27 @@ const scrollToTickets = () => {
     }, 100);
 };
 
+const scrollToRsvp = () => {
+    // Small delay to ensure DOM is updated
+    setTimeout(() => {
+        const rsvpSection = document.querySelector('[data-section="rsvp"]') as HTMLElement;
+        if (rsvpSection) {
+            rsvpSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+            });
+
+            // Add a subtle highlight effect
+            rsvpSection.style.transition = 'box-shadow 0.3s ease';
+            rsvpSection.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.3)';
+            setTimeout(() => {
+                rsvpSection.style.boxShadow = '';
+            }, 2000);
+        }
+    }, 100);
+};
+
 // Purchasability validation
 const canPurchaseTickets = computed(() => {
     // Check if event status allows purchases
@@ -596,7 +1253,34 @@ const canPurchaseTickets = computed(() => {
     return hasValidSalesWindow;
 });
 
-// Message for when tickets are not available
+const canMakeRsvp = computed(() => {
+    // Check if event status allows RSVPs
+    if (!['published', 'live'].includes(currentStatus.value)) {
+        return false;
+    }
+
+    const now = new Date();
+
+    // Use rsvp_closes_at if set, otherwise fall back to event start time
+    let deadline: Date;
+    if (props.event.rsvp_closes_at) {
+        deadline = new Date(props.event.rsvp_closes_at);
+    } else {
+        let eventStartString = props.event.start_date;
+        if (eventStartString.includes('T')) {
+            eventStartString = eventStartString.split('T')[0];
+        }
+        deadline = new Date(`${eventStartString}T${props.event.start_time || '00:00:00'}`);
+    }
+
+    if (deadline <= now) {
+        return false;
+    }
+
+    return true;
+});
+
+// Message for when tickets/RSVP not available
 const unavailabilityMessage = computed(() => {
     if (currentStatus.value === 'past') {
         return 'This event has already ended.';
@@ -604,7 +1288,39 @@ const unavailabilityMessage = computed(() => {
         return 'This event has been canceled.';
     } else if (currentStatus.value === 'draft') {
         return 'This event is not yet available.';
-    } else {
+    } else if (props.event.is_rsvp) {
+        const now = new Date();
+
+        let deadline: Date;
+        if (props.event.rsvp_closes_at) {
+            deadline = new Date(props.event.rsvp_closes_at);
+        } else {
+            let eventStartString = props.event.start_date;
+            if (eventStartString.includes('T')) {
+                eventStartString = eventStartString.split('T')[0];
+            }
+            deadline = new Date(`${eventStartString}T${props.event.start_time || '00:00:00'}`);
+        }
+
+        if (deadline <= now) {
+            if (props.event.rsvp_closes_at) {
+                return 'RSVP registration has closed.';
+            }
+            // Check if event is currently happening or has ended
+            let eventEndString = props.event.end_date || props.event.start_date;
+            const eventTime = props.event.start_time || '00:00:00';
+            const eventEndTime = props.event.end_time || eventTime;
+            if (eventEndString.includes('T')) {
+                eventEndString = eventEndString.split('T')[0];
+            }
+            const eventEnd = new Date(`${eventEndString}T${eventEndTime}`);
+            if (now >= eventEnd) {
+                return 'This event has ended. RSVP is no longer available.';
+            } else {
+                return 'This event has started. RSVP deadline has passed.';
+            }
+        }
+    } else if (!props.event.is_rsvp) {
         // Check ticket-specific issues
         const hasTickets = availableTicketTypes.value.length > 0;
         if (!hasTickets) {
@@ -688,6 +1404,10 @@ const finalAmount = computed(() => {
     return subtotalAmount.value;
 });
 
+const canSubmitRsvp = computed(() => {
+    return (rsvpForm.email && rsvpForm.guest_name);
+});
+
 // Ticket purchase handlers
 const getTicketTypeName = (ticketTypeId: number): string => {
     const ticketType = availableTicketTypes.value.find((t) => t.id === ticketTypeId);
@@ -763,6 +1483,129 @@ const proceedToBuyerForm = () => {
 
 
 
+// RSVP handlers
+// Check for existing RSVP
+const checkExistingRsvp = async (email: string) => {
+    if (!email || email.length < 3) {
+        existingRsvp.value = null;
+        isUpdatingRsvp.value = false;
+        return;
+    }
+
+    rsvpCheckingEmail.value = true;
+
+    try {
+        const response = await axios.get(route('events.rsvp.check', props.event.slug || props.event.id), {
+            params: { email: email }
+        });
+
+        if (response.data.exists) {
+            existingRsvp.value = response.data.rsvp;
+            isUpdatingRsvp.value = true;
+
+            // Prefill form with existing data
+            rsvpForm.guest_name = response.data.rsvp.guest_name || '';
+            rsvpForm.phone = response.data.rsvp.phone || '';
+            rsvpForm.referral_source = response.data.rsvp.referral_source || '';
+            rsvpForm.notes = response.data.rsvp.notes || '';
+
+            toast.info('Existing RSVP Found', {
+                position: 'top-center',
+                description: 'Your information has been pre-filled. You can update it below.',
+                duration: 4000,
+            });
+        } else {
+            existingRsvp.value = null;
+            isUpdatingRsvp.value = false;
+        }
+    } catch (error) {
+        console.error('Error checking existing RSVP:', error);
+        existingRsvp.value = null;
+        isUpdatingRsvp.value = false;
+    } finally {
+        rsvpCheckingEmail.value = false;
+    }
+};
+
+// Watch for email changes to check for existing RSVP
+let emailCheckTimeout: any = null;
+watch(() => rsvpForm.email, (newEmail) => {
+    // Clear previous timeout
+    if (emailCheckTimeout) {
+        clearTimeout(emailCheckTimeout);
+    }
+
+    // Debounce email checking
+    emailCheckTimeout = setTimeout(() => {
+        checkExistingRsvp(newEmail);
+    }, 500);
+});
+
+const sendRsvp = () => {
+    console.log('RSVP form submission started', { form: rsvpForm, event: props.event, isUpdate: isUpdatingRsvp.value });
+
+    rsvpProcessing.value = true;
+    rsvpSuccess.value = "";
+
+    router.post(
+        route('events.rsvp.book', { event: props.event.slug || props.event.id }),
+        {
+            guest_name: rsvpForm.guest_name,
+            email: rsvpForm.email,
+            phone: rsvpForm.phone,
+            referral_source: rsvpForm.referral_source,
+            notes: rsvpForm.notes,
+            honeypot: rsvpForm.honeypot,
+            custom_fields: rsvpForm.custom_fields,
+        }, {
+        onFinish: () => {
+            console.log('RSVP request finished');
+            rsvpProcessing.value = false;
+        },
+        onSuccess: (page) => {
+            console.log('RSVP submission successful', page);
+            const wasUpdate = page.props.flash?.is_update || isUpdatingRsvp.value;
+
+            rsvpSuccess.value = wasUpdate
+                ? "Your RSVP has been updated successfully!"
+                : "Your RSVP has been sent successfully!";
+
+            toast.success(wasUpdate ? 'RSVP Updated!' : 'RSVP Sent!', {
+                position: 'top-center',
+                description: wasUpdate
+                    ? 'Your RSVP has been updated successfully!'
+                    : 'Your RSVP has been sent successfully!',
+                closeButton: true
+            });
+        },
+        onError: (errors) => {
+            console.error('RSVP submission failed', errors);
+            toast.error('RSVP submission failed', {
+                position: 'top-center',
+                description: 'Please check your information and try again.',
+                closeButton: true
+            });
+
+            const myForm = document.getElementById('rsvp-form');
+            if (myForm && typeof (myForm as HTMLFormElement).reset === 'function') {
+                (myForm as HTMLFormElement).reset();
+            }
+
+            // Reset form values
+            Object.assign(rsvpForm, {
+                guest_name: '',
+                email: '',
+                phone: '',
+                referral_source: '',
+                notes: '',
+                honeypot: '',
+                custom_fields: {},
+            });
+        },
+    }
+    );
+};
+
 const eventUrl = computed(() => {
     return window.location.href;
 });
@@ -802,6 +1645,62 @@ const copyLink = async () => {
             position: 'top-center',
             description: 'Please try again',
         });
+    }
+};
+
+// Report submission
+const submitReport = async () => {
+    if (reportSubmitting.value) return;
+
+    reportSubmitting.value = true;
+    reportSuccess.value = false;
+
+    try {
+        const response = await axios.post('/api/events/report', {
+            event_id: props.event.id,
+            reporter_name: reportForm.reporter_name,
+            reporter_email: reportForm.reporter_email,
+            report_type: reportForm.report_type,
+            subject: reportForm.subject,
+            description: reportForm.description,
+            priority: reportForm.priority,
+            honeypot: reportForm.honeypot,
+        });
+
+        if (response.data.success) {
+            reportSuccess.value = true;
+            reportMessage.value = response.data.message;
+
+            // Reset form
+            Object.assign(reportForm, {
+                reporter_name: '',
+                reporter_email: '',
+                report_type: 'other',
+                subject: '',
+                description: '',
+                priority: 'medium',
+                honeypot: '',
+            });
+
+            toast.success('Report submitted successfully!', {
+                position: 'top-center',
+                description: 'The event organizer has been notified.',
+            });
+
+            // Close modal after delay
+            setTimeout(() => {
+                showReportModal.value = false;
+                reportSuccess.value = false;
+            }, 2000);
+        }
+    } catch (error) {
+        console.error('Failed to submit report:', error);
+        toast.error('Failed to submit report', {
+            position: 'top-center',
+            description: 'Please try again later.',
+        });
+    } finally {
+        reportSubmitting.value = false;
     }
 };
 
@@ -849,8 +1748,14 @@ html {
     transition: all 0.3s ease;
 }
 
+[data-section="rsvp"] {
+    scroll-margin-top: 2rem;
+    transition: all 0.3s ease;
+}
+
 /* Highlight effect when scrolled to */
-[data-section="tickets"]:target {
+[data-section="tickets"]:target,
+[data-section="rsvp"]:target {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
     border-radius: 1rem;
 }

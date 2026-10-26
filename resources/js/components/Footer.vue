@@ -67,6 +67,7 @@
                         <h4 class="mb-4 text-lg font-semibold text-foreground">Quick Links</h4>
                         <ul class="space-y-3">
                             <li><a :href="route('events.index')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Browse Events</a></li>
+                            <li><a :href="route('request-demo')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Request Demo</a></li>
                             <li><a :href="route('filament.admin.auth.login')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Create Event</a></li>
                             <li><a :href="route('privacy-policy')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Privacy Policy</a></li>
                         </ul>
@@ -76,9 +77,51 @@
                         <h4 class="mb-4 text-lg font-semibold text-foreground">Support</h4>
                         <ul class="space-y-3">
                             <li><a :href="route('help-center')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Help Center</a></li>
+                            <li><a :href="route('contact-us')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Contact Us</a></li>
                             <li><a :href="route('refund-policy')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Refund Policy</a></li>
                             <li><a :href="route('terms-of-service')" class="text-muted-foreground transition-colors hover:text-primary font-medium">Terms of Service</a></li>
                         </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="mb-4 text-lg font-semibold text-foreground">Newsletter</h4>
+                        <p class="mb-4 text-muted-foreground text-sm leading-relaxed">Stay updated with the latest events, features, and industry insights.</p>
+                        <form @submit.prevent="subscribeToNewsletter" class="space-y-3">
+                            <input
+                                v-model="newsletterEmail"
+                                type="email"
+                                placeholder="Enter your email address"
+                                required
+                                class="w-full rounded-full bg-background/50 border border-border px-4 py-3 text-foreground placeholder-muted-foreground backdrop-blur-sm focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all"
+                            />
+                            <!-- Honeypot field - hidden from users -->
+                            <input
+                                v-model="honeypot"
+                                type="text"
+                                name="website"
+                                style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;"
+                                tabindex="-1"
+                                autocomplete="off"
+                            />
+                            <button
+                                type="submit"
+                                :disabled="isSubmitting"
+                                class="w-full rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-3 font-medium transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            >
+                                <span v-if="isSubmitting" class="flex items-center justify-center">
+                                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Subscribing...
+                                </span>
+                                <span v-else>Subscribe</span>
+                            </button>
+                        </form>
+                        <!-- Success/Error Messages -->
+                        <div v-if="subscriptionMessage" class="mt-3 text-sm" :class="subscriptionSuccess ? 'text-green-600' : 'text-red-600'">
+                            {{ subscriptionMessage }}
+                        </div>
                     </div>
                 </div>
 
@@ -102,9 +145,53 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import axios from 'axios';
 
 // var currentYear:number = 0;
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
 
+// Newsletter subscription
+const newsletterEmail = ref('');
+const honeypot = ref('');
+const isSubmitting = ref(false);
+const subscriptionMessage = ref('');
+const subscriptionSuccess = ref(false);
+
+const subscribeToNewsletter = async () => {
+    isSubmitting.value = true;
+    subscriptionMessage.value = '';
+
+    try {
+        const response = await axios.post('/api/newsletter/subscribe', {
+            email: newsletterEmail.value,
+            honeypot: honeypot.value
+        });
+
+        subscriptionSuccess.value = true;
+        subscriptionMessage.value = response.data.message;
+        newsletterEmail.value = '';
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+            subscriptionMessage.value = '';
+        }, 5000);
+
+    } catch (error: any) {
+        subscriptionSuccess.value = false;
+
+        if (error.response && error.response.data && error.response.data.message) {
+            subscriptionMessage.value = error.response.data.message;
+        } else {
+            subscriptionMessage.value = 'Failed to subscribe. Please try again later.';
+        }
+
+        // Clear error message after 5 seconds
+        setTimeout(() => {
+            subscriptionMessage.value = '';
+        }, 5000);
+    } finally {
+        isSubmitting.value = false;
+    }
+};
 </script>

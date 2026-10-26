@@ -36,8 +36,9 @@ Severity: **High** = money, admission or personal data is wrong; **Medium** = a 
 | DEF-26 | All | 30 ESLint errors on the five in-scope front-end files (28 unused imports and declarations in `EventDetails`, a mutated prop in `TicketVerification`, an always-on `Transition`, an unused variable) | ESLint | Dead code and a prop mutation | `22e160b` | Low |
 | DEF-27 | F3 | Scanning the QR code printed on a PDF ticket failed with 'QR code data does not match database records' for every ticket | F3-62 | The QR payload holds the event date as the JSON form of a date; `validateQrData` compared it with a Carbon instance using `!==`, which is never equal | `1410209` | High |
 | DEF-28 | F1 | The 'Customize Attendee Information' checkbox on the buyer form did nothing; the attendee fields were always visible with 'Guest' typed into them, so a typed name was appended to it | Browser test (E-01) | The checkbox listened for a native `change` event that the reka-ui Checkbox does not emit | `5385e3c` | Medium |
+| DEF-29 | F1 | The event page stayed blank: the page script threw `ReferenceError: watch is not defined`, so the ticket purchase page never rendered and no ticket could be bought | Browser purchase-flow tests (5 tests did not complete) | `EventDetails.vue` calls `watch` (session grouping, report modal, RSVP email) but imports only `computed`, `reactive` and `ref`; the restored original code lost the import in the earlier lint clean-up | Uncommitted: `watch` added to the import in `resources/js/pages/EventDetails.vue`, assets rebuilt | High |
 
-**Summary:** 28 code defects (9 High, 14 Medium, 5 Low) in about 1,850 in-scope lines, a density of about 15 per thousand lines. By flow: F1 6, F2 11, F3 9, all 2 (the two static analysis findings).
+**Summary:** 29 code defects (10 High, 14 Medium, 5 Low): 28 in about 1,850 in-scope lines of PHP, a density of about 15 per thousand lines, and DEF-29 in front-end code. By flow: F1 7, F2 11, F3 9, all 2 (the two static analysis findings). With the Critical level of the test severity guide, four of the High defects (DEF-05, DEF-13, DEF-16, DEF-25) are Critical.
 
 ## Defects in tests and environment
 
@@ -49,6 +50,10 @@ Severity: **High** = money, admission or personal data is wrong; **Medium** = a 
 | `Api\V2\AuthTest` | Random Faker phone number sometimes exceeded 15 characters, so the test failed intermittently | Fixed number (`41f675e`) |
 | Shared development database | Five account-setup tests failed with `RoleAlreadyExists` | Dedicated `suptix_test` database |
 | Pest 4 upgrade | `/** @test */` docblocks are ignored by PHPUnit 12, so seven tests were silently not run | Converted to `#[Test]` |
+| `Auth/*` and `DashboardTest` (17 tests) | Starter-kit tests for routes the application does not serve: it forwards `/login` and `/register` to Filament and has no dashboard route | Rewritten to describe the current design (25 October 2026) |
+| `EventPartnerTest` (2 tests) | Logo tests faked the `public` disk while the model uses the default disk, so they depended on `FILESYSTEM_DISK` | Tests set the default disk to `public` |
+| `RsvpHoneypotTest` (1 test) | Test event was not an RSVP event, so no credit account existed and booking returned 404 | Event created with `is_rsvp => true` |
+| `RsvpWaitlistTest` (1 test) | Asserted the waitlist mail was queued; the controller sends it immediately | Asserts the mail was sent |
 
 ## Investigated and found correct, or not provable here
 

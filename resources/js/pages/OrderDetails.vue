@@ -1,4 +1,5 @@
 <template>
+    <SeoHead v-if="props.seo?.title" :seo="props.seo" />
     <div class="min-h-screen bg-background py-12 overflow-hidden">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <!-- Header -->
@@ -270,6 +271,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ReceiptIcon, XIcon } from 'lucide-vue-next';
 import { nextTick, ref } from 'vue';
+import SeoHead from '@/components/SeoHead.vue';
 
 interface Event {
     id: number;

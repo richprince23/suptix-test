@@ -1,0 +1,15 @@
+app/Http/Controllers/CheckInController.php                    0 /   23    0.0%
+app/Http/Controllers/DiscountController.php                   0 /   56    0.0%
+app/Http/Controllers/PaymentController.php                    0 /  202    0.0%
+app/Http/Controllers/PaystackController.php                   0 /  128    0.0%
+app/Http/Controllers/TicketController.php                     0 /  503    0.0%
+app/Http/Controllers/TicketPurchaseController.php             0 /  200    0.0%
+app/Models/Discount.php                                       0 /   10    0.0%
+app/Models/Order.php                                          6 /   20   30.0%
+app/Models/Payment.php                                        0 /    2    0.0%
+app/Models/Ticket.php                                         3 /   18   16.7%
+app/Models/TicketType.php                                     0 /   30    0.0%
+app/Services/PaystackBalanceService.php                       0 /  257    0.0%
+app/Services/PaystackService.php                              0 /  480    0.0%
+
+In-scope line coverage: 9 / 1929 = 0.5% (threshold 80%)

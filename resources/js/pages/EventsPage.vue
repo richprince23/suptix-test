@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <section class="relative h-auto overflow-hidden mb-12">
         <NavBar text-color="text-black" background-color="bg-transparent"
             class="fixed z-40 w-full border-b-pink-600/10 shadow-md shadow-black/10 backdrop-blur" />
@@ -214,6 +215,7 @@
 import EventItem from '@/components/EventItem.vue';
 import NavBar from '@/components/NavBar.vue';
 import Footer from '@/components/Footer.vue';
+import SeoHead from '@/components/SeoHead.vue';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

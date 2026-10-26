@@ -1,66 +1,65 @@
 === app/Models/Discount.php
-  Duration: 13.19s
+  Duration: 27.44s
   Mutations: 3 untested, 29 tested
   Score:     90.63%
-  Duration:  11.34s
+  Duration:  16.57s
 === app/Models/Order.php
-  Duration: 14.03s
-  Mutations: 3 timeout, 11 tested
+  Duration: 18.99s
+  Mutations: 2 timeout, 12 tested
   Score:     100.00%
-  Duration:  21.59s
+  Duration:  27.68s
 === app/Models/Payment.php
-  Duration: 13.41s
+  Duration: 16.29s
   Mutations: 0 tested
   Score:     0.00%
   Duration:  0.00s
 === app/Models/Ticket.php
-  Duration: 13.78s
-  Mutations: 3 timeout, 17 tested
+  Mutations: 2 timeout, 18 tested
   Score:     100.00%
-  Duration:  22.34s
+  Duration: 16.99s
 === app/Models/TicketType.php
-  Duration: 13.52s
+  Duration: 15.79s
   Mutations: 16 tested
   Score:     100.00%
-  Duration:  6.55s
+  Duration:  7.72s
 === app/Http/Controllers/CheckInController.php
-  Duration: 13.75s
+  Duration: 15.42s
   Mutations: 14 tested
   Score:     100.00%
-  Duration:  3.79s
+  Duration:  3.81s
 === app/Http/Controllers/DiscountController.php
-  Duration: 13.36s
+  Duration: 14.28s
   Mutations: 12 untested, 57 tested
   Score:     82.61%
-  Duration:  17.90s
+  Duration:  21.31s
 === app/Http/Controllers/PaystackController.php
-  Duration: 13.33s
+  Duration: 15.26s
   Mutations: 42 tested
   Score:     100.00%
-  Duration:  10.09s
+  Duration:  11.15s
 === app/Http/Controllers/TicketPurchaseController.php
-  Duration: 13.80s
+  Duration: 15.29s
   Mutations: 34 untested, 157 tested
   Score:     82.20%
-  Duration:  65.80s
+  Duration:  66.71s
 === app/Http/Controllers/PaymentController.php
-  Duration: 14.23s
+  Duration: 12.46s
   Mutations: 49 untested, 121 tested
   Score:     71.18%
-  Duration:  45.45s
+  Duration:  39.90s
 === app/Services/PaystackBalanceService.php
-  Duration: 13.69s
+  Duration: 12.54s
   Mutations: 113 untested, 1 timeout, 275 tested
   Score:     70.95%
-  Duration:  96.16s
+  Duration:  78.96s
 === app/Services/PaystackService.php
-  Duration: 14.82s
-  Mutations: 191 untested, 307 tested
-  Score:     61.65%
-  Duration:  189.54s
+  Duration: 12.57s
+  Mutations: 190 untested, 308 tested
+  Score:     61.85%
+  Duration:  159.70s
 === app/Http/Controllers/TicketController.php
-  Duration: 15.01s
+  Duration: 12.39s
   Mutations: 102 untested, 378 tested
   Score:     78.75%
-  Duration:  142.77s
+  Duration:  153.22s
 DONE

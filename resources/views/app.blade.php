@@ -8,8 +8,14 @@
 
 
 
+    {{-- SEO Tools Meta Tags - server-side defaults --}}
+    {!! \Artesaos\SEOTools\Facades\SEOMeta::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\JsonLd::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\TwitterCard::generate() !!}
+
     {{-- Inertia will override title when page-specific title is provided --}}
-    <title inertia>@yield('title', config('app.name'))</title>
+    <title inertia>@yield('title', \Artesaos\SEOTools\Facades\SEOTools::getTitle())</title>
 
     {{-- Favicons --}}
     <link rel="icon" href="/favicon.ico" sizes="any">

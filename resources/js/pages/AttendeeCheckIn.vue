@@ -9,7 +9,7 @@
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                 <div class="mb-8 text-center">
                     <h1 class="bg-card mb-4 text-3xl font-bold text-foreground md:text-4xl">Attendee Check-In</h1>
-                    <p class="text-lg text-foreground/80">Check in attendees using ticket number or order number</p>
+                    <p class="text-lg text-foreground/80">Check in attendees using ticket number, order number, or guest code</p>
                 </div>
 
                 <!-- Selected Event Info -->
@@ -33,8 +33,9 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="inline-flex items-center text-xs sm:text-base px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                Ticketed Event
+                            <div class="inline-flex items-center text-xs sm:text-base px-3 py-1 rounded-full text-sm font-medium"
+                                 :class="selectedEvent.is_rsvp ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                                {{ selectedEvent.is_rsvp ? 'RSVP Event' : 'Ticketed Event' }}
                             </div>
                         </div>
                     </div>
@@ -43,7 +44,7 @@
                 <!-- Check-in Type Selector -->
                 <div class="mb-8 rounded-all  bg-whites p-6">
                     <h2 class="mb-4 text-lg font-semibold text-foreground">Select Check-In Method</h2>
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <button
                             @click="setCheckInType('ticket')"
                             :class="[
@@ -76,6 +77,24 @@
                                 <div>
                                     <h3 class="font-semibold">Order Number</h3>
                                     <p class="text-sm opacity-75">Check in bulk ticket orders</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button
+                            @click="setCheckInType('guest')"
+                            :class="[
+                                'rounded border-2 p-4 text-left transition-all cursor-pointer',
+                                checkInType === 'guest'
+                                    ? 'border-primary bg-blue-50 text-blue-700'
+                                    : 'border-gray-200 bg-white/40 text-foreground/85 hover:border-gray-300'
+                            ]"
+                        >
+                            <div class="flex items-center">
+                                <UserCheck class="mr-3 h-6 w-6" />
+                                <div>
+                                    <h3 class="font-semibold">Guest Code</h3>
+                                    <p class="text-sm opacity-75">Check in RSVP guests</p>
                                 </div>
                             </div>
                         </button>
@@ -164,6 +183,43 @@
                         </button>
                     </form>
 
+                    <!-- Guest Code Search -->
+                    <form v-else-if="checkInType === 'guest'" @submit.prevent="searchGuestCode" class="space-y-4">
+                        <div>
+                            <label for="guestCode" class="mb-2 block text-sm font-medium text-foreground/85">
+                                Guest Code
+                            </label>
+                            <div class="relative">
+                                <input
+                                    id="guestCode"
+                                    v-model="searchValue"
+                                    type="text"
+                                    placeholder="Enter guest code (e.g., ABC12345)"
+                                    class="w-full rounded  px-4 py-3 text-lg transition-colors focus:border-primary focus:ring-2 focus:ring-blue-200"
+                                    :disabled="isSearching"
+                                    required
+                                />
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                    <UserCheck class="h-5 w-5 text-gray-400" />
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-foreground/75">Guest codes are typically 8 characters long</p>
+                        </div>
+                        <button
+                            type="submit"
+                            :disabled="isSearching || !searchValue.trim()"
+                            class="w-full rounded bg-primary cursor-pointer px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
+                        >
+                            <div v-if="isSearching" class="flex items-center justify-center">
+                                <Loader2 class="mr-2 h-5 w-5 animate-spin" />
+                                Searching...
+                            </div>
+                            <div v-else class="flex items-center justify-center">
+                                <Search class="mr-2 h-5 w-5" />
+                                Verify Guest
+                            </div>
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Error Message -->
@@ -223,6 +279,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- RSVP Guest Result -->
+                    <div v-else-if="searchResults.type === 'rsvp'" class="">
+                        <RsvpCard
+                            :rsvp="searchResults.data"
+                            :can-check-in="true"
+                            @check-in="checkInRsvp"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -232,16 +297,17 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 import TicketCard from '@/components/TicketCard.vue';
+import RsvpCard from '@/components/RsvpCard.vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
-import { AlertCircle, Calendar, Loader2, MapPin, Building, Search, ShoppingBag, Ticket } from 'lucide-vue-next';
+import { AlertCircle, Calendar, Loader2, MapPin, Building, Search, ShoppingBag, Ticket, UserCheck } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 // Configure axios to include CSRF token for web requests
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.withCredentials = true;
 
-type CheckInType = 'ticket' | 'order';
+type CheckInType = 'ticket' | 'order' | 'guest';
 
 interface TicketType {
     id: number;
@@ -286,9 +352,24 @@ interface TicketData {
     custom_field_responses?: { label: string; value: string }[];
 }
 
+interface RsvpData {
+    id: number;
+    guest_code: string;
+    guest_name: string;
+    email: string;
+    phone: string;
+    status: string;
+    checked_in: boolean;
+    checked_in_at: string | null;
+    checked_in_by: { name: string } | null;
+    notes: string;
+    referral_source: string;
+    event: Event;
+}
+
 interface SearchResults {
-    type: 'ticket' | 'order';
-    data: TicketData | Order;
+    type: 'ticket' | 'order' | 'rsvp';
+    data: TicketData | Order | RsvpData;
 }
 
 interface SelectedEvent {
@@ -301,6 +382,7 @@ interface SelectedEvent {
         id: number;
         name: string;
     } | null;
+    is_rsvp: boolean;
 }
 
 // Props
@@ -327,6 +409,7 @@ const getSearchFormTitle = (): string => {
     const titles = {
         ticket: 'Search by Ticket Number',
         order: 'Search by Order Number',
+        guest: 'Verify Guest Code',
     };
     return titles[checkInType.value];
 };
@@ -395,6 +478,31 @@ const searchOrder = async () => {
     }
 };
 
+const searchGuestCode = async () => {
+    if (!searchValue.value.trim() || isSearching.value) return;
+
+    isSearching.value = true;
+    errorMessage.value = '';
+    searchResults.value = null;
+
+    try {
+        const response = await axios.post('/api/guest/verify-code', {
+            guest_code: searchValue.value.trim(),
+        });
+
+        if (response.data.success) {
+            searchResults.value = {
+                type: 'rsvp',
+                data: response.data.data.rsvp,
+            };
+        }
+    } catch (error: any) {
+        errorMessage.value = error.response?.data?.message || 'Failed to verify guest code. Please check the code and try again.';
+    } finally {
+        isSearching.value = false;
+    }
+};
+
 const checkInTicket = async (ticket: TicketData) => {
     try {
         const response = await axios.put(`/api/tickets/${ticket.id}/mark-used`);
@@ -409,4 +517,20 @@ const checkInTicket = async (ticket: TicketData) => {
     }
 };
 
+const checkInRsvp = async (rsvp: RsvpData) => {
+    try {
+        const response = await axios.post('/api/guest/check-in', {
+            guest_code: rsvp.guest_code,
+        });
+
+        if (response.data.success) {
+            // Update the RSVP status in the results
+            rsvp.checked_in = true;
+            rsvp.checked_in_at = response.data.rsvp.checked_in_at;
+            rsvp.checked_in_by = response.data.rsvp.checked_in_by;
+        }
+    } catch (error: any) {
+        alert(error.response?.data?.message || 'Failed to check in guest. Please try again.');
+    }
+};
 </script>

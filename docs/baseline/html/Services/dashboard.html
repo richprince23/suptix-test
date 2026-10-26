@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /Volumes/STORAGE/COV/7020SCN/suptix/app/Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../_css/bootstrap.min.css?v=12.5.8" rel="stylesheet" type="text/css">
+  <link href="../_css/billboard.min.css?v=12.5.8" rel="stylesheet" type="text/css">
+  <link href="../_css/style.css?v=12.5.8" rel="stylesheet" type="text/css">
+  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../index.html">/Volumes/STORAGE/COV/7020SCN/suptix/app</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Services</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventStatusService.php.html#8">App\Services\EventStatusService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#10">App\Services\PaystackBalanceService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#18">App\Services\PaystackService</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#12">App\Services\SeoService</a></td><td class="text-right">9%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#10">App\Services\PaystackSubaccountService</a></td><td class="text-right">35%</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#11">App\Services\GiantSmsService</a></td><td class="text-right">61%</td></tr>
+       <tr><td><a href="EventCreditService.php.html#18">App\Services\EventCreditService</a></td><td class="text-right">77%</td></tr>
+       <tr><td><a href="HubtelSmsService.php.html#11">App\Services\HubtelSmsService</a></td><td class="text-right">80%</td></tr>
+       <tr><td><a href="SmsService.php.html#7">App\Services\SmsService</a></td><td class="text-right">84%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="PaystackService.php.html#18">App\Services\PaystackService</a></td><td class="text-right">0.0%</td><td class="text-right">70</td><td class="text-right">4970</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#10">App\Services\PaystackBalanceService</a></td><td class="text-right">0.0%</td><td class="text-right">49</td><td class="text-right">2450</td></tr>
+       <tr><td><a href="SeoService.php.html#12">App\Services\SeoService</a></td><td class="text-right">9.6%</td><td class="text-right">42</td><td class="text-right">1343</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#10">App\Services\PaystackSubaccountService</a></td><td class="text-right">35.3%</td><td class="text-right">31</td><td class="text-right">290</td></tr>
+       <tr><td><a href="EventCreditService.php.html#18">App\Services\EventCreditService</a></td><td class="text-right">78.0%</td><td class="text-right">35</td><td class="text-right">48</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#11">App\Services\GiantSmsService</a></td><td class="text-right">62.0%</td><td class="text-right">13</td><td class="text-right">22</td></tr>
+       <tr><td><a href="EventStatusService.php.html#8">App\Services\EventStatusService</a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="HubtelSmsService.php.html#11">App\Services\HubtelSmsService</a></td><td class="text-right">80.6%</td><td class="text-right">12</td><td class="text-right">13</td></tr>
+       <tr><td><a href="SmsService.php.html#7">App\Services\SmsService</a></td><td class="text-right">84.6%</td><td class="text-right">6</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="EventCreditService.php.html#81"><abbr title="App\Services\EventCreditService::canSendSms">canSendSms</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventCreditService.php.html#160"><abbr title="App\Services\EventCreditService::consumeSmsCredit">consumeSmsCredit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventStatusService.php.html#10"><abbr title="App\Services\EventStatusService::updateEventStatuses">updateEventStatuses</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="EventStatusService.php.html#23"><abbr title="App\Services\EventStatusService::getEventsNeedingStatusUpdate">getEventsNeedingStatusUpdate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#109"><abbr title="App\Services\GiantSmsService::getBalance">getBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="HubtelSmsService.php.html#106"><abbr title="App\Services\HubtelSmsService::getBalance">getBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#16"><abbr title="App\Services\PaystackBalanceService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#24"><abbr title="App\Services\PaystackBalanceService::syncSubaccountBalances">syncSubaccountBalances</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#64"><abbr title="App\Services\PaystackBalanceService::getSubaccountTransactions">getSubaccountTransactions</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#127"><abbr title="App\Services\PaystackBalanceService::getTransactionVerificationData">getTransactionVerificationData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#159"><abbr title="App\Services\PaystackBalanceService::calculateSeparateBalances">calculateSeparateBalances</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#260"><abbr title="App\Services\PaystackBalanceService::getSubaccountBalance">getSubaccountBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#288"><abbr title="App\Services\PaystackBalanceService::syncAllSubaccountBalances">syncAllSubaccountBalances</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#322"><abbr title="App\Services\PaystackBalanceService::processTransactionForBalance">processTransactionForBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#380"><abbr title="App\Services\PaystackBalanceService::calculateSingleTransactionBalance">calculateSingleTransactionBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#411"><abbr title="App\Services\PaystackBalanceService::getSystemBalanceSummary">getSystemBalanceSummary</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#24"><abbr title="App\Services\PaystackService::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#33"><abbr title="App\Services\PaystackService::createSubaccount">createSubaccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#102"><abbr title="App\Services\PaystackService::getSubaccount">getSubaccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#140"><abbr title="App\Services\PaystackService::getSubaccountBalance">getSubaccountBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#188"><abbr title="App\Services\PaystackService::syncSubaccountBalance">syncSubaccountBalance</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#222"><abbr title="App\Services\PaystackService::getBanks">getBanks</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#268"><abbr title="App\Services\PaystackService::verifyBankAccount">verifyBankAccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#312"><abbr title="App\Services\PaystackService::updateSubaccount">updateSubaccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#352"><abbr title="App\Services\PaystackService::initializePayment">initializePayment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#470"><abbr title="App\Services\PaystackService::verifyPayment">verifyPayment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#508"><abbr title="App\Services\PaystackService::processSuccessfulPayment">processSuccessfulPayment</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#690"><abbr title="App\Services\PaystackService::generatePaymentReference">generatePaymentReference</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#698"><abbr title="App\Services\PaystackService::verifyWebhookSignature">verifyWebhookSignature</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackService.php.html#712"><abbr title="App\Services\PaystackService::sendPaymentConfirmationEmails">sendPaymentConfirmationEmails</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#95"><abbr title="App\Services\PaystackSubaccountService::fetchSubaccount">fetchSubaccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#165"><abbr title="App\Services\PaystackSubaccountService::testConnection">testConnection</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#185"><abbr title="App\Services\PaystackSubaccountService::deleteSubaccount">deleteSubaccount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#238"><abbr title="App\Services\PaystackSubaccountService::listAllSubaccounts">listAllSubaccounts</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#50"><abbr title="App\Services\SeoService::eventsIndex">eventsIndex</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#82"><abbr title="App\Services\SeoService::eventShow">eventShow</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#146"><abbr title="App\Services\SeoService::calendar">calendar</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#163"><abbr title="App\Services\SeoService::orderSearch">orderSearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#181"><abbr title="App\Services\SeoService::orderDetails">orderDetails</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#202"><abbr title="App\Services\SeoService::paymentSuccess">paymentSuccess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#220"><abbr title="App\Services\SeoService::paymentFailed">paymentFailed</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#236"><abbr title="App\Services\SeoService::ticketVerification">ticketVerification</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#250"><abbr title="App\Services\SeoService::default">default</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#268"><abbr title="App\Services\SeoService::formatStructuredData">formatStructuredData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#276"><abbr title="App\Services\SeoService::setEventSEO">setEventSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#328"><abbr title="App\Services\SeoService::setEventsIndexSEO">setEventsIndexSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#354"><abbr title="App\Services\SeoService::setOrderSearchSEO">setOrderSearchSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#374"><abbr title="App\Services\SeoService::setOrderSEO">setOrderSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#394"><abbr title="App\Services\SeoService::setCalendarSEO">setCalendarSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#423"><abbr title="App\Services\SeoService::contactUs">contactUs</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#447"><abbr title="App\Services\SeoService::privacyPolicy">privacyPolicy</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#471"><abbr title="App\Services\SeoService::termsOfService">termsOfService</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#495"><abbr title="App\Services\SeoService::refundPolicy">refundPolicy</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#519"><abbr title="App\Services\SeoService::helpCenter">helpCenter</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#543"><abbr title="App\Services\SeoService::requestDemo">requestDemo</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#567"><abbr title="App\Services\SeoService::attendeeCheckIn">attendeeCheckIn</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#585"><abbr title="App\Services\SeoService::about">about</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#609"><abbr title="App\Services\SeoService::setContactUsSEO">setContactUsSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#615"><abbr title="App\Services\SeoService::setPrivacyPolicySEO">setPrivacyPolicySEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#621"><abbr title="App\Services\SeoService::setTermsOfServiceSEO">setTermsOfServiceSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#627"><abbr title="App\Services\SeoService::setRefundPolicySEO">setRefundPolicySEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#633"><abbr title="App\Services\SeoService::setHelpCenterSEO">setHelpCenterSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#639"><abbr title="App\Services\SeoService::setRequestDemoSEO">setRequestDemoSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#645"><abbr title="App\Services\SeoService::setAttendeeCheckInSEO">setAttendeeCheckInSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#651"><abbr title="App\Services\SeoService::setAboutSEO">setAboutSEO</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SeoService.php.html#660"><abbr title="App\Services\SeoService::setSEOData">setSEOData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SmsService.php.html#12"><abbr title="App\Services\SmsService::__construct">__construct</abbr></a></td><td class="text-right">63%</td></tr>
+       <tr><td><a href="EventCreditService.php.html#302"><abbr title="App\Services\EventCreditService::grantAdminCredits">grantAdminCredits</abbr></a></td><td class="text-right">71%</td></tr>
+       <tr><td><a href="EventCreditService.php.html#184"><abbr title="App\Services\EventCreditService::grantCreditsFromPurchase">grantCreditsFromPurchase</abbr></a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#38"><abbr title="App\Services\GiantSmsService::sendSms">sendSms</abbr></a></td><td class="text-right">76%</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#25"><abbr title="App\Services\PaystackSubaccountService::updateSubaccount">updateSubaccount</abbr></a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="EventCreditService.php.html#96"><abbr title="App\Services\EventCreditService::consumeAttendeeSlot">consumeAttendeeSlot</abbr></a></td><td class="text-right">85%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="PaystackService.php.html#508"><abbr title="App\Services\PaystackService::processSuccessfulPayment">processSuccessfulPayment</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">19</td><td class="text-right">380</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#159"><abbr title="App\Services\PaystackBalanceService::calculateSeparateBalances">calculateSeparateBalances</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">11</td><td class="text-right">132</td></tr>
+       <tr><td><a href="PaystackService.php.html#712"><abbr title="App\Services\PaystackService::sendPaymentConfirmationEmails">sendPaymentConfirmationEmails</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#322"><abbr title="App\Services\PaystackBalanceService::processTransactionForBalance">processTransactionForBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">7</td><td class="text-right">56</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#64"><abbr title="App\Services\PaystackBalanceService::getSubaccountTransactions">getSubaccountTransactions</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="PaystackService.php.html#352"><abbr title="App\Services\PaystackService::initializePayment">initializePayment</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="SeoService.php.html#82"><abbr title="App\Services\SeoService::eventShow">eventShow</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#260"><abbr title="App\Services\PaystackBalanceService::getSubaccountBalance">getSubaccountBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#411"><abbr title="App\Services\PaystackBalanceService::getSystemBalanceSummary">getSystemBalanceSummary</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="PaystackService.php.html#33"><abbr title="App\Services\PaystackService::createSubaccount">createSubaccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#95"><abbr title="App\Services\PaystackSubaccountService::fetchSubaccount">fetchSubaccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#185"><abbr title="App\Services\PaystackSubaccountService::deleteSubaccount">deleteSubaccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#127"><abbr title="App\Services\PaystackBalanceService::getTransactionVerificationData">getTransactionVerificationData</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#380"><abbr title="App\Services\PaystackBalanceService::calculateSingleTransactionBalance">calculateSingleTransactionBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#102"><abbr title="App\Services\PaystackService::getSubaccount">getSubaccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#140"><abbr title="App\Services\PaystackService::getSubaccountBalance">getSubaccountBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#222"><abbr title="App\Services\PaystackService::getBanks">getBanks</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#268"><abbr title="App\Services\PaystackService::verifyBankAccount">verifyBankAccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#312"><abbr title="App\Services\PaystackService::updateSubaccount">updateSubaccount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackService.php.html#470"><abbr title="App\Services\PaystackService::verifyPayment">verifyPayment</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#238"><abbr title="App\Services\PaystackSubaccountService::listAllSubaccounts">listAllSubaccounts</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="SeoService.php.html#660"><abbr title="App\Services\SeoService::setSEOData">setSEOData</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="EventCreditService.php.html#81"><abbr title="App\Services\EventCreditService::canSendSms">canSendSms</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="EventStatusService.php.html#10"><abbr title="App\Services\EventStatusService::updateEventStatuses">updateEventStatuses</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#24"><abbr title="App\Services\PaystackBalanceService::syncSubaccountBalances">syncSubaccountBalances</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="PaystackBalanceService.php.html#288"><abbr title="App\Services\PaystackBalanceService::syncAllSubaccountBalances">syncAllSubaccountBalances</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="PaystackService.php.html#188"><abbr title="App\Services\PaystackService::syncSubaccountBalance">syncSubaccountBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="PaystackService.php.html#698"><abbr title="App\Services\PaystackService::verifyWebhookSignature">verifyWebhookSignature</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="EventCreditService.php.html#160"><abbr title="App\Services\EventCreditService::consumeSmsCredit">consumeSmsCredit</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#109"><abbr title="App\Services\GiantSmsService::getBalance">getBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="HubtelSmsService.php.html#106"><abbr title="App\Services\HubtelSmsService::getBalance">getBalance</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#165"><abbr title="App\Services\PaystackSubaccountService::testConnection">testConnection</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="GiantSmsService.php.html#38"><abbr title="App\Services\GiantSmsService::sendSms">sendSms</abbr></a></td><td class="text-right">76.6%</td><td class="text-right">5</td><td class="text-right">5</td></tr>
+       <tr><td><a href="PaystackSubaccountService.php.html#25"><abbr title="App\Services\PaystackSubaccountService::updateSubaccount">updateSubaccount</abbr></a></td><td class="text-right">84.3%</td><td class="text-right">5</td><td class="text-right">5</td></tr>
+       <tr><td><a href="EventCreditService.php.html#184"><abbr title="App\Services\EventCreditService::grantCreditsFromPurchase">grantCreditsFromPurchase</abbr></a></td><td class="text-right">75.6%</td><td class="text-right">4</td><td class="text-right">4</td></tr>
+       <tr><td><a href="EventCreditService.php.html#302"><abbr title="App\Services\EventCreditService::grantAdminCredits">grantAdminCredits</abbr></a></td><td class="text-right">71.8%</td><td class="text-right">4</td><td class="text-right">4</td></tr>
+       <tr><td><a href="EventCreditService.php.html#96"><abbr title="App\Services\EventCreditService::consumeAttendeeSlot">consumeAttendeeSlot</abbr></a></td><td class="text-right">85.7%</td><td class="text-right">3</td><td class="text-right">3</td></tr>
+       <tr><td><a href="SmsService.php.html#12"><abbr title="App\Services\SmsService::__construct">__construct</abbr></a></td><td class="text-right">63.6%</td><td class="text-right">2</td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.8</a> using <a href="https://www.php.net/" target="_top">PHP 8.4.15</a> and <a href="https://phpunit.de/">PHPUnit 12.5.33</a> at Thu Oct 22 3:46:55 UTC 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../_js/billboard.pkgd.min.js?v=12.5.8" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,4,"EventStatusService.php.html#8","App\\Services\\EventStatusService","20"],[0,49,"PaystackBalanceService.php.html#10","App\\Services\\PaystackBalanceService","2450"],[0,70,"PaystackService.php.html#18","App\\Services\\PaystackService","4970"],[9.647058823529411,42,"SeoService.php.html#12","App\\Services\\SeoService","1343.14"],[35.32608695652174,31,"PaystackSubaccountService.php.html#10","App\\Services\\PaystackSubaccountService","290.96"],[61.97183098591549,13,"GiantSmsService.php.html#11","App\\Services\\GiantSmsService","22.29"],[77.97356828193833,35,"EventCreditService.php.html#18","App\\Services\\EventCreditService","48.09"],[80.59701492537313,12,"HubtelSmsService.php.html#11","App\\Services\\HubtelSmsService","13.05"],[84.61538461538461,6,"SmsService.php.html#7","App\\Services\\SmsService","6.13"],[100,1,"CreditCheckResult.php.html#5","App\\Services\\CreditCheckResult","1"]]</script>
+  <script type="application/json" id="complexity_method">[[0,3,"EventCreditService.php.html#81","App\\Services\\EventCreditService::canSendSms","12"],[0,2,"EventCreditService.php.html#160","App\\Services\\EventCreditService::consumeSmsCredit","6"],[0,3,"EventStatusService.php.html#10","App\\Services\\EventStatusService::updateEventStatuses","12"],[0,1,"EventStatusService.php.html#23","App\\Services\\EventStatusService::getEventsNeedingStatusUpdate","2"],[0,2,"GiantSmsService.php.html#109","App\\Services\\GiantSmsService::getBalance","6"],[0,2,"HubtelSmsService.php.html#106","App\\Services\\HubtelSmsService::getBalance","6"],[0,1,"PaystackBalanceService.php.html#16","App\\Services\\PaystackBalanceService::__construct","2"],[0,3,"PaystackBalanceService.php.html#24","App\\Services\\PaystackBalanceService::syncSubaccountBalances","12"],[0,6,"PaystackBalanceService.php.html#64","App\\Services\\PaystackBalanceService::getSubaccountTransactions","42"],[0,4,"PaystackBalanceService.php.html#127","App\\Services\\PaystackBalanceService::getTransactionVerificationData","20"],[0,11,"PaystackBalanceService.php.html#159","App\\Services\\PaystackBalanceService::calculateSeparateBalances","132"],[0,5,"PaystackBalanceService.php.html#260","App\\Services\\PaystackBalanceService::getSubaccountBalance","30"],[0,3,"PaystackBalanceService.php.html#288","App\\Services\\PaystackBalanceService::syncAllSubaccountBalances","12"],[0,7,"PaystackBalanceService.php.html#322","App\\Services\\PaystackBalanceService::processTransactionForBalance","56"],[0,4,"PaystackBalanceService.php.html#380","App\\Services\\PaystackBalanceService::calculateSingleTransactionBalance","20"],[0,5,"PaystackBalanceService.php.html#411","App\\Services\\PaystackBalanceService::getSystemBalanceSummary","30"],[0,1,"PaystackService.php.html#24","App\\Services\\PaystackService::__construct","2"],[0,5,"PaystackService.php.html#33","App\\Services\\PaystackService::createSubaccount","30"],[0,4,"PaystackService.php.html#102","App\\Services\\PaystackService::getSubaccount","20"],[0,4,"PaystackService.php.html#140","App\\Services\\PaystackService::getSubaccountBalance","20"],[0,3,"PaystackService.php.html#188","App\\Services\\PaystackService::syncSubaccountBalance","12"],[0,4,"PaystackService.php.html#222","App\\Services\\PaystackService::getBanks","20"],[0,4,"PaystackService.php.html#268","App\\Services\\PaystackService::verifyBankAccount","20"],[0,4,"PaystackService.php.html#312","App\\Services\\PaystackService::updateSubaccount","20"],[0,6,"PaystackService.php.html#352","App\\Services\\PaystackService::initializePayment","42"],[0,4,"PaystackService.php.html#470","App\\Services\\PaystackService::verifyPayment","20"],[0,19,"PaystackService.php.html#508","App\\Services\\PaystackService::processSuccessfulPayment","380"],[0,1,"PaystackService.php.html#690","App\\Services\\PaystackService::generatePaymentReference","2"],[0,3,"PaystackService.php.html#698","App\\Services\\PaystackService::verifyWebhookSignature","12"],[0,8,"PaystackService.php.html#712","App\\Services\\PaystackService::sendPaymentConfirmationEmails","72"],[0,5,"PaystackSubaccountService.php.html#95","App\\Services\\PaystackSubaccountService::fetchSubaccount","30"],[0,2,"PaystackSubaccountService.php.html#165","App\\Services\\PaystackSubaccountService::testConnection","6"],[0,5,"PaystackSubaccountService.php.html#185","App\\Services\\PaystackSubaccountService::deleteSubaccount","30"],[0,4,"PaystackSubaccountService.php.html#238","App\\Services\\PaystackSubaccountService::listAllSubaccounts","20"],[0,1,"SeoService.php.html#50","App\\Services\\SeoService::eventsIndex","2"],[0,6,"SeoService.php.html#82","App\\Services\\SeoService::eventShow","42"],[0,1,"SeoService.php.html#146","App\\Services\\SeoService::calendar","2"],[0,1,"SeoService.php.html#163","App\\Services\\SeoService::orderSearch","2"],[0,1,"SeoService.php.html#181","App\\Services\\SeoService::orderDetails","2"],[0,1,"SeoService.php.html#202","App\\Services\\SeoService::paymentSuccess","2"],[0,1,"SeoService.php.html#220","App\\Services\\SeoService::paymentFailed","2"],[0,1,"SeoService.php.html#236","App\\Services\\SeoService::ticketVerification","2"],[0,1,"SeoService.php.html#250","App\\Services\\SeoService::default","2"],[0,1,"SeoService.php.html#268","App\\Services\\SeoService::formatStructuredData","2"],[0,1,"SeoService.php.html#276","App\\Services\\SeoService::setEventSEO","2"],[0,1,"SeoService.php.html#328","App\\Services\\SeoService::setEventsIndexSEO","2"],[0,1,"SeoService.php.html#354","App\\Services\\SeoService::setOrderSearchSEO","2"],[0,1,"SeoService.php.html#374","App\\Services\\SeoService::setOrderSEO","2"],[0,1,"SeoService.php.html#394","App\\Services\\SeoService::setCalendarSEO","2"],[0,1,"SeoService.php.html#423","App\\Services\\SeoService::contactUs","2"],[0,1,"SeoService.php.html#447","App\\Services\\SeoService::privacyPolicy","2"],[0,1,"SeoService.php.html#471","App\\Services\\SeoService::termsOfService","2"],[0,1,"SeoService.php.html#495","App\\Services\\SeoService::refundPolicy","2"],[0,1,"SeoService.php.html#519","App\\Services\\SeoService::helpCenter","2"],[0,1,"SeoService.php.html#543","App\\Services\\SeoService::requestDemo","2"],[0,1,"SeoService.php.html#567","App\\Services\\SeoService::attendeeCheckIn","2"],[0,1,"SeoService.php.html#585","App\\Services\\SeoService::about","2"],[0,1,"SeoService.php.html#609","App\\Services\\SeoService::setContactUsSEO","2"],[0,1,"SeoService.php.html#615","App\\Services\\SeoService::setPrivacyPolicySEO","2"],[0,1,"SeoService.php.html#621","App\\Services\\SeoService::setTermsOfServiceSEO","2"],[0,1,"SeoService.php.html#627","App\\Services\\SeoService::setRefundPolicySEO","2"],[0,1,"SeoService.php.html#633","App\\Services\\SeoService::setHelpCenterSEO","2"],[0,1,"SeoService.php.html#639","App\\Services\\SeoService::setRequestDemoSEO","2"],[0,1,"SeoService.php.html#645","App\\Services\\SeoService::setAttendeeCheckInSEO","2"],[0,1,"SeoService.php.html#651","App\\Services\\SeoService::setAboutSEO","2"],[0,4,"SeoService.php.html#660","App\\Services\\SeoService::setSEOData","20"],[63.63636363636363,2,"SmsService.php.html#12","App\\Services\\SmsService::__construct","2.19"],[71.7948717948718,4,"EventCreditService.php.html#302","App\\Services\\EventCreditService::grantAdminCredits","4.36"],[75.55555555555556,4,"EventCreditService.php.html#184","App\\Services\\EventCreditService::grantCreditsFromPurchase","4.23"],[76.59574468085107,5,"GiantSmsService.php.html#38","App\\Services\\GiantSmsService::sendSms","5.32"],[84.31372549019608,5,"PaystackSubaccountService.php.html#25","App\\Services\\PaystackSubaccountService::updateSubaccount","5.10"],[85.71428571428571,3,"EventCreditService.php.html#96","App\\Services\\EventCreditService::consumeAttendeeSlot","3.03"],[91.66666666666666,4,"EventCreditService.php.html#55","App\\Services\\EventCreditService::canSendConfirmationEmail","4.01"],[97.82608695652173,7,"EventCreditService.php.html#240","App\\Services\\EventCreditService::approveWaitlistEntry","7"],[100,1,"CreditCheckResult.php.html#7","App\\Services\\CreditCheckResult::__construct","1"],[100,2,"EventCreditService.php.html#20","App\\Services\\EventCreditService::ensureAccountExists","2"],[100,3,"EventCreditService.php.html#38","App\\Services\\EventCreditService::canAcceptNewRsvp","3"],[100,3,"EventCreditService.php.html#127","App\\Services\\EventCreditService::consumeEmailCredit","3"],[100,3,"GiantSmsService.php.html#21","App\\Services\\GiantSmsService::__construct","3"],[100,1,"GiantSmsService.php.html#33","App\\Services\\GiantSmsService::getProviderName","1"],[100,2,"GiantSmsService.php.html#104","App\\Services\\GiantSmsService::isConfigured","2"],[100,3,"HubtelSmsService.php.html#21","App\\Services\\HubtelSmsService::__construct","3"],[100,1,"HubtelSmsService.php.html#33","App\\Services\\HubtelSmsService::getProviderName","1"],[100,4,"HubtelSmsService.php.html#38","App\\Services\\HubtelSmsService::sendSms","4"],[100,2,"HubtelSmsService.php.html#101","App\\Services\\HubtelSmsService::isConfigured","2"],[100,1,"PaystackSubaccountService.php.html#16","App\\Services\\PaystackSubaccountService::__construct","1"],[100,1,"PaystackSubaccountService.php.html#147","App\\Services\\PaystackSubaccountService::updatePaymentInfoFromPaystackResponse","1"],[100,8,"PaystackSubaccountService.php.html#284","App\\Services\\PaystackSubaccountService::getValidationMessage","8"],[100,1,"SeoService.php.html#17","App\\Services\\SeoService::homePage","1"],[100,1,"SeoService.php.html#302","App\\Services\\SeoService::setHomeSEO","1"],[100,4,"SmsService.php.html#31","App\\Services\\SmsService::sendSms","4"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [3,1,0,0,1,0,0,1,1,2,0,1])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [66,0,0,0,0,0,0,1,3,2,2,17])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

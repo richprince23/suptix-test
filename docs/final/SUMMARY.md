@@ -9,7 +9,7 @@ Baseline: commit `da57882` (clean test database, Pest 4, pcov; `docs/baseline/cl
 | Line coverage, in-scope classes | 9 of 1,885 (0.5%) | 1,709 of 1,852 (92.3%) | At least 80% |
 | Line coverage, whole application | 646 of 4,958 (13.0%) | 2,602 of 4,926 (52.8%) | |
 | Method coverage, whole application | 44 of 367 (12.0%) | 149 of 365 (40.8%) | |
-| Mutation score, in-scope classes | Not measured | 1,431 of 1,935 mutants killed (74.0%) | At least 60% |
+| Mutation score, in-scope classes | Not measured | 1,432 of 1,935 mutants killed (74.0%) | At least 60% |
 | PHPStan level 5, in-scope classes | Not run (105 errors on first run) | 0 errors | 0 errors |
 | Pint, in-scope files, factories and tests | Needed changes | 0 files | 0 files |
 | Pint, whole repository | 133 files | 121 files | No new errors |

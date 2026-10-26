@@ -1,4 +1,5 @@
 <template>
+    <SeoHead :seo="seo" />
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
         <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
             <!-- Error Header -->
@@ -105,6 +106,7 @@
 </template>
 
 <script setup lang="ts">
+import SeoHead from '@/components/SeoHead.vue';
 import { Link } from '@inertiajs/vue3';
 import { ArrowLeftIcon, XCircleIcon } from 'lucide-vue-next';
 
