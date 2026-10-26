@@ -1,26 +1,20 @@
-# Suptix
+# Suptix: Software Quality Assurance Case Study
 
-Suptix is a modern, scalable event management and ticketing platform designed for event organizers and attendees. Built with a Laravel 12 backend and a Vue 3 / Inertia.js frontend, Suptix delivers end-to-end event discovery, multi-tier ticket sales, integrated African payment processing via Paystack, automated QR code generation and validation, and a multi-tenant organizer admin panel powered by Filament v3.
+This repository is a case study in software quality assurance and testing (module 7020SCN). It takes Suptix, a Laravel 12 and Vue 3 event ticketing platform, and applies a risk-based test process to the three flows that carry revenue, payment trust and event entry. It holds the application, the automated tests, the test documentation and the evidence behind the report.
 
 ---
 
 ## Table of Contents
 
-- [Project Status](#project-status)
-- [Core Features](#core-features)
-- [Technology Stack](#technology-stack)
-- [Architecture Overview](#architecture-overview)
-- [Getting Started](#getting-started)
-- [Running the Application](#running-the-application)
+- [Case Study Overview](#case-study-overview)
+- [Headline Results](#headline-results)
+- [Setup and Testing Guide for Markers](#setup-and-testing-guide-for-markers)
 - [Testing and Quality Assurance](#testing-and-quality-assurance)
-  - [Automated Tests](#automated-tests)
-  - [Watching the browser tests run](#watching-the-browser-tests-run)
-  - [Coverage, static analysis and mutation testing](#coverage-static-analysis-and-mutation-testing)
+  - [Running the tests](#running-the-tests)
   - [Test results](#test-results)
   - [Quality documentation](#quality-documentation)
-  - [Code Formatting and Linting](#code-formatting-and-linting)
-- [Production Deployment](#production-deployment)
-- [API Documentation and Guides](#api-documentation-and-guides)
+  - [Continuous integration](#continuous-integration)
+- [Repository Map](#repository-map)
 - [Appendices](#appendices)
   - [Appendix A: Documentation and evidence index](#appendix-a-documentation-and-evidence-index)
   - [Appendix B: Command reference](#appendix-b-command-reference)
@@ -34,271 +28,170 @@ Every command used in this project is listed in [dev-notes.md](dev-notes.md).
 
 ---
 
-## Project Status
+## Case Study Overview
 
-- **Phase 1: Project Setup and Development** - Completed
-- **Phase 2: Testing and Quality Assurance** - In Progress
-- **Phase 3: Deployment** - To Be Implemented
-- **Phase 4: Maintenance and Improvements** - To Be Implemented
+**Aim.** Measure the quality of the three business-critical flows, close the gaps with targeted automated tests, and show the gain with measured results.
 
----
+| Flow | What it protects | In-scope classes |
+|---|---|---|
+| F1 Purchase and pricing | Correct charges, no overselling | `TicketPurchaseController`, `DiscountController`, `Discount`, `Order`, `Ticket`, `TicketType` |
+| F2 Payment confirmation | Reliable, secure payment and ticket delivery | `PaymentController`, `PaystackController`, `PaystackService`, `PaystackBalanceService`, `Payment` |
+| F3 Ticket validation and entry | One entry per ticket, organiser separation | `TicketController`, `CheckInController`, `Ticket` |
 
-## Core Features
+**Out of scope:** Mobile API v2, the Filament admin panel, and the Providers, Console and Exceptions directories. Coverage is reported for the 13 in-scope classes only, never for the whole application.
 
-### Event Discovery and Management
-- Event creation with rich descriptions, cover banners, schedules, and locations.
-- Categorization across diverse event types (Educational, Corporate, Social, Cultural, Sports).
-- Event lifecycle management (Draft, Published, Live, Canceled, Past).
-- Location integration with Google Maps and venue management.
+**Approach.** The work follows the ISO/IEC 29119 document set: a [test strategy](docs/testing/TEST_STRATEGY.md), a [test plan](docs/testing/TEST_PLAN.md), a [54-case catalogue](docs/testing/TEST_CASES.md) and an execution record ([results](docs/testing/TEST_RESULTS.md)). Tests are ranked by risk (Priority 1 blocks sign-off), run against an isolated database with faked Paystack, mail and queue services, and gated in CI. Concurrency tests are simulations, because transactions hide uncommitted rows from other processes.
 
-### Ticketing
-- Multi-tier ticketing with configurable pricing, capacity caps, and availability windows.
-- Dynamic discount code validation and redemption.
-- Automated QR code issuance for all confirmed orders.
-- Direct PDF ticket generation (DomPDF / client-side) and automated transactional email dispatch.
-
-### African Payment Processing (Paystack)
-- Seamless checkout experience powered by Paystack.
-- Automated split-payments and subaccount transfers for organizers.
-- Robust webhook verification and idempotency handling for payment confirmations.
-- Bank account verification and balance synchronisation for organizer payouts.
-
-### Check-in and Mobile Scanning API
-- Dedicated REST API (v2 and mobile routes) secured with Laravel Sanctum.
-- High-performance QR code verification and manual ticket entry validation.
-- Real-time attendee check-in logging and duplicate scan prevention.
-- Lightweight connectivity probe endpoint (`/api/ping`) for mobile scanning hardware/apps.
-- Comprehensive event check-in statistics and entry reporting.
-
-### Multi-Tenant Organizer Administration
-- Back-office dashboard powered by Filament v3.
-- Organizer-based tenancy isolating events, tickets, revenues, and attendees.
-- Granular role and permission management via Spatie Laravel Permission.
-- Excel data export for attendees and financial reports.
-
-### Multi-Channel Communication
-- Transactional SMS notifications supported via Hubtel and GiantSMS providers with fallback.
-- Transactional emails for order confirmations, ticket deliveries, and event updates.
+**Branches.** `original-scope` holds the full study. The baseline is commit `a36bd12` (the inherited tests only). `master` on the Coventry repository follows `original-scope`.
 
 ---
 
-## Technology Stack
+## Headline Results
 
-### Backend
-- Framework: Laravel 12.x
-- Language: PHP 8.4+
-- Authentication: Laravel Sanctum and web session guards
-- Admin Panel: Filament v3
-- Database & ORM: SQLite (local) / MySQL (production) with Eloquent ORM
-- Background Queues: Database / Redis queue worker
-- Testing Framework: Pest 4 (PHPUnit 12) with the browser plugin (Playwright), Larastan (PHPStan level 5), Pest mutation testing
+Final run on `original-scope`, all suites (details in [Test results](#test-results)):
 
-### Frontend
-- Framework: Vue 3 (Composition API)
-- Client-Server Bridge: Inertia.js v2
-- Language: TypeScript
-- Styling: Tailwind CSS v4 and Reka UI
-- Build Tool: Vite 6 with SSR support
-- Icons: HugeIcons / Phosphor Icons
-
-### Integrations and Services
-- Payments: Paystack API & Webhooks
-- SMS Gateways: Hubtel SMS API, GiantSMS API
-- Mapping: Google Maps API
-- Cloud Storage: AWS S3 / Local Disk
+| Measure | Baseline | After |
+|---|---:|---:|
+| Tests passed | 114 of 135 | 422 of 423 (1 skipped) |
+| Tests failed | 21 | 0 |
+| In-scope line coverage | 0.5% | 91.4% |
+| Defects found and fixed | n/a | 29 |
 
 ---
 
-## Architecture Overview
+## Setup and Testing Guide for Markers
 
-```
-suptix/
-├── app/
-│   ├── Filament/          # Filament v3 admin resources and pages
-│   ├── Http/
-│   │   ├── Controllers/   # Web and API controllers
-│   │   └── Middleware/    # HTTP middleware (auth, sanitization, honeypot)
-│   ├── Models/            # Eloquent data models (Event, Order, Ticket, Organizer, etc.)
-│   └── Services/          # Domain services (Payment, SMS, TicketService)
-├── config/                # Application configuration files
-├── database/
-│   ├── factories/         # Model factories for testing and seeding
-│   ├── migrations/        # Database schema definitions
-│   └── seeders/           # Initial and mock data seeders
-├── resources/
-│   ├── js/
-│   │   ├── components/    # Reusable Vue components and design system
-│   │   ├── layouts/       # Inertia page layouts
-│   │   └── pages/         # Inertia view pages
-│   └── views/             # Blade root layouts and email templates
-├── routes/
-│   ├── api.php            # Mobile and external REST endpoints
-│   ├── web.php            # Web client routes and Inertia endpoints
-│   └── ticket-purchase.php# Ticket order and checkout workflows
-└── tests/
-    ├── Browser/           # End-to-end tests in a real browser (Pest browser plugin)
-    ├── Feature/           # Feature integration tests (Pest): Purchase, Payment, Tickets, Orders, Models, Performance
-    └── Unit/              # Isolated unit tests
-```
+This guide takes a clean machine to a full test run. It needs about 15 minutes plus the downloads. Commands are for macOS or Linux; PowerShell equivalents are given where they differ. The expected output of each step is shown, so you can tell at once whether it worked.
 
----
+### What you need
 
-## Getting Started
+| Tool | Version | Notes |
+|---|---|---|
+| Git | any | to clone the repository |
+| PHP | 8.4 | extensions Composer asks for (for example `mbstring`, `intl`, `gd`, `zip`, `bcmath`, `pdo_mysql`); `pcov` is needed only for the coverage step |
+| Composer | 2.x | |
+| Node.js and npm | 22 | |
+| MySQL | 8.4 | or Docker, which supplies one (step 4) |
 
-### Prerequisites
-- PHP 8.2 or higher (PHP 8.4 recommended)
-- Composer 2.x
-- Node.js 20.x or higher and NPM
-- SQLite (default for development) or MySQL 8.0+
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone git@github.coventry.ac.uk:Aikinsr/suptix.git
-   cd suptix
-   ```
-
-2. Install backend dependencies:
-   ```bash
-   composer install
-   ```
-
-3. Install frontend dependencies:
-   ```bash
-   npm install
-   ```
-
-4. Configure environment settings:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-5. Configure database and credentials in `.env`:
-   ```env
-   APP_NAME=Suptix
-   APP_URL=http://localhost:8000
-
-   DB_CONNECTION=sqlite
-   # For MySQL:
-   # DB_CONNECTION=mysql
-   # DB_HOST=127.0.0.1
-   # DB_PORT=3306
-   # DB_DATABASE=suptix
-   # DB_USERNAME=root
-   # DB_PASSWORD=
-
-   # Paystack Settings
-   PAYSTACK_PUBLIC_KEY=pk_test_xxxx
-   PAYSTACK_SECRET_KEY=sk_test_xxxx
-   PAYSTACK_PLATFORM_FEE_PERCENTAGE=7
-
-   # SMS Provider (hubtel or giant_sms)
-   SMS_PRIMARY_PROVIDER=hubtel
-   HUBTEL_CLIENT_ID=
-   HUBTEL_CLIENT_SECRET=
-   HUBTEL_SENDER_ID=Suptix
-   ```
-
-6. Run database migrations and seed default data:
-   ```bash
-   touch database/database.sqlite
-   php artisan migrate --seed
-   ```
-
-7. Create the storage symlink:
-   ```bash
-   php artisan storage:link
-   ```
-
----
-
-## Running the Application
-
-### Concurrent Development Server
-Start all required processes (web server, queue listener, Pail log watcher, and Vite dev server) concurrently:
+### Step 1: Get the code
 ```bash
-composer run dev
+git clone https://github.coventry.ac.uk/Aikinsr/suptix.git
+cd suptix
+git switch master        # the default branch; it holds the finished work
 ```
 
-### Running Individual Services
-If preferred, services can be launched in separate terminal sessions:
+### Step 2: Install dependencies
+```bash
+composer install
+npm ci
+```
+Expected: both finish without errors.
 
-- Laravel Web Server:
-  ```bash
-  php artisan serve
-  ```
+### Step 3: Create the environment file
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-- Vite Asset Server:
-  ```bash
-  npm run dev
-  ```
+### Step 4: Start a MySQL database
+The tests need a MySQL database called `suptix_test`. Use Docker (option A) or a MySQL you already run (option B).
 
-- Background Queue Worker:
-  ```bash
-  php artisan queue:listen --tries=1
-  ```
+**Option A: Docker**
+```bash
+docker run -d --name suptix-mysql -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=suptix_test -p 3306:3306 mysql:8.4
+```
+Wait about 30 seconds for MySQL to start (`docker logs suptix-mysql` ends with "ready for connections").
 
-- Log Streamer (Laravel Pail):
-  ```bash
-  php artisan pail --timeout=0
-  ```
+**Option B: your own MySQL**
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS suptix_test"
+```
+
+### Step 5: Tell the tests how to connect
+The repository's `.env.testing` holds the author's own local database password, so give the tests your credentials through environment variables for this terminal session. They take priority over the file. Use the password you set in step 4 (`secret` for option A).
+
+macOS or Linux:
+```bash
+export DB_CONNECTION=mysql DB_HOST=127.0.0.1 DB_PORT=3306 DB_DATABASE=suptix_test DB_USERNAME=root DB_PASSWORD=secret
+```
+PowerShell:
+```powershell
+$env:DB_CONNECTION="mysql"; $env:DB_HOST="127.0.0.1"; $env:DB_PORT="3306"; $env:DB_DATABASE="suptix_test"; $env:DB_USERNAME="root"; $env:DB_PASSWORD="secret"
+```
+`DB_DATABASE` must be `suptix_test`. The tests never use any other database.
+
+### Step 6: Create the tables
+```bash
+php artisan migrate --env=testing --force
+```
+Expected: a list of migrations marked `DONE`.
+
+### Step 7: Build the front end and install the test browser
+```bash
+php artisan ziggy:generate
+npm run build
+npx playwright install chromium      # about 200 MB; only the browser tests need it
+```
+
+### Step 8: Run all the tests
+```bash
+php artisan test
+```
+Expected (about 1 to 2 minutes):
+```
+Tests:    1 skipped, 422 passed (2013 assertions)
+```
+The skipped test is the live Paystack checkout, which needs a Paystack account and is switched off on purpose. To skip the browser tests, run `php artisan test --testsuite=Unit,Feature`, which gives `Tests:    415 passed (1970 assertions)`.
+
+### Step 9: Check the in-scope coverage
+This needs the `pcov` PHP extension (`php -m | grep pcov`).
+```bash
+mkdir -p coverage
+php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --coverage-clover=coverage/clover.xml
+php scripts/check-scope-coverage.php coverage/clover.xml 80
+```
+Expected last line:
+```
+In-scope line coverage: 1720 / 1881 = 91.4% (threshold 80%)
+```
+The script lists the 13 in-scope classes with their coverage and exits with an error below 80%.
+
+### Step 10: Run the static checks
+```bash
+./vendor/bin/phpstan analyse                      # expected: [OK] No errors
+npx vue-tsc --noEmit | grep -c "error TS"         # expected: 21 (the limit is 26)
+```
+The style and lint commands are in [dev-notes.md](dev-notes.md#6-static-analysis-style-and-type-checks): Pint passes on the in-scope files and ESLint passes on the five in-scope pages.
+
+### Step 11 (optional): Look at the evidence and the baseline
+- The recorded output of the final run is in [docs/testing/evidence/](docs/testing/evidence/), and the results are summarised under [Test results](#test-results) below.
+- To see the baseline (the inherited tests only, 21 failing and 0.5% in-scope coverage), follow [dev-notes.md](dev-notes.md#9-reproducing-the-baseline).
+- Mutation testing takes about ten minutes: [dev-notes.md](dev-notes.md#7-mutation-testing).
+
+### If something goes wrong
+
+| Symptom | Cause and fix |
+|---|---|
+| `Access denied for user 'root'` | The variables from step 5 are not set in this terminal, or the password is wrong. Set them again |
+| `SQLSTATE ... Connection refused` | MySQL is not running or not on port 3306; check `docker ps` or your MySQL service |
+| `PlaywrightOutdatedException` or browser tests fail at start | Run `npx playwright install chromium` again |
+| The purchase browser tests hang or the page is blank | Run `php artisan ziggy:generate` and `npm run build`, then rerun |
+| `Clover file not found` or coverage near 0% | `pcov` is missing or not enabled; install it, and use the exact command in step 9 |
+| `Unable to locate file in Vite manifest` | Run `npm run build` |
 
 ---
 
 ## Testing and Quality Assurance
 
-### Automated Tests
-All test, browser, coverage, mutation and static analysis commands are in [dev-notes.md](dev-notes.md) ([running tests](dev-notes.md#3-running-tests), [browser tests](dev-notes.md#4-browser-tests), [coverage](dev-notes.md#5-coverage)).
-
-The suite runs against a dedicated MySQL database, `suptix_test` (set in `phpunit.xml`), and every test uses `DatabaseTransactions`, never `RefreshDatabase`. Create the database and migrate it once:
+### Running the tests
 ```bash
-php artisan tinker --execute="DB::statement('CREATE DATABASE IF NOT EXISTS suptix_test');"
-DB_DATABASE=suptix_test php artisan migrate
+php artisan test                                   # Unit, Feature and Browser
+php artisan test --testsuite=Unit,Feature          # without the browser tests
+php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --coverage-clover=coverage/clover.xml
+php scripts/check-scope-coverage.php coverage/clover.xml 80     # in-scope gate
+./vendor/bin/phpstan analyse                       # static analysis, level 5
 ```
-Install the browser used by the end-to-end tests once (`npm install` then):
-```bash
-npx playwright install chromium
-```
-Run the tests:
-```bash
-php artisan test                          # all suites: Unit, Feature, Browser
-php artisan test --testsuite=Unit,Feature # without the browser tests
-```
-
-### Watching the browser tests run
-The browser tests run headless and fast by default (and in CI). To watch them like a Selenium demo, with a visible browser, keystroke-by-keystroke typing and a pause after each click:
-```bash
-composer run test:browser:watch
-# the same thing by hand:
-BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser --headed
-# one test only:
-BROWSER_DEMO=1 ./vendor/bin/pest tests/Browser/TicketPurchaseFlowTest.php --filter="lets a guest" --headed
-```
-#### Paying on the real Paystack test checkout
-`tests/Browser/PaystackTestModeCheckoutTest.php` goes through the real Paystack test environment instead of the stand-in checkout page: the app calls Paystack's API with the `sk_test_` key from `.env`, the browser lands on Paystack's hosted checkout, pays with Paystack's published test card and returns to the application. No money moves. It is skipped unless `PAYSTACK_LIVE=1`, and always skipped if the key in `.env` is not a test key.
-```bash
-composer run test:browser:paystack
-```
-Paystack's checkout sits behind a Cloudflare "Verify you are human" check. The test does not touch it: when it appears, tick the box in the browser window yourself and the test carries on (it waits up to two minutes). It needs at least one subaccount in your Paystack test account, and it will not run in CI.
-
-`--headed` cannot be combined with `--parallel`. Use `composer run test:browser` for the normal headless run.
-
-### Coverage, static analysis and mutation testing
-Full command lists: [coverage](dev-notes.md#5-coverage), [static analysis and style](dev-notes.md#6-static-analysis-style-and-type-checks), [mutation testing](dev-notes.md#7-mutation-testing).
-
-```bash
-# line coverage (pcov), then the in-scope gate used in CI (at least 80%)
-php -d pcov.enabled=1 -d pcov.directory=app artisan test --coverage-clover coverage/clover.xml
-php scripts/check-scope-coverage.php coverage/clover.xml 80
-
-# static analysis (PHPStan level 5 on the in-scope classes, see phpstan.neon)
-./vendor/bin/phpstan analyse
-
-# mutation testing on one class (covered lines only)
-php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --mutate --covered-only --class='App\Models\Discount' --testsuite=Unit,Feature
-```
+All test, browser, coverage, mutation and analysis commands are in [dev-notes.md](dev-notes.md) ([running tests](dev-notes.md#3-running-tests), [browser tests](dev-notes.md#4-browser-tests), [coverage](dev-notes.md#5-coverage), [static analysis and style](dev-notes.md#6-static-analysis-style-and-type-checks), [mutation testing](dev-notes.md#7-mutation-testing)). Tests use the `suptix_test` database and `DatabaseTransactions`, never `RefreshDatabase`.
 
 ### Test results
 
@@ -352,57 +245,35 @@ Commands to reproduce these results: [run the tests](dev-notes.md#3-running-test
 - [Developer notes and every command](dev-notes.md).
 - [Report tiny draft](docs/report/Suptix_SQA_Report_Tiny_Draft.docx): the chapter structure and writing guide the report follows.
 - System design diagrams: [System_Design.mmd](docs/design/System_Design.mmd) and [System_Design_Sequence.mmd](docs/design/System_Design_Sequence.mmd).
-- The GitHub Actions workflow in [.github/workflows/ci.yml](.github/workflows/ci.yml) runs style, static analysis, tests with coverage and mutation testing; the scope gate is [scripts/check-scope-coverage.php](scripts/check-scope-coverage.php).
+- The CI pipeline and its gates are described in [Continuous integration](#continuous-integration).
 
-### Code Formatting and Linting
-- Format PHP code with Laravel Pint (use `./vendor/bin/pint --test` to check without changing files):
-  ```bash
-  php artisan pint
-  ```
-- Lint frontend assets (`npm run lint` fixes files; `npx eslint <files> --no-fix` only checks):
-  ```bash
-  npm run lint
-  ```
-- Format frontend code with Prettier:
-  ```bash
-  npm run format
-  npm run format:check
-  ```
-- Run TypeScript type checks:
-  ```bash
-  npx vue-tsc --noEmit
-  ```
+### Continuous integration
+[.github/workflows/ci.yml](.github/workflows/ci.yml) runs on pushes to `master`, `staging` and `original-scope`, on pull requests into `master`, and on manual dispatch. It has three jobs:
+
+| Job | Checks | Gate |
+|---|---|---|
+| Style and static analysis | Pint, PHPStan level 5, ESLint on the in-scope pages, vue-tsc | Any failure fails the build; vue-tsc may not exceed 26 errors |
+| Tests and coverage | Migrate the test database, run every suite with PCOV | In-scope line coverage of at least 80% ([script](scripts/check-scope-coverage.php)) |
+| Mutation testing | Pest mutation tests on the 13 in-scope files (pushes and manual runs only) | Mutation score of at least 60% |
+
+Recorded CI runs are in [docs/final/CI_EVIDENCE.md](docs/final/CI_EVIDENCE.md).
 
 ---
 
-## Production Deployment
+## Repository Map
 
-### Production Asset Compilation
-Compile frontend assets for production:
-```bash
-npm run build
-```
-For Server-Side Rendering (SSR) deployment:
-```bash
-npm run build:ssr
-```
-
-### Containerization
-The repository includes a ready-to-use `Dockerfile` and `docker-compose.yml`:
-```bash
-docker compose up -d --build
-```
-Additionally, `nixpacks.toml` is provided for container platforms such as Railway and Coolify.
-
----
-
-## API Documentation and Guides
-
-Additional reference documentation is available in the repository:
-- `API_V2_DOCUMENTATION.md` - Sanctum token authentication and Mobile API v2 endpoints.
-- `MOBILE_API_DOCUMENTATION.md` - Mobile verification and check-in workflows.
-- `FLUTTER_SCANNING_APP_GUIDE.md` - Architecture and integration guide for Flutter scanning clients.
-- `SMS_SETUP.md` - Setup and failover configuration for Hubtel and GiantSMS.
+| Path | Contents |
+|---|---|
+| `app/` | The application; the 13 in-scope classes are listed in [Appendix C](#appendix-c-in-scope-classes-and-coverage) |
+| `tests/Unit`, `tests/Feature`, `tests/Browser` | Automated tests (Pest 4) |
+| `docs/testing/` | Test strategy, plan, case catalogue, results and the raw run output |
+| `docs/defects/` | Defect log and the test run taken before any fix |
+| `docs/baseline/`, `docs/final/` | Baseline coverage files and earlier final measurements |
+| `docs/design/`, `docs/report/` | Design diagram sources and the report tiny draft |
+| `scripts/check-scope-coverage.php` | In-scope coverage gate |
+| `phpunit.xml`, `phpstan.neon` | Test and analysis configuration (scope set to the 13 classes) |
+| `.github/workflows/ci.yml` | CI pipeline |
+| `dev-notes.md` | Every command, grouped by task |
 
 ---
 
@@ -454,7 +325,7 @@ The full list, with explanations, is in [dev-notes.md](dev-notes.md).
 | Coverage, all suites | `php -d pcov.enabled=1 -d pcov.directory=app ./vendor/bin/pest --coverage-clover=coverage/clover.xml` | [dev-notes §5](dev-notes.md#5-coverage) |
 | In-scope coverage gate | `php scripts/check-scope-coverage.php coverage/clover.xml 80` | [dev-notes §5](dev-notes.md#5-coverage) |
 | Static analysis | `./vendor/bin/phpstan analyse` | [dev-notes §6](dev-notes.md#6-static-analysis-style-and-type-checks) |
-| Style check | `./vendor/bin/pint --test` | [dev-notes §6](dev-notes.md#6-static-analysis-style-and-type-checks) |
+| Style check (in-scope files) | see the command in dev-notes | [dev-notes §6](dev-notes.md#6-static-analysis-style-and-type-checks) |
 | Mutation testing | `./vendor/bin/pest --mutate --covered-only --class='App\Models\Discount'` | [dev-notes §7](dev-notes.md#7-mutation-testing) |
 | Reproduce the baseline | `git switch --detach a36bd12` then run the suite | [dev-notes §9](dev-notes.md#9-reproducing-the-baseline) |
 | Rebuild the assets | `npm run build` | [dev-notes §11](dev-notes.md#11-build-and-containers) |

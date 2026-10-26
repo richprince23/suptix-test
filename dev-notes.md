@@ -130,13 +130,18 @@ printf("%-36s %12d %12d %9.2f%%\n",
 ```bash
 ./vendor/bin/phpstan analyse                       # level 5 on the in-scope classes (phpstan.neon)
 ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
-php artisan pint                                   # format PHP
-./vendor/bin/pint --test                           # check only
+./vendor/bin/pint <files>                         # format the named PHP files (without a path it rewrites the whole repository)
+# check only, on the files the study covers (the whole repository has older style issues outside the scope)
+./vendor/bin/pint --test app/Http/Controllers/TicketPurchaseController.php app/Http/Controllers/DiscountController.php \
+  app/Http/Controllers/PaymentController.php app/Http/Controllers/PaystackController.php app/Http/Controllers/TicketController.php \
+  app/Http/Controllers/CheckInController.php app/Models/Discount.php app/Models/Order.php app/Models/Payment.php app/Models/Ticket.php \
+  app/Models/TicketType.php app/Services/PaystackService.php app/Services/PaystackBalanceService.php database/factories tests
 npm run lint                                       # ESLint, fixes files
-npx eslint <files> --no-fix --max-warnings 0       # check only, as in CI
+npx eslint resources/js/pages/EventDetails.vue resources/js/pages/TicketBuyerForm.vue resources/js/pages/TicketVerification.vue \
+  resources/js/pages/AttendeeCheckIn.vue resources/js/components/TicketSelector.vue --no-fix --max-warnings 0   # check only, as in CI
 npm run format                                     # Prettier
 npm run format:check
-npx vue-tsc --noEmit                               # type check (26 inherited errors are recorded)
+npx vue-tsc --noEmit                               # type check; CI allows at most 26 errors, the current count is 21
 ```
 
 ## 7. Mutation testing

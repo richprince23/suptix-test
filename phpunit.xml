@@ -17,13 +17,7 @@
         </testsuite>
 
     </testsuites>
-    <!-- <source>
-        <exclude>
-            <directory>app/Filament</directory>
-            <directory>app/Providers</directory>
-            <directory>app/Console</directory>
-            <directory>app/Exceptions</directory>
-        </exclude>
+    <source>
         <include>
             <file>app/Http/Controllers/TicketPurchaseController.php</file>
             <file>app/Http/Controllers/DiscountController.php</file>
@@ -39,7 +33,7 @@
             <file>app/Models/TicketType.php</file>
             <file>app/Models/Payment.php</file>
         </include>
-    </source> -->
+    </source>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
